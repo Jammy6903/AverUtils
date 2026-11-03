@@ -25,7 +25,7 @@ public class Warps implements CommandExecutor {
             }
             warpsString.delete(warpsString.length() - 2, warpsString.length());
             sender.sendMessage(Component.text("Warps: \n" + warpsString,  NamedTextColor.YELLOW));
-        } catch (SQLException e) {
+        } catch (SQLException exception) {
             sender.sendMessage(Component.text("An unknown error has occurred", NamedTextColor.RED));
             AverUtils.logWarning("Failed to fetch warps from database", exception);
         }
