@@ -3,7 +3,10 @@ package onl.jami.averUtils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.luckperms.api.LuckPerms;
 import onl.jami.averUtils.admin.DoAs;
+import onl.jami.averUtils.admin.Motd;
+import onl.jami.averUtils.admin.PlayerListDecoration;
 import onl.jami.averUtils.listeners.Chat;
+import onl.jami.averUtils.listeners.Ping;
 import onl.jami.averUtils.userconfig.profile.NameChoice;
 import onl.jami.averUtils.userconfig.profile.Nickname;
 import onl.jami.averUtils.userconfig.profile.Pronouns;
@@ -66,6 +69,7 @@ public final class AverUtils extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new Chat(), this);
         getServer().getPluginManager().registerEvents(new Player(), this);
+        getServer().getPluginManager().registerEvents(new Ping(), this);
         Msg msg = new Msg();
         getCommand("msg").setExecutor(msg);
         getCommand("msg").setTabCompleter(msg);
@@ -115,6 +119,12 @@ public final class AverUtils extends JavaPlugin {
         getCommand("delwarp").setExecutor(delWarp);
         SetWarp setWarp = new SetWarp();
         getCommand("setwarp").setExecutor(setWarp);
+        Motd motd = new Motd();
+        getCommand("motd").setExecutor(motd);
+        getCommand("motd").setTabCompleter(motd);
+        PlayerListDecoration playerListDecoration = new PlayerListDecoration();
+        getCommand("playerlistdecoration").setExecutor(playerListDecoration);
+        getCommand("playerlistdecoration").setTabCompleter(playerListDecoration);
     }
 
     @Override

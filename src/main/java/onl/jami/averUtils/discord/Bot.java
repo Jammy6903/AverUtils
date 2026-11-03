@@ -20,13 +20,12 @@ import onl.jami.averUtils.discord.verification.VerifyDiscord;
 public class Bot {
     public static JDA jda;
 
-    public static JDA jdaInit(String token) {
+    public static void jdaInit(String token) {
         jda = JDABuilder.createLight(token, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_WEBHOOKS, GatewayIntent.MESSAGE_CONTENT)
                 .addEventListeners(new DiscordToMinecraft(), new SyncOnChange(), new VerifyDiscord(), new EditChannels(), new EditRoles())
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .build();
         jda.updateCommands().addCommands(verifyCommand(), channelCommand(), roleCommand()).queue();
-        return jda;
     }
 
     public static void close() {
