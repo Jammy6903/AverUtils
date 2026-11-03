@@ -20,7 +20,6 @@ import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -64,7 +63,7 @@ public class VerifyLock {
                                 text("Confirm", TextColor.color(0xAEFFC1)),
                                 text("Click to confirm your input."),
                                 100,
-                                DialogAction.customClick((view, audience) -> {
+                                DialogAction.customClick((view, _) -> {
                                     Long id = VerificationCodes.checkCode(view.getText("code"));
                                     if (id == null) {
                                         p.kick(Component.text("You must enter a valid verification code"));
@@ -87,7 +86,7 @@ public class VerifyLock {
                                                     Bukkit.getScheduler().runTask(AverUtils.getPlugin(), () -> p.kick(Component.text("An unknown error has occured.")));
                                                 }
                                             },
-                                            failure -> Bukkit.getScheduler().runTask(AverUtils.getPlugin(), () -> p.kick(Component.text("You are not in the Discord.")))
+                                            _ -> Bukkit.getScheduler().runTask(AverUtils.getPlugin(), () -> p.kick(Component.text("You are not in the Discord.")))
                                     );
                                 }, ClickCallback.Options.builder().build())
                         ),
@@ -95,7 +94,7 @@ public class VerifyLock {
                                 text("Cancel", TextColor.color(0xFFA0B1)),
                                 text("Cancel verification, you will be kicked."),
                                 100,
-                                DialogAction.customClick((view, audience) -> {
+                                DialogAction.customClick((_, audience) -> {
                                     if (audience instanceof Player) {
                                         p.kick(Component.text("You must verify your account in the Discord server"));
                                     }

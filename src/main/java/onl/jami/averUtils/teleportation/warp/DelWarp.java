@@ -4,14 +4,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.WarpRepo;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
 
 public class DelWarp implements CommandExecutor {
 

@@ -14,7 +14,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
 
 public class Formatter {
     public static Component formatChat(Player player, Component message, Component discordPreceder) {

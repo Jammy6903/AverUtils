@@ -7,10 +7,8 @@ import net.luckperms.api.model.group.Group;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.sync.RoleSync;
 import onl.jami.averUtils.storage.database.RoleLinkRepo;
-import org.bukkit.Bukkit;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
 
 public class EditRoles extends ListenerAdapter {
     @Override

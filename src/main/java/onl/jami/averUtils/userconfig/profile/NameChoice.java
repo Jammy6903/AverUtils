@@ -5,7 +5,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.cache.PlayerCache;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -17,7 +16,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 
 public class NameChoice implements TabExecutor {
 

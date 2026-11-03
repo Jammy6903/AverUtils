@@ -7,7 +7,6 @@ import onl.jami.averUtils.discord.sync.RoleSync;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.discord.verification.VerifyLock;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -17,7 +16,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.sql.SQLException;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class Player implements Listener {
 

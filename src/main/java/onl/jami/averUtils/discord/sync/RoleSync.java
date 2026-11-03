@@ -16,7 +16,6 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class RoleSync {
 
@@ -37,9 +36,9 @@ public class RoleSync {
                 for (RoleLinkRepo.RoleData roleData : rolesData) {
                     for (Role role : m.getRoles()) {
                         if (role.getIdLong() == roleData.roleId()) {
-                            AverUtils.getLuckPermsApi().getUserManager().modifyUser(playerData.uuid(), user -> {
-                                user.data().add(InheritanceNode.builder(roleData.lpGroup()).build());
-                            });
+                            AverUtils.getLuckPermsApi().getUserManager().modifyUser(playerData.uuid(), user ->
+                                user.data().add(InheritanceNode.builder(roleData.lpGroup()).build())
+                            );
                         }
                     }
                 }

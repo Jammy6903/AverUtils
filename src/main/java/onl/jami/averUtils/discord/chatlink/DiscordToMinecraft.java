@@ -9,7 +9,6 @@ import onl.jami.averUtils.storage.database.ChannelLinkRepo;
 import org.bukkit.Bukkit;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
 
 public class DiscordToMinecraft extends ListenerAdapter {
     @Override
@@ -27,6 +26,7 @@ public class DiscordToMinecraft extends ListenerAdapter {
                 message = message + " [attachments]";
             }
             Component component = Formatter.formatDiscordChat(event.getAuthor().getIdLong(), message);
+            if (component == null) { return; }
             Bukkit.broadcast(component);
         } catch (SQLException exception) {
             AverUtils.logWarning("Failed to fetch channel link from database", exception);

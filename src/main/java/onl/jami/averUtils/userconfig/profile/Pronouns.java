@@ -5,7 +5,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.cache.PlayerCache;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -15,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
 
 public class Pronouns implements TabExecutor {
     @Override

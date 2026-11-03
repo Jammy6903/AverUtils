@@ -1,6 +1,7 @@
 package onl.jami.averUtils.discord.chatlink;
 
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 
@@ -23,19 +24,17 @@ import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.ChannelLinkCategory;
 import onl.jami.averUtils.storage.database.ChannelLinkRepo;
 import onl.jami.averUtils.discord.Bot;
-import org.bukkit.Bukkit;
 import org.jspecify.annotations.NonNull;
 
 import java.awt.*;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 public class EditChannels extends ListenerAdapter {
 
     private static final Cache<String, Long> interactionCache = CacheBuilder.newBuilder()
-            .expireAfterWrite(5, TimeUnit.MINUTES)
-            .build();;
+            .expireAfterWrite(Duration.ofMinutes(5))
+            .build();
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -121,7 +120,7 @@ public class EditChannels extends ListenerAdapter {
                 if (!ChannelLinkRepo.setCategories(event.getGuild().getIdLong(), channelId, categoriesSet, webhook.getUrl())) {
                     event.reply("An error has occurred, channel link not saved.").setEphemeral(true).queue();
                     return;
-                };
+                }
                 event.reply("Channel link has been saved.").setEphemeral(true).queue();
             } catch (SQLException exception) {
                 AverUtils.logWarning("Failed to create channel link in database", exception);

@@ -15,13 +15,13 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
 
 public class VerifyMinecraft implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage(Component.text("Only players can run this command!",  NamedTextColor.RED));
+            return true;
         }
         if (args.length < 1) return false;
         Long id = VerificationCodes.checkCode(args[0]);
@@ -46,7 +46,7 @@ public class VerifyMinecraft implements CommandExecutor {
                         Bukkit.getScheduler().runTask(AverUtils.getPlugin(), () -> sender.sendMessage(Component.text("An unknown error has occured.")));
                     }
                 },
-                failure -> Bukkit.getScheduler().runTask(AverUtils.getPlugin(), () -> sender.sendMessage(Component.text("You are not in the Discord.")))
+                _ -> Bukkit.getScheduler().runTask(AverUtils.getPlugin(), () -> sender.sendMessage(Component.text("You are not in the Discord.")))
         );
 
         return true;

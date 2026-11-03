@@ -46,41 +46,4 @@ public class PlayerName {
                 .hoverEvent(HoverEvent.showText(nameHoverComponent))
                 .clickEvent(ClickEvent.suggestCommand("/msg " + player.getName() + " "));
     }
-
-    public static Component getComponent(Long userId) {
-        String playerName = Bot.getJDA().getUserById(userId).getGlobalName();
-        try {
-            PlayerRepo.PlayerData playerData = PlayerRepo.getPlayerByDiscordId(userId);
-            if (playerData == null) {
-                if (playerName == null) { return null; }
-                return Component.text(playerName);
-            }
-            String ign = Bukkit.getOfflinePlayer(playerData.uuid()).getName();
-
-            playerName = switch (playerData.nameChoice()) {
-                case null -> ign;
-                case PlayerRepo.PlayerData.NameChoice.PLAYER_NAME -> ign;
-                case PlayerRepo.PlayerData.NameChoice.DISCORD_GLOBAL -> playerData.discordGlobalName() != null ? playerData.discordGlobalName() : ign;
-                case PlayerRepo.PlayerData.NameChoice.DISCORD_NICKNAME -> playerData.discordUsername() != null ? playerData.discordUsername() : ign;
-                case PlayerRepo.PlayerData.NameChoice.NICKNAME -> playerData.nickname() != null ? playerData.nickname() : ign;
-            };
-
-            String discordUsername = playerData.discordUsername();
-            String discordGlobalName = playerData.discordGlobalName();
-            String discordNickname = playerData.discordNickname();
-
-            Component nameHoverComponent = Component.text(playerName + "'s Profile", NamedTextColor.AQUA).decorate(TextDecoration.UNDERLINED);
-            nameHoverComponent = nameHoverComponent.append(Component.text("\nPlayer Name: " + ign, NamedTextColor.WHITE)).decoration(TextDecoration.UNDERLINED, false);
-            if (discordUsername != null) { nameHoverComponent = nameHoverComponent.append(Component.text("\nDiscord Username: " + playerData.discordUsername())); }
-            if (discordGlobalName != null) { nameHoverComponent = nameHoverComponent.append(Component.text("\nDiscord Global Name: " + playerData.discordGlobalName())); }
-            if (discordNickname != null) { nameHoverComponent = nameHoverComponent.append(Component.text("\nDiscord nickname: " + playerData.discordNickname())); }
-
-            return Component.text(playerName).color(NamedTextColor.WHITE)
-                    .hoverEvent(HoverEvent.showText(nameHoverComponent));
-        } catch (SQLException exception) {
-            AverUtils.logWarning("Failed to fetch player from database", exception);
-            if (playerName == null) { return null; }
-            return Component.text(playerName);
-        }
-    }
 }
