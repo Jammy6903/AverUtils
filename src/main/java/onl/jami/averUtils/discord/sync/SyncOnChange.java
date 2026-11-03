@@ -69,7 +69,7 @@ public class SyncOnChange extends ListenerAdapter {
 
     @Override
     public void onGuildMemberUpdateTimeOut(@NonNull GuildMemberUpdateTimeOutEvent e) {
-        return;
+
     }
 
     @Override
