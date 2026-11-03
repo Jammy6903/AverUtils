@@ -1,6 +1,7 @@
 package onl.jami.averUtils.listeners;
 
 import net.kyori.adventure.text.Component;
+import onl.jami.averUtils.chat.PlayerName;
 import onl.jami.averUtils.discord.sync.RoleSync;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import onl.jami.averUtils.storage.database.PlayerRepo;
@@ -21,9 +22,13 @@ public class PlayerJoin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         try {
             UUID uuid = e.getPlayer().getUniqueId();
+
             PlayerRepo.createPlayer(uuid);
             VerifyLock.verifyOnLogin(e.getPlayer());
             PlayerCache.addPlayer(uuid, PlayerRepo.getPlayer(uuid));
+
+            PlayerName.updatePlayerList(e.getPlayer());
+
             RoleSync.sync(e.getPlayer());
         } catch (SQLException exception) {
             Bukkit.getLogger().log(Level.WARNING, "Could not create player " + e.getPlayer().getName(), exception);
