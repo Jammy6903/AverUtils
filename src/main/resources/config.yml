@@ -10,3 +10,6 @@ chat:
   prefix-format: "<gray>[</gray><prefix><gray>]</gray>"
   suffix-format: ""
   discord-format: "<gray>[</gray><blue>D</blue><gray>]</gray>"
+
+playerlist:
+  format: "<prefix> <name>"

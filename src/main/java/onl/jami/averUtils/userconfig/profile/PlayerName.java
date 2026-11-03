@@ -5,6 +5,10 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.luckperms.api.cacheddata.CachedMetaData;
+import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import org.bukkit.entity.Player;
@@ -42,5 +46,33 @@ public class PlayerName {
         return Component.text(playerName).color(NamedTextColor.WHITE)
                 .hoverEvent(HoverEvent.showText(nameHoverComponent))
                 .clickEvent(ClickEvent.suggestCommand("/msg " + player.getName() + " "));
+    }
+
+    public static void updatePlayerList(Player player) {
+        PlayerRepo.PlayerData playerData = PlayerCache.getPlayer(player.getUniqueId());
+        String formatString = AverUtils.getCfg().getString("playerlist.format");
+        CachedMetaData md = AverUtils.getLuckPermsApi().getPlayerAdapter(Player.class).getUser(player).getCachedData().getMetaData();
+        String lpPrefixString = md.getPrefix();
+        String lpSuffixString = md.getSuffix();
+        if (lpPrefixString == null) {
+            lpPrefixString = "default";
+        }
+        if (lpSuffixString == null) {
+            lpSuffixString = "";
+        }
+        String playerPronouns = playerData.pronouns();
+        Component pronouns = Component.empty();
+        if (!(playerPronouns == null)) {
+            if (!playerPronouns.isEmpty()) {
+                pronouns = Component.text(playerPronouns);
+            }
+        }
+        Component component = MiniMessage.miniMessage().deserialize(formatString,
+                Placeholder.component("prefix", MiniMessage.miniMessage().deserialize(lpPrefixString)),
+                Placeholder.component("suffix", MiniMessage.miniMessage().deserialize(lpSuffixString)),
+                Placeholder.component("name", getComponent(player)),
+                Placeholder.component("pronouns", pronouns)
+        );
+        player.playerListName(component);
     }
 }

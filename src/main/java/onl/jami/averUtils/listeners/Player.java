@@ -35,6 +35,8 @@ public class Player implements Listener {
             VerifyLock.verifyOnLogin(e.getPlayer());
             PlayerCache.addPlayer(uuid, PlayerRepo.getPlayer(uuid));
 
+            PlayerName.updatePlayerList(e.getPlayer());
+
             // cache this, also simplify it
             List<PlayerListDecorationRepo.PlayerListDecorationData> headers = PlayerListDecorationRepo.getActive(PlayerListDecorationRepo.PlayerListDecorationData.Location.HEADER);
             List<PlayerListDecorationRepo.PlayerListDecorationData> footers = PlayerListDecorationRepo.getActive(PlayerListDecorationRepo.PlayerListDecorationData.Location.FOOTER);
