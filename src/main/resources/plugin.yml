@@ -4,7 +4,7 @@ author: 'Jami'
 
 main: onl.jami.averUtils.AverUtils
 api-version: '26.3'
-load: POSTWORLD
+softdepend: [LuckPerms]
 
 commands:
   home:

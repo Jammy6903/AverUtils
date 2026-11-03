@@ -40,12 +40,12 @@ public class VerifyLock {
                         p.kick(Component.text("Verification timed out."));
                     }
                 } catch (SQLException exception) {
-                    Bukkit.getLogger().log(Level.WARNING, "Could not verify player " + p.getName(), exception);
+                    AverUtils.logWarning("Failed to update player in database", exception);
                     p.kick(Component.text("An unknown error has occurred."));
                 }
             }, 20L * 300);
         } catch (SQLException exception) {
-            Bukkit.getLogger().log(Level.WARNING, "Could not verify player " + p.getName(), exception);
+            AverUtils.logWarning("Failed to update player in database", exception);
             p.kick(Component.text("An unknown error has occurred."));
         }
     }
@@ -82,8 +82,8 @@ public class VerifyLock {
                                                     PlayerCache.addPlayer(p.getUniqueId(), PlayerRepo.getPlayer(p.getUniqueId()));
                                                     p.sendMessage(Component.text("You have been verified!", NamedTextColor.GREEN));
                                                     RoleSync.sync(p);
-                                                } catch (SQLException ex) {
-                                                    Bukkit.getLogger().log(Level.WARNING, "Failed to verify player!", ex);
+                                                } catch (SQLException exception) {
+                                                    AverUtils.logWarning("Failed to update player in database", exception);
                                                     Bukkit.getScheduler().runTask(AverUtils.getPlugin(), () -> p.kick(Component.text("An unknown error has occured.")));
                                                 }
                                             },

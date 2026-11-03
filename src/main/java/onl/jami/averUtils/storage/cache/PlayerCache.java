@@ -1,5 +1,6 @@
 package onl.jami.averUtils.storage.cache;
 
+import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import org.bukkit.Bukkit;
 
@@ -24,8 +25,8 @@ public class PlayerCache {
     public static void updatePlayer(UUID uuid) {
         try {
             players.put(uuid, PlayerRepo.getPlayer(uuid));
-        } catch (SQLException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to update player in cache " + uuid, e);
+        } catch (SQLException exception) {
+            AverUtils.logWarning("Failed to fetch player from database", exception);
         }
     }
 

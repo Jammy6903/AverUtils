@@ -2,6 +2,7 @@ package onl.jami.averUtils.teleportation.warp;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.WarpRepo;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -18,12 +19,12 @@ public class DelWarp implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (args.length == 0) { return false; }
         try {
-            if (WarpRepo.deleteWarp(args[0]) == true) {
+            if (WarpRepo.deleteWarp(args[0])) {
                 sender.sendMessage(Component.text("Warp has been deleted.", NamedTextColor.GREEN));
             }
-        } catch (SQLException e) {
+        } catch (SQLException exception) {
             sender.sendMessage(Component.text("An unknown error has occurred", NamedTextColor.RED));
-            Bukkit.getLogger().log(Level.WARNING, "Warp could not be deleted from database", e);
+            AverUtils.logWarning("Failed to remove warp from database", exception);
         }
         return true;
     }

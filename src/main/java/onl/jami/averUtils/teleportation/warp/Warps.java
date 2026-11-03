@@ -2,6 +2,7 @@ package onl.jami.averUtils.teleportation.warp;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.WarpRepo;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -26,7 +27,7 @@ public class Warps implements CommandExecutor {
             sender.sendMessage(Component.text("Warps: \n" + warpsString,  NamedTextColor.YELLOW));
         } catch (SQLException e) {
             sender.sendMessage(Component.text("An unknown error has occurred", NamedTextColor.RED));
-            Bukkit.getLogger().log(Level.WARNING, "Failed to fetch warps for player ", e);
+            AverUtils.logWarning("Failed to fetch warps from database", exception);
         }
         return true;
     }

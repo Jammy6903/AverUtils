@@ -41,8 +41,8 @@ public class VerifyMinecraft implements CommandExecutor {
                         PlayerCache.addPlayer(((Player)sender).getUniqueId(), PlayerRepo.getPlayer(((Player)sender).getUniqueId()));
                         sender.sendMessage(Component.text("You have been verified!", NamedTextColor.GREEN));
                         RoleSync.sync((Player)sender);
-                    } catch (SQLException ex) {
-                        Bukkit.getLogger().log(Level.WARNING, "Failed to verify player!", ex);
+                    } catch (SQLException exception) {
+                        AverUtils.logWarning("Failed to verify player in database", exception);
                         Bukkit.getScheduler().runTask(AverUtils.getPlugin(), () -> sender.sendMessage(Component.text("An unknown error has occured.")));
                     }
                 },

@@ -2,6 +2,7 @@ package onl.jami.averUtils.teleportation.home;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.HomeRepo;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -38,9 +39,9 @@ public class Home implements TabExecutor {
             Location location = new Location(Bukkit.getWorld(homeData.world()), homeData.x(), homeData.y(), homeData.z(),  homeData.yaw(), homeData.pitch());
             ((Player) sender).teleport(location);
             sender.sendMessage(Component.text("Successfully teleported to " + name, NamedTextColor.GREEN));
-        } catch (SQLException e) {
+        } catch (SQLException exception) {
             sender.sendMessage(Component.text("Failed to teleport to " + name, NamedTextColor.RED));
-            Bukkit.getLogger().warning("Failed to player teleport to their home" + e);
+            AverUtils.logWarning("Failed to fetch home for player from database", exception);
         }
         return true;
     }
@@ -55,8 +56,8 @@ public class Home implements TabExecutor {
                     results.add(home.name());
                 }
                 return results;
-            } catch (SQLException e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to fetch homes" + e);
+            } catch (SQLException exception) {
+                AverUtils.logWarning("Failed to fetch homes for player from database", exception);
             }
         }
         return null;

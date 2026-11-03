@@ -19,6 +19,7 @@ import net.dv8tion.jda.api.entities.channel.unions.GuildChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.ChannelLinkCategory;
 import onl.jami.averUtils.storage.database.ChannelLinkRepo;
 import onl.jami.averUtils.discord.Bot;
@@ -68,7 +69,8 @@ public class EditChannels extends ListenerAdapter {
                     });
                     ChannelLinkRepo.deleteChannel(event.getGuild().getIdLong(), textChannel.getIdLong());
                     event.reply("Channel link has been removed").setEphemeral(true).queue();
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    AverUtils.logWarning("Failed to remove channel link from database", exception);
                     event.reply("An error has occured, channel link could not be removed.").setEphemeral(true).queue();
                 }
                 break;
@@ -117,12 +119,12 @@ public class EditChannels extends ListenerAdapter {
             }
             try {
                 if (!ChannelLinkRepo.setCategories(event.getGuild().getIdLong(), channelId, categoriesSet, webhook.getUrl())) {
-                    event.reply("An error has occured, channel link not saved.").setEphemeral(true).queue();
+                    event.reply("An error has occurred, channel link not saved.").setEphemeral(true).queue();
                     return;
                 };
                 event.reply("Channel link has been saved.").setEphemeral(true).queue();
-            } catch (SQLException e) {
-                Bukkit.getLogger().log(Level.WARNING, "Error while saving channel link. " + e);
+            } catch (SQLException exception) {
+                AverUtils.logWarning("Failed to create channel link in database", exception);
                 event.reply("An error has occurred, channel link not saved.").setEphemeral(true).queue();
             }
         });

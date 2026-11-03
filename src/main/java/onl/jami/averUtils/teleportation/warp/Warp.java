@@ -2,6 +2,7 @@ package onl.jami.averUtils.teleportation.warp;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.WarpRepo;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -33,9 +34,9 @@ public class Warp implements TabExecutor {
             }
             ((Player) sender).teleport(new Location(Bukkit.getWorld(warp.world()), warp.x(), warp.y(), warp.z(), warp.yaw(), warp.pitch()));
             sender.sendMessage(Component.text("Teleported to warp location!", NamedTextColor.GREEN));
-        } catch (SQLException e) {
+        } catch (SQLException exception) {
             sender.sendMessage(Component.text("An unknown error has occurred", NamedTextColor.RED));
-            Bukkit.getLogger().log(Level.SEVERE, "Failed to fetch warp from database", e);
+            AverUtils.logWarning("Failed to fetch warp from database", exception);
         }
         return true;
     }
@@ -47,8 +48,8 @@ public class Warp implements TabExecutor {
             for (WarpRepo.WarpData warp : WarpRepo.listWarps()) {
                 completions.add(warp.name());
             }
-        } catch (SQLException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Could not list Warps from database", e);
+        } catch (SQLException exception) {
+            AverUtils.logWarning("Failed to fetch warps from database", exception);
         }
         return completions;
     }

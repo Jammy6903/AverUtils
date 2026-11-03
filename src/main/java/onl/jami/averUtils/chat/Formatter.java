@@ -71,7 +71,7 @@ public class Formatter {
             if (p == null) { return discordNonPlayer(chatFormatString, discordPreceder, playerName, message); }
             return (formatChat(p, Component.text(message), discordPreceder));
         } catch (SQLException exception) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to fetch player " + exception);
+            AverUtils.logWarning("Failed to fetch player from database", exception);
         }
         return null;
     }

@@ -2,6 +2,7 @@ package onl.jami.averUtils.teleportation.warp;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.WarpRepo;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -28,9 +29,9 @@ public class SetWarp implements CommandExecutor {
                 return true;
             }
             sender.sendMessage(Component.text("Warp has been created: " + args[0], NamedTextColor.GREEN));
-        } catch (SQLException e) {
+        } catch (SQLException exception) {
             sender.sendMessage(Component.text("An unknown error has occured", NamedTextColor.RED));
-            Bukkit.getLogger().log(Level.WARNING, "Failed to create a warp in database", e);
+            AverUtils.logWarning("Failed to create warp in database", exception);
         }
         return true;
     }

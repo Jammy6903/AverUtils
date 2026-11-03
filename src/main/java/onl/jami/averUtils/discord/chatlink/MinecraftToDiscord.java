@@ -6,6 +6,7 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.ChannelLinkCategory;
 import onl.jami.averUtils.storage.database.ChannelLinkRepo;
 import onl.jami.averUtils.discord.Bot;
@@ -49,13 +50,12 @@ public class MinecraftToDiscord {
                 http.sendAsync(request, HttpResponse.BodyHandlers.discarding())
                         .thenAccept(response -> {
                             if (response.statusCode() == 300) {
-                                Bukkit.getLogger().log(Level.WARNING, "Failed to post to webhook url");
+                                AverUtils.getPlugin().getLogger().log(Level.WARNING, "Failed to post to webhook url");
                             }
                         });
             }
         } catch (SQLException exception) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to fetch channel_links", exception);
-        }
+            AverUtils.logWarning("Failed to fetch channel links from database", exception);}
     }
 
     public static void sendJoinMessage(PlayerJoinEvent event) {
@@ -64,13 +64,12 @@ public class MinecraftToDiscord {
             for (ChannelLinkRepo.ChannelRef channel : channelRef) {
                 TextChannel c = Bot.getJDA().getGuildById(channel.guildId()).getChannelById(TextChannel.class, channel.channelId());
                 if  (c == null) {
-                    Bukkit.getLogger().log(Level.WARNING, "Failed to fetch channel for " + channel.guildId() + ":" + channel.channelId());
                     return;
                 }
                 c.sendMessage(event.getPlayer().getName() + " joined the game").queue();
             }
         } catch (SQLException exception) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to fetch channel_links", exception);
+            AverUtils.logWarning("Failed to fetch channel links from database", exception);
         }
     }
 
@@ -80,13 +79,12 @@ public class MinecraftToDiscord {
             for (ChannelLinkRepo.ChannelRef channel : channelRef) {
                 TextChannel c = Bot.getJDA().getGuildById(channel.guildId()).getChannelById(TextChannel.class, channel.channelId());
                 if  (c == null) {
-                    Bukkit.getLogger().log(Level.WARNING, "Failed to fetch channel for " + channel.guildId() + ":" + channel.channelId());
                     return;
                 }
                 c.sendMessage(event.getPlayer().getName() + " left the game").queue();
             }
         } catch (SQLException exception) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to fetch channel_links", exception);
+            AverUtils.logWarning("Failed to fetch channel links from database", exception);
         }
     }
 
@@ -96,13 +94,12 @@ public class MinecraftToDiscord {
             for (ChannelLinkRepo.ChannelRef channel : channelRef) {
                 TextChannel c = Bot.getJDA().getGuildById(channel.guildId()).getChannelById(TextChannel.class, channel.channelId());
                 if  (c == null) {
-                    Bukkit.getLogger().log(Level.WARNING, "Failed to fetch channel for " + channel.guildId() + ":" + channel.channelId());
                     return;
                 }
                 c.sendMessage(PlainTextComponentSerializer.plainText().serialize(event.deathMessage())).queue();
             }
         } catch (SQLException exception) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to fetch channel_links", exception);
+            AverUtils.logWarning("Failed to fetch channel links from database", exception);
         }
     }
 
@@ -114,13 +111,12 @@ public class MinecraftToDiscord {
                 for (ChannelLinkRepo.ChannelRef channel : channelRef) {
                     TextChannel c = Bot.getJDA().getGuildById(channel.guildId()).getChannelById(TextChannel.class, channel.channelId());
                     if (c == null) {
-                        Bukkit.getLogger().log(Level.WARNING, "Failed to fetch channel for " + channel.guildId() + ":" + channel.channelId());
                         return;
                     }
                     c.sendMessage(PlainTextComponentSerializer.plainText().serialize(message)).queue();
                 }
             } catch (SQLException exception) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to fetch channel_links", exception);
+                AverUtils.logWarning("Failed to fetch channel links from database", exception);
             }
         }
     }

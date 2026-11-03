@@ -2,6 +2,7 @@ package onl.jami.averUtils.userconfig.profile;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import org.bukkit.Bukkit;
@@ -34,9 +35,9 @@ public class Pronouns implements TabExecutor {
             PlayerRepo.updatePronouns(((Player) sender).getUniqueId(), args[0].toLowerCase());
             sender.sendMessage("Successfully updated your pronouns: " + args[0].toLowerCase());
             PlayerCache.updatePlayer(((Player) sender).getUniqueId());
-        } catch (SQLException e) {
+        } catch (SQLException exception) {
             sender.sendMessage(Component.text("An error occurred while trying to update your pronouns", NamedTextColor.RED));
-            Bukkit.getLogger().log(Level.WARNING, "Could not update players pronouns", e);
+            AverUtils.logWarning("Failed to update player in database", exception);
         }
         return true;
     }

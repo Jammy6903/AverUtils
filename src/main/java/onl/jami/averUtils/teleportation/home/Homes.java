@@ -2,6 +2,7 @@ package onl.jami.averUtils.teleportation.home;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.HomeRepo;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -29,8 +30,8 @@ public class Homes implements CommandExecutor {
             }
             homesString.delete(homesString.length() - 2, homesString.length());
             sender.sendMessage(Component.text("Your homes: \n" + homesString,  NamedTextColor.YELLOW));
-        } catch (SQLException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to fetch homes for player " + e);
+        } catch (SQLException exception) {
+            AverUtils.logWarning("Failed to fetch homes for player from database", exception);
         }
         return true;
     }

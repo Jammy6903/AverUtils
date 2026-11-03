@@ -1,6 +1,5 @@
 package onl.jami.averUtils;
 
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.luckperms.api.LuckPerms;
 import onl.jami.averUtils.admin.DoAs;
@@ -51,14 +50,14 @@ public final class AverUtils extends JavaPlugin {
             Driver.initTables();
             Driver.migrate();
         } catch (ClassNotFoundException | SQLException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "Could not initialize or migrate the database!", e);
+            this.getLogger().log(Level.SEVERE, "Could not initialize or migrate the database!", e);
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
         if (cfg.getBoolean("discord.enabled")) {
             Bot.jdaInit(cfg.getString("discord.token"));
-        };
+        }
 
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
         if (provider != null) {
@@ -125,17 +124,19 @@ public final class AverUtils extends JavaPlugin {
         try {
             Driver.close();
         } catch (SQLException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to close database connection", e);
+            this.getLogger().log(Level.WARNING, "Failed to close database connection", e);
         }
+    }
+
+    public static void logWarning(String message, Exception e) {
+        AverUtils.getPlugin().getLogger().log(Level.WARNING, message, e);
     }
 
     public static Plugin getPlugin() {return instance;}
 
     public static Configuration getCfg() {return cfg;}
 
-    public static Guild getGuild() {
-        return Bot.getJDA().getGuildById(getCfg().getLong("discord.verification-guild-id"));
-    }
+    public static Guild getGuild() { return Bot.getJDA().getGuildById(getCfg().getLong("discord.verification-guild-id")); }
 
     public static LuckPerms getLuckPermsApi() {
         return luckPermsApi;

@@ -2,6 +2,7 @@ package onl.jami.averUtils.teleportation.home;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.HomeRepo;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -35,9 +36,9 @@ public class SetHome implements CommandExecutor {
             }
             sender.sendMessage(Component.text("Home could not be created!",  NamedTextColor.RED));
             return true;
-        } catch (SQLException e) {
+        } catch (SQLException exception) {
             sender.sendMessage(Component.text("Home could not be created!",  NamedTextColor.RED));
-            Bukkit.getLogger().log(Level.WARNING, "A players home could not be created: ", e);
+            AverUtils.logWarning("Failed to create home for player in database", exception);
         }
         return true;
     }

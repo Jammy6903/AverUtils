@@ -5,6 +5,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.discord.Bot;
 import onl.jami.averUtils.storage.cache.PlayerCache;
@@ -76,8 +77,8 @@ public class PlayerName {
 
             return Component.text(playerName).color(NamedTextColor.WHITE)
                     .hoverEvent(HoverEvent.showText(nameHoverComponent));
-        } catch (SQLException e) {
-            Bukkit.getLogger().warning("Could not access player from database " + e);
+        } catch (SQLException exception) {
+            AverUtils.logWarning("Failed to fetch player from database", exception);
             if (playerName == null) { return null; }
             return Component.text(playerName);
         }

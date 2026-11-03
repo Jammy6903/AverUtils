@@ -43,8 +43,8 @@ public class RoleSync {
                         }
                     }
                 }
-            } catch (SQLException ex) {
-                Bukkit.getLogger().log(Level.WARNING, "Could not get player or roles from database", ex);
+            } catch (SQLException exception) {
+                AverUtils.logWarning("Failed to fetch player or role link from database", exception);
             } catch (ErrorResponseException ex) {
 
             }

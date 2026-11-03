@@ -1,6 +1,7 @@
 package onl.jami.averUtils.listeners;
 
 import net.kyori.adventure.text.Component;
+import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.chatlink.MinecraftToDiscord;
 import onl.jami.averUtils.discord.sync.RoleSync;
 import onl.jami.averUtils.storage.cache.PlayerCache;
@@ -30,7 +31,7 @@ public class Player implements Listener {
             RoleSync.sync(e.getPlayer());
             MinecraftToDiscord.sendJoinMessage(e);
         } catch (SQLException exception) {
-            Bukkit.getLogger().log(Level.WARNING, "Could not create player " + e.getPlayer().getName(), exception);
+            AverUtils.logWarning("Failed to create player in database", exception);
             e.getPlayer().kick(Component.text("An unknown error has occurred."));
         }
     }

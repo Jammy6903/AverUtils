@@ -2,6 +2,7 @@ package onl.jami.averUtils.userconfig.profile;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import org.bukkit.Bukkit;
@@ -33,10 +34,9 @@ public class Nickname implements CommandExecutor {
             PlayerRepo.updateNickname(((Player) sender).getUniqueId(), args[0]);
             PlayerCache.updatePlayer(((Player) sender).getUniqueId());
             sender.sendMessage(Component.text("Nickname has been updated!", NamedTextColor.GREEN));
-
-        } catch (SQLException e) {
+        } catch (SQLException exception) {
             sender.sendMessage(Component.text("Failed to update nickname!", NamedTextColor.RED));
-            Bukkit.getLogger().log(Level.WARNING, "Failed to update a players nickname " + e);
+            AverUtils.logWarning("Failed to fetch player or role link from database", exception);
         }
         return true;
     }

@@ -2,6 +2,7 @@ package onl.jami.averUtils.userconfig.profile;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import org.bukkit.Bukkit;
@@ -37,10 +38,9 @@ public class NameChoice implements TabExecutor {
             PlayerRepo.updateNameChoice(((Player) sender).getUniqueId(), args[0]);
             PlayerCache.updatePlayer(((Player) sender).getUniqueId());
             sender.sendMessage(Component.text("Name choice has been updated!", NamedTextColor.GREEN));
-
-        } catch (SQLException e) {
+        } catch (SQLException exception) {
             sender.sendMessage(Component.text("Failed to update name choice!", NamedTextColor.RED));
-            Bukkit.getLogger().log(Level.WARNING, "Failed to update a players name choice " + e);
+            AverUtils.logWarning("Failed to fetch player from database", exception);
         }
         return true;
     }
