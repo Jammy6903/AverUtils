@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -21,13 +20,12 @@ import onl.jami.averUtils.discord.verification.VerifyDiscord;
 public class Bot {
     public static JDA jda;
 
-    public static JDA jdaInit(String token) {
+    public static void jdaInit(String token) {
         jda = JDABuilder.createLight(token, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_WEBHOOKS, GatewayIntent.MESSAGE_CONTENT)
                 .addEventListeners(new DiscordToMinecraft(), new SyncOnChange(), new VerifyDiscord(), new EditChannels(), new EditRoles())
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .build();
         jda.updateCommands().addCommands(verifyCommand(), channelCommand(), roleCommand()).queue();
-        return jda;
     }
 
     public static void close() {

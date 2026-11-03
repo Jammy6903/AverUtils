@@ -2,8 +2,8 @@ package onl.jami.averUtils.teleportation.home;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.HomeRepo;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 public class DelHome implements TabExecutor {
 
@@ -22,6 +21,7 @@ public class DelHome implements TabExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage(Component.text("Only players can use this command",  NamedTextColor.RED));
+            return true;
         }
         if (args.length == 0) {
             return false;
@@ -29,8 +29,8 @@ public class DelHome implements TabExecutor {
         try {
             HomeRepo.deleteHome(((Player) sender).getUniqueId(), args[0]);
             sender.sendMessage(Component.text("Home: " + args[0] + " has been deleted!",  NamedTextColor.GREEN));
-        } catch (SQLException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Could not delete home: " + args[0], e);
+        } catch (SQLException exception) {
+            AverUtils.logWarning("Failed to remove home from database", exception);
             sender.sendMessage(Component.text("Could not delete home: " + args[0], NamedTextColor.RED));
         }
         return true;
@@ -46,8 +46,8 @@ public class DelHome implements TabExecutor {
                     results.add(home.name());
                 }
                 return results;
-            } catch (SQLException e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to fetch homes for player " + e);
+            } catch (SQLException exception) {
+                AverUtils.logWarning("Failed to fetch homes for player from database", exception);
             }
         }
         return null;

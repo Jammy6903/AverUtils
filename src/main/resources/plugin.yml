@@ -4,7 +4,7 @@ author: 'Jami'
 
 main: onl.jami.averUtils.AverUtils
 api-version: '26.3'
-load: POSTWORLD
+softdepend: [LuckPerms]
 
 commands:
   home:
@@ -91,3 +91,11 @@ commands:
     description: Choose your pronouns
     usage: /pronouns [pronouns]
     permission: averutils.pronouns
+  motd:
+    description: Create and edit MOTDs which will be randomly chosen from an active pool when a player pings the server
+    usage: /motd [subcommand]
+    permission: aveutils.motd
+  playerlistdecoration:
+    description: Create and edit player list decorations which will be randomly chosen from an active pool to display in the server list
+    usage: /playerlistdecoration [subcommand]
+    permission: averutils.playerlistdecoration
