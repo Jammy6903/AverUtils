@@ -1,0 +1,12 @@
+discord:
+  enabled: false
+  token: [insert discord bot token here]
+  verification-guild-id: [insert guild id here]
+  require-verification: false
+
+chat:
+  format: "<discord><prefix> <name><pronouns><gray>:</gray> <white><message></white>"
+  pronouns-format: " <gray><pronouns><gray>"
+  prefix-format: "<gray>[</gray><prefix><gray>]</gray>"
+  suffix-format: ""
+  discord-format: "<gray>[</gray><blue>D</blue><gray>]</gray>"

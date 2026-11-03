@@ -1,0 +1,93 @@
+name: AverUtils
+version: '${version}'
+author: 'Jami'
+
+main: onl.jami.averUtils.AverUtils
+api-version: '26.3'
+load: POSTWORLD
+
+commands:
+  home:
+    description: Teleport to one of your homes
+    usage: /home [name]
+    permission: averutils.homes
+  homes:
+    description: List your homes
+    usage: /home
+    permission: averutils.homes
+  sethome:
+    description: Set a home to teleport to with the home command
+    usage: /sethome [name]
+    permission: averutils.homes
+  delhome:
+    description: Delete one of your homes
+    usage: /delhome [name]
+    permission: averutils.homes
+  warp:
+    description: Teleport to a warp point
+    usage: /warp [name]
+    permission: averutils.warp
+  warps:
+    description: Lists warp points
+    usage: /warps
+    permission: averutils.warp
+  setwarp:
+    description: Set a warp point
+    usage: /setwarp [name]
+    permission: averutils.editwarps
+  delwarp:
+    description: Delete a warp point
+    usage: /delwarp [name]
+    permission: averutils.editwarps
+  tpa:
+    description: Request to teleport to a player
+    usage: /tpa [username]
+    permission: averutils.tpa
+  tpahere:
+    description: Request to teleport a player to your position
+    usage: /tpahere [username]
+    permission: averutils.tpa
+  tpaccept:
+    description: Accept a tpa request
+    usage: /tpaccept
+    permission: averutils.tpa
+  tpdeny:
+    description: Deny a tpa request
+    usage: /tpdeny
+    permission: averutils.tpa
+  spawn:
+    description: Teleport to the server spawn point
+    usage: /spawn
+    permission: averutils.spawn
+  msg:
+    description: Message a player privately
+    aliases: [tell, w, whisper]
+    usage: /msg [player] [message]
+    permission: averutils.msg
+  reply:
+    description: Reply to the last player who messaged you
+    aliases: [r]
+    usage: /reply [message]
+    permission: averutils.msg
+  verify:
+    description: Verify your Minecraft account with the Discord Bot
+    usage: /verify [code] - use /verify in Discord to get your code
+    permission: averutils.verify
+  doas:
+    description: Make a player perform a command
+    usage: /doas [player] [command]
+    permission: averutils.doas
+  nickname:
+    description: Set your nickname
+    aliases: [nick]
+    usage: /nickname [name]
+    permission: averutils.nickname
+  namechoice:
+    description: Choose which name to use
+    aliases: [name]
+    usage: /namechoice [PLAYER_NAME/NICKNAME/DISCORD_GLOBAL/DISCORD_NICKNAME]
+    permission: averutils.namechoice
+  pronouns:
+    description: Choose your pronouns
+    usage: /pronouns [pronouns]
+    permission: averutils.pronouns

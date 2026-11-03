@@ -1,0 +1,132 @@
+package onl.jami.averUtils.discord.chatlink;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import io.papermc.paper.event.player.AsyncChatEvent;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import onl.jami.averUtils.storage.database.ChannelLinkCategory;
+import onl.jami.averUtils.storage.database.ChannelLinkRepo;
+import onl.jami.averUtils.discord.Bot;
+import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerAdvancementDoneEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+
+public class MinecraftToDiscord implements Listener {
+    private static final HttpClient http = HttpClient.newHttpClient();
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onChat(AsyncChatEvent event) {
+        try {
+            List<ChannelLinkRepo.ChannelRef> channelRef = ChannelLinkRepo.getChannelsFor(ChannelLinkCategory.CHAT);
+            for  (ChannelLinkRepo.ChannelRef channel : channelRef) {
+                JsonObject body = new JsonObject();
+                body.addProperty("content", PlainTextComponentSerializer.plainText().serialize(event.message()));
+                body.addProperty("username", event.getPlayer().getName());
+                body.addProperty("avatar_url", "https://mc-heads.net/avatar/" + event.getPlayer().getUniqueId());
+                JsonObject mentions = new JsonObject();
+                mentions.add("parse", new JsonArray());
+                body.add("allowed_mentions", mentions);
+
+                HttpRequest request = HttpRequest.newBuilder(URI.create(channel.webhookUrl()))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
+                        .build();
+
+                http.sendAsync(request, HttpResponse.BodyHandlers.discarding())
+                        .thenAccept(response -> {
+                            if (response.statusCode() == 300) {
+                                Bukkit.getLogger().log(Level.WARNING, "Failed to post to webhook url");
+                            }
+                        });
+            }
+        } catch (SQLException exception) {
+            Bukkit.getLogger().log(Level.WARNING, "Failed to fetch channel_links", exception);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        try {
+            List<ChannelLinkRepo.ChannelRef> channelRef = ChannelLinkRepo.getChannelsFor(ChannelLinkCategory.JOIN);
+            for (ChannelLinkRepo.ChannelRef channel : channelRef) {
+                TextChannel c = Bot.getJDA().getGuildById(channel.guildId()).getChannelById(TextChannel.class, channel.channelId());
+                if  (c == null) {
+                    Bukkit.getLogger().log(Level.WARNING, "Failed to fetch channel for " + channel.guildId() + ":" + channel.channelId());
+                    return;
+                }
+                c.sendMessage(event.getPlayer().getName() + " joined the game").queue();
+            }
+        } catch (SQLException exception) {
+            Bukkit.getLogger().log(Level.WARNING, "Failed to fetch channel_links", exception);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerLeave(PlayerQuitEvent event) {
+        try {
+            List<ChannelLinkRepo.ChannelRef> channelRef = ChannelLinkRepo.getChannelsFor(ChannelLinkCategory.QUIT);
+            for (ChannelLinkRepo.ChannelRef channel : channelRef) {
+                TextChannel c = Bot.getJDA().getGuildById(channel.guildId()).getChannelById(TextChannel.class, channel.channelId());
+                if  (c == null) {
+                    Bukkit.getLogger().log(Level.WARNING, "Failed to fetch channel for " + channel.guildId() + ":" + channel.channelId());
+                    return;
+                }
+                c.sendMessage(event.getPlayer().getName() + " left the game").queue();
+            }
+        } catch (SQLException exception) {
+            Bukkit.getLogger().log(Level.WARNING, "Failed to fetch channel_links", exception);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        try {
+            List<ChannelLinkRepo.ChannelRef> channelRef = ChannelLinkRepo.getChannelsFor(ChannelLinkCategory.DEATH);
+            for (ChannelLinkRepo.ChannelRef channel : channelRef) {
+                TextChannel c = Bot.getJDA().getGuildById(channel.guildId()).getChannelById(TextChannel.class, channel.channelId());
+                if  (c == null) {
+                    Bukkit.getLogger().log(Level.WARNING, "Failed to fetch channel for " + channel.guildId() + ":" + channel.channelId());
+                    return;
+                }
+                c.sendMessage(PlainTextComponentSerializer.plainText().serialize(event.deathMessage())).queue();
+            }
+        } catch (SQLException exception) {
+            Bukkit.getLogger().log(Level.WARNING, "Failed to fetch channel_links", exception);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerAdvancementDone(PlayerAdvancementDoneEvent event) {
+        Component message = event.message();
+        if (message != null) {
+            try {
+                List<ChannelLinkRepo.ChannelRef> channelRef = ChannelLinkRepo.getChannelsFor(ChannelLinkCategory.ADVANCEMENT);
+                for (ChannelLinkRepo.ChannelRef channel : channelRef) {
+                    TextChannel c = Bot.getJDA().getGuildById(channel.guildId()).getChannelById(TextChannel.class, channel.channelId());
+                    if (c == null) {
+                        Bukkit.getLogger().log(Level.WARNING, "Failed to fetch channel for " + channel.guildId() + ":" + channel.channelId());
+                        return;
+                    }
+                    c.sendMessage(PlainTextComponentSerializer.plainText().serialize(message)).queue();
+                }
+            } catch (SQLException exception) {
+                Bukkit.getLogger().log(Level.WARNING, "Failed to fetch channel_links", exception);
+            }
+        }
+    }
+}
