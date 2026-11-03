@@ -9,14 +9,13 @@ import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.discord.Bot;
 import onl.jami.averUtils.storage.cache.PlayerCache;
+import onl.jami.averUtils.userconfig.profile.PlayerName;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
 
-public class ChatFormatter {
+public class Formatter {
     public static Component formatChat(Player player, Component message, Component discordPreceder) {
         String chatFormatString = AverUtils.getCfg().getString("chat.format");
         String prefixFormatString = AverUtils.getCfg().getString("chat.prefix-format");
@@ -71,7 +70,7 @@ public class ChatFormatter {
             if (p == null) { return discordNonPlayer(chatFormatString, discordPreceder, playerName, message); }
             return (formatChat(p, Component.text(message), discordPreceder));
         } catch (SQLException exception) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to fetch player " + exception);
+            AverUtils.logWarning("Failed to fetch player from database", exception);
         }
         return null;
     }

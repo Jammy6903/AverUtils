@@ -7,10 +7,8 @@ import net.luckperms.api.model.group.Group;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.sync.RoleSync;
 import onl.jami.averUtils.storage.database.RoleLinkRepo;
-import org.bukkit.Bukkit;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
 
 public class EditRoles extends ListenerAdapter {
     @Override
@@ -33,9 +31,9 @@ public class EditRoles extends ListenerAdapter {
                     RoleLinkRepo.addRole(roleToAdd.getIdLong(), group.getName());
                     RoleSync.syncOnline();
                     event.reply("Successfully added role").setEphemeral(true).queue();
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    AverUtils.logWarning("Failed to create role link in database", exception);
                     event.reply("An unknown error has occured").setEphemeral(true).queue();
-                    Bukkit.getLogger().log(Level.WARNING, "Failed to add role to database" + e);
                     return;
                 }
                 break;
@@ -45,9 +43,9 @@ public class EditRoles extends ListenerAdapter {
                     RoleLinkRepo.deleteRole(roleToRemove.getIdLong());
                     RoleSync.syncOnline();
                     event.reply("Successfully removed role").setEphemeral(true).queue();
-                } catch (SQLException e) {
+                } catch (SQLException exception) {
+                    AverUtils.logWarning("Failed to remove role link from database", exception);
                     event.reply("An unknown error has occured").setEphemeral(true).queue();
-                    Bukkit.getLogger().log(Level.WARNING, "Failed to remove role to database" + e);
                     return;
                 }
                 break;
