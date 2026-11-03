@@ -1,4 +1,4 @@
-package onl.jami.averUtils.chat;
+package onl.jami.averUtils.userconfig.profile;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

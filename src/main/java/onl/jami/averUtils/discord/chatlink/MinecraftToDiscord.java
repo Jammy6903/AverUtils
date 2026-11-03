@@ -26,11 +26,10 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 
-public class MinecraftToDiscord implements Listener {
+public class MinecraftToDiscord {
     private static final HttpClient http = HttpClient.newHttpClient();
 
-    @EventHandler(priority = EventPriority.LOW)
-    public void onChat(AsyncChatEvent event) {
+    public static void sendChatMessage(AsyncChatEvent event) {
         try {
             List<ChannelLinkRepo.ChannelRef> channelRef = ChannelLinkRepo.getChannelsFor(ChannelLinkCategory.CHAT);
             for  (ChannelLinkRepo.ChannelRef channel : channelRef) {
@@ -59,8 +58,7 @@ public class MinecraftToDiscord implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
+    public static void sendJoinMessage(PlayerJoinEvent event) {
         try {
             List<ChannelLinkRepo.ChannelRef> channelRef = ChannelLinkRepo.getChannelsFor(ChannelLinkCategory.JOIN);
             for (ChannelLinkRepo.ChannelRef channel : channelRef) {
@@ -76,8 +74,7 @@ public class MinecraftToDiscord implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerLeave(PlayerQuitEvent event) {
+    public static void sendPlayerLeaveMessage(PlayerQuitEvent event) {
         try {
             List<ChannelLinkRepo.ChannelRef> channelRef = ChannelLinkRepo.getChannelsFor(ChannelLinkCategory.QUIT);
             for (ChannelLinkRepo.ChannelRef channel : channelRef) {
@@ -93,8 +90,7 @@ public class MinecraftToDiscord implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent event) {
+    public static void sendPlayerDeathMessage(PlayerDeathEvent event) {
         try {
             List<ChannelLinkRepo.ChannelRef> channelRef = ChannelLinkRepo.getChannelsFor(ChannelLinkCategory.DEATH);
             for (ChannelLinkRepo.ChannelRef channel : channelRef) {
@@ -110,8 +106,7 @@ public class MinecraftToDiscord implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerAdvancementDone(PlayerAdvancementDoneEvent event) {
+    public static void sendPlayerAdvancementMessage(PlayerAdvancementDoneEvent event) {
         Component message = event.message();
         if (message != null) {
             try {

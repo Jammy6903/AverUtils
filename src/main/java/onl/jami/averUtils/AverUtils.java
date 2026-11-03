@@ -4,17 +4,16 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.luckperms.api.LuckPerms;
 import onl.jami.averUtils.admin.DoAs;
-import onl.jami.averUtils.chat.ChatListener;
-import onl.jami.averUtils.chat.NameChoice;
-import onl.jami.averUtils.chat.Nickname;
-import onl.jami.averUtils.chat.Pronouns;
+import onl.jami.averUtils.listeners.Chat;
+import onl.jami.averUtils.userconfig.profile.NameChoice;
+import onl.jami.averUtils.userconfig.profile.Nickname;
+import onl.jami.averUtils.userconfig.profile.Pronouns;
 import onl.jami.averUtils.chat.messaging.Msg;
 import onl.jami.averUtils.chat.messaging.Reply;
 import onl.jami.averUtils.storage.database.Driver;
 import onl.jami.averUtils.discord.Bot;
-import onl.jami.averUtils.discord.chatlink.MinecraftToDiscord;
 import onl.jami.averUtils.discord.verification.VerifyMinecraft;
-import onl.jami.averUtils.listeners.PlayerJoin;
+import onl.jami.averUtils.listeners.Player;
 import onl.jami.averUtils.teleportation.Spawn;
 import onl.jami.averUtils.teleportation.home.*;
 import onl.jami.averUtils.teleportation.tpa.TpAccept;
@@ -36,7 +35,6 @@ import java.util.logging.Level;
 
 public final class AverUtils extends JavaPlugin {
 
-    private static JDA jda = null;
     private static Configuration cfg;
     private static Plugin instance;
     private static LuckPerms luckPermsApi;
@@ -59,7 +57,7 @@ public final class AverUtils extends JavaPlugin {
         }
 
         if (cfg.getBoolean("discord.enabled")) {
-            jda = Bot.jdaInit(cfg.getString("discord.token"));
+            Bot.jdaInit(cfg.getString("discord.token"));
         };
 
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
@@ -67,9 +65,8 @@ public final class AverUtils extends JavaPlugin {
             luckPermsApi = provider.getProvider();
         }
 
-        getServer().getPluginManager().registerEvents(new ChatListener(), this);
-        getServer().getPluginManager().registerEvents(new MinecraftToDiscord(), this);
-        getServer().getPluginManager().registerEvents(new PlayerJoin(), this);
+        getServer().getPluginManager().registerEvents(new Chat(), this);
+        getServer().getPluginManager().registerEvents(new Player(), this);
         Msg msg = new Msg();
         getCommand("msg").setExecutor(msg);
         getCommand("msg").setTabCompleter(msg);

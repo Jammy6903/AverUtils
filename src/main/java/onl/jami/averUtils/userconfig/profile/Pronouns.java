@@ -1,4 +1,4 @@
-package onl.jami.averUtils.chat;
+package onl.jami.averUtils.userconfig.profile;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -6,15 +6,17 @@ import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 
-public class Nickname implements CommandExecutor {
+public class Pronouns implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player)) {
@@ -24,20 +26,23 @@ public class Nickname implements CommandExecutor {
         if (args.length == 0) {
             return false;
         }
-        if (args[0].length() > 16 || args[0].length() < 3) {
-            sender.sendMessage(Component.text("Nickname must be 3-16 characters!", NamedTextColor.RED));
+        if (args[0].length() > 10) {
+            sender.sendMessage(Component.text("Pronouns must be 1-10 characters!", NamedTextColor.RED));
             return true;
         }
-
         try {
-            PlayerRepo.updateNickname(((Player) sender).getUniqueId(), args[0]);
+            PlayerRepo.updatePronouns(((Player) sender).getUniqueId(), args[0].toLowerCase());
+            sender.sendMessage("Successfully updated your pronouns: " + args[0].toLowerCase());
             PlayerCache.updatePlayer(((Player) sender).getUniqueId());
-            sender.sendMessage(Component.text("Nickname has been updated!", NamedTextColor.GREEN));
-
         } catch (SQLException e) {
-            sender.sendMessage(Component.text("Failed to update nickname!", NamedTextColor.RED));
-            Bukkit.getLogger().log(Level.WARNING, "Failed to update a players nickname " + e);
+            sender.sendMessage(Component.text("An error occurred while trying to update your pronouns", NamedTextColor.RED));
+            Bukkit.getLogger().log(Level.WARNING, "Could not update players pronouns", e);
         }
         return true;
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        return List.of("he/him", "she/her", "they/them", "ask");
     }
 }

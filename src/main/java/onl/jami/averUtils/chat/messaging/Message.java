@@ -2,7 +2,7 @@ package onl.jami.averUtils.chat.messaging;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import onl.jami.averUtils.chat.PlayerName;
+import onl.jami.averUtils.userconfig.profile.PlayerName;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

@@ -1,6 +1,7 @@
 package onl.jami.averUtils.listeners;
 
 import net.kyori.adventure.text.Component;
+import onl.jami.averUtils.discord.chatlink.MinecraftToDiscord;
 import onl.jami.averUtils.discord.sync.RoleSync;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import onl.jami.averUtils.storage.database.PlayerRepo;
@@ -8,6 +9,8 @@ import onl.jami.averUtils.discord.verification.VerifyLock;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -15,7 +18,7 @@ import java.sql.SQLException;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class PlayerJoin implements Listener {
+public class Player implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
@@ -25,6 +28,7 @@ public class PlayerJoin implements Listener {
             VerifyLock.verifyOnLogin(e.getPlayer());
             PlayerCache.addPlayer(uuid, PlayerRepo.getPlayer(uuid));
             RoleSync.sync(e.getPlayer());
+            MinecraftToDiscord.sendJoinMessage(e);
         } catch (SQLException exception) {
             Bukkit.getLogger().log(Level.WARNING, "Could not create player " + e.getPlayer().getName(), exception);
             e.getPlayer().kick(Component.text("An unknown error has occurred."));
@@ -33,6 +37,17 @@ public class PlayerJoin implements Listener {
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
+        MinecraftToDiscord.sendPlayerLeaveMessage(e);
         PlayerCache.removePlayer(e.getPlayer().getUniqueId());
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent e) {
+        MinecraftToDiscord.sendPlayerDeathMessage(e);
+    }
+
+    @EventHandler
+    public void onPlayerAdvancementDone(PlayerAdvancementDoneEvent e) {
+        MinecraftToDiscord.sendPlayerAdvancementMessage(e);
     }
 }
