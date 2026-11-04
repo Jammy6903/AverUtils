@@ -67,12 +67,30 @@ public class Driver {
                     channel_id  INTEGER NOT NULL,
                     categories  INTEGER NOT NULL DEFAULT 0,
                     webhook_url TEXT NOT NULL,
-                                PRIMARY KEY (guild_id, channel_id))
+                                PRIMARY KEY (guild_id, channel_id)
+                )
             """);
             st.executeUpdate("""
                 CREATE TABLE IF NOT EXISTS role_links (
                     role_id     INTEGER PRIMARY KEY NOT NULL,
                     lp_group    TEXT NOT NULL
+                )
+            """);
+            st.executeUpdate("""
+                CREATE TABLE IF NOT EXISTS motds (
+                    name        TEXT PRIMARY KEY NOT NULL,
+                    message     TEXT NOT NULL,
+                    is_active   BOOLEAN NOT NULL DEFAULT FALSE
+                )
+            """);
+            st.executeUpdate("""
+                CREATE TABLE IF NOT EXISTS player_list_decorations (
+                    name        TEXT NOT NULL,
+                    location    TEXT NOT NULL
+                                CHECK(location IN ('HEADER', 'FOOTER')),
+                    message     TEXT NOT NULL,
+                    is_active   BOOLEAN NOT NULL DEFAULT FALSE,
+                                PRIMARY KEY (name, location)
                 )
             """);
         }

@@ -39,12 +39,12 @@ public class Formatter {
                 Placeholder.component("prefix", lpPrefix));
         Component suffix = MiniMessage.miniMessage().deserialize(suffixFormatString,
                 Placeholder.component("suffix", lpSuffix));
-        Component pronouns;
-        if (playerPronouns == null || playerPronouns.isEmpty()) {
-            pronouns = Component.empty();
-        } else {
-            pronouns = MiniMessage.miniMessage().deserialize(pronounsFormatString,
-                    Placeholder.component("pronouns", Component.text(playerPronouns)));
+        Component pronouns = Component.empty();
+        if (!(playerPronouns == null)) {
+            if (!playerPronouns.isEmpty()) {
+                pronouns = MiniMessage.miniMessage().deserialize(pronounsFormatString,
+                        Placeholder.component("pronouns", Component.text(playerPronouns)));
+            }
         }
 
         return MiniMessage.miniMessage().deserialize(chatFormatString,
