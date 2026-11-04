@@ -30,13 +30,17 @@ public class Player implements Listener {
         try {
             UUID uuid = player.getUniqueId();
 
+            // create player if not exists
             PlayerRepo.createPlayer(uuid);
+
+            // verify player if required, sync roles with discord and send join message to any linked channels
             VerifyLock.verifyOnLogin(e.getPlayer());
-            PlayerCache.addPlayer(uuid, PlayerRepo.getPlayer(uuid));
+            RoleSync.sync(e.getPlayer());
+            MinecraftToDiscord.sendJoinMessage(e);
 
             PlayerName.updatePlayerList(e.getPlayer());
 
-            // cache this, also simplify it
+            // TODO: cache this, also simplify it
             List<PlayerListDecorationRepo.PlayerListDecorationData> headers = PlayerListDecorationRepo.getActive(PlayerListDecorationRepo.PlayerListDecorationData.Location.HEADER);
             List<PlayerListDecorationRepo.PlayerListDecorationData> footers = PlayerListDecorationRepo.getActive(PlayerListDecorationRepo.PlayerListDecorationData.Location.FOOTER);
             if (!headers.isEmpty()) {
@@ -56,8 +60,8 @@ public class Player implements Listener {
                 }
             }
 
-            RoleSync.sync(player);
-            MinecraftToDiscord.sendJoinMessage(e);
+            // cache player
+            PlayerCache.addPlayer(uuid, PlayerRepo.getPlayer(uuid));
         } catch (SQLException exception) {
             AverUtils.logWarning("Failed to access database on player join", exception);
             player.kick(Component.text("An unknown error has occurred."));
@@ -66,17 +70,22 @@ public class Player implements Listener {
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
+        // send leave message to any linked discord channels
         MinecraftToDiscord.sendPlayerLeaveMessage(e);
+
+        // remove player from cache
         PlayerCache.removePlayer(e.getPlayer().getUniqueId());
     }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
+        // send death message to any linked discord channels
         MinecraftToDiscord.sendPlayerDeathMessage(e);
     }
 
     @EventHandler
     public void onPlayerAdvancementDone(PlayerAdvancementDoneEvent e) {
+        // send advancement message to any linked discord channels
         MinecraftToDiscord.sendPlayerAdvancementMessage(e);
     }
 }

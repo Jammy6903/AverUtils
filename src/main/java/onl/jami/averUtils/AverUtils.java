@@ -27,6 +27,9 @@ import onl.jami.averUtils.teleportation.warp.SetWarp;
 import onl.jami.averUtils.teleportation.warp.Warp;
 import onl.jami.averUtils.teleportation.warp.Warps;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -44,10 +47,13 @@ public final class AverUtils extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        this.saveResource("config.yml", false);
+
+        // save default config if it doesn't already exist
+        this.saveDefaultConfig();
 
         cfg = this.getConfig();
 
+        // initialize database/tables, migrate if necessary
         try {
             Driver.initDb();
             Driver.initTables();
@@ -58,10 +64,21 @@ public final class AverUtils extends JavaPlugin {
             return;
         }
 
+        // check for discord config, start bot, disable discord on incorrect config
         if (cfg.getBoolean("discord.enabled")) {
-            Bot.jdaInit(cfg.getString("discord.token"));
+            String token = cfg.getString("discord.token");
+            long id = cfg.getLong("discord.id");
+            if (token != null && !token.isEmpty() && id != 0 ) {
+                if (!Bot.jdaInit(cfg.getString("discord.token"))) {
+                    cfg.set("discord.enabled", false);
+                }
+            } else {
+                cfg.set("discord.enabled", false);
+                this.getLogger().log(Level.WARNING, "Discord token or guild id is not set in config.yml");
+            }
         }
 
+        // get LuckPerms API if present
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
         if (provider != null) {
             luckPermsApi = provider.getProvider();
@@ -69,62 +86,26 @@ public final class AverUtils extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new Chat(), this);
         getServer().getPluginManager().registerEvents(new Player(), this);
-        getServer().getPluginManager().registerEvents(new Ping(), this);
-        Msg msg = new Msg();
-        getCommand("msg").setExecutor(msg);
-        getCommand("msg").setTabCompleter(msg);
-        Reply reply = new Reply();
-        getCommand("reply").setExecutor(reply);
-        Tpa tpa = new Tpa();
-        getCommand("tpa").setExecutor(tpa);
-        getCommand("tpa").setTabCompleter(tpa);
-        TpaHere tpaHere = new TpaHere();
-        getCommand("tpahere").setExecutor(tpaHere);
-        getCommand("tpahere").setTabCompleter(tpaHere);
-        TpAccept tpAccept = new TpAccept();
-        getCommand("tpaccept").setExecutor(tpAccept);
-        TpDeny tpDeny = new TpDeny();
-        getCommand("tpdeny").setExecutor(tpDeny);
-        Spawn spawn = new Spawn();
-        getCommand("spawn").setExecutor(spawn);
-        SetHome setHome =  new SetHome();
-        getCommand("sethome").setExecutor(setHome);
-        Home homeCommand =  new Home();
-        getCommand("home").setExecutor(homeCommand);
-        getCommand("home").setTabCompleter(homeCommand);
-        Homes homes = new Homes();
-        getCommand("homes").setExecutor(homes);
-        DelHome delHome = new DelHome();
-        getCommand("delhome").setExecutor(delHome);
-        getCommand("delhome").setTabCompleter(delHome);
-        VerifyMinecraft verifyMinecraft = new VerifyMinecraft();
-        getCommand("verify").setExecutor(verifyMinecraft);
-        DoAs doAs = new DoAs();
-        getCommand("doas").setExecutor(doAs);
-        getCommand("doas").setTabCompleter(doAs);
-        Pronouns pronouns = new Pronouns();
-        getCommand("pronouns").setExecutor(pronouns);
-        getCommand("pronouns").setTabCompleter(pronouns);
-        Nickname nickname = new Nickname();
-        getCommand("nickname").setExecutor(nickname);
-        NameChoice nameChoice = new NameChoice();
-        getCommand("name").setExecutor(nameChoice);
-        getCommand("name").setTabCompleter(nameChoice);
-        Warp warp = new Warp();
-        getCommand("warp").setExecutor(warp);
-        getCommand("warp").setTabCompleter(warp);
-        Warps warps = new Warps();
-        getCommand("warps").setExecutor(warps);
-        DelWarp delWarp = new DelWarp();
-        getCommand("delwarp").setExecutor(delWarp);
-        SetWarp setWarp = new SetWarp();
-        getCommand("setwarp").setExecutor(setWarp);
-        Motd motd = new Motd();
-        getCommand("motd").setExecutor(motd);
-        getCommand("motd").setTabCompleter(motd);
-        PlayerListDecoration playerListDecoration = new PlayerListDecoration();
-        getCommand("playerlistdecoration").setExecutor(playerListDecoration);
-        getCommand("playerlistdecoration").setTabCompleter(playerListDecoration);
+        registerCommand("msg", new Msg());
+        registerCommand("reply", new Reply());
+        registerCommand("tpa", new Tpa());
+        registerCommand("tpahere", new TpaHere());
+        registerCommand("tpaaccept", new TpAccept());
+        registerCommand("tpdeny", new TpDeny());
+        registerCommand("spawn", new Spawn());
+        registerCommand("setHome", new SetHome());
+        registerCommand("homep", new Home());
+        registerCommand("homes", new Homes());
+        registerCommand("delHome", new DelHome());
+        registerCommand("verify", new VerifyMinecraft());
+        registerCommand("doas", new DoAs());
+        registerCommand("pronouns", new Pronouns());
+        registerCommand("nickname", new Nickname());
+        registerCommand("namechoice", new NameChoice());
+        registerCommand("warp", new Warp());
+        registerCommand("warps", new Warps());
+        registerCommand("delWarp", new DelWarp());
+        registerCommand("setWarp", new SetWarp());
     }
 
     @Override
@@ -135,6 +116,18 @@ public final class AverUtils extends JavaPlugin {
             Driver.close();
         } catch (SQLException e) {
             this.getLogger().log(Level.WARNING, "Failed to close database connection", e);
+        }
+    }
+
+    private void registerCommand(String name, CommandExecutor executor) {
+        PluginCommand command = getCommand(name);
+        if (command == null) {
+            getLogger().log(Level.WARNING, "Command not found: " + name);
+            return;
+        }
+        command.setExecutor(executor);
+        if (executor instanceof TabCompleter completer) {
+            command.setTabCompleter(completer);
         }
     }
 
