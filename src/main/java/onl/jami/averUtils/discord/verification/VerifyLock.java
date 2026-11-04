@@ -26,7 +26,7 @@ import static net.kyori.adventure.text.Component.text;
 public class VerifyLock {
     public static void verifyOnLogin(Player p) {
         try {
-            if (!AverUtils.getCfg().getBoolean("discord.require-verification")) {
+            if (!AverUtils.getCfg().getBoolean("discord.enabled")) {
                 return;
             }
             if (PlayerRepo.getPlayer(p.getUniqueId()).isVerified()) {

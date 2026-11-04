@@ -27,6 +27,9 @@ public class MinecraftToDiscord {
     private static final HttpClient http = HttpClient.newHttpClient();
 
     public static void sendChatMessage(AsyncChatEvent event) {
+        if (!AverUtils.getCfg().getBoolean("discord.enabled")) {
+            return;
+        }
         try {
             List<ChannelLinkRepo.ChannelRef> channelRef = ChannelLinkRepo.getChannelsFor(ChannelLinkCategory.CHAT);
             for  (ChannelLinkRepo.ChannelRef channel : channelRef) {
@@ -55,6 +58,9 @@ public class MinecraftToDiscord {
     }
 
     public static void sendJoinMessage(PlayerJoinEvent event) {
+        if (!AverUtils.getCfg().getBoolean("discord.enabled")) {
+            return;
+        }
         try {
             List<ChannelLinkRepo.ChannelRef> channelRef = ChannelLinkRepo.getChannelsFor(ChannelLinkCategory.JOIN);
             for (ChannelLinkRepo.ChannelRef channel : channelRef) {
@@ -70,6 +76,9 @@ public class MinecraftToDiscord {
     }
 
     public static void sendPlayerLeaveMessage(PlayerQuitEvent event) {
+        if (!AverUtils.getCfg().getBoolean("discord.enabled")) {
+            return;
+        }
         try {
             List<ChannelLinkRepo.ChannelRef> channelRef = ChannelLinkRepo.getChannelsFor(ChannelLinkCategory.QUIT);
             for (ChannelLinkRepo.ChannelRef channel : channelRef) {
@@ -85,6 +94,9 @@ public class MinecraftToDiscord {
     }
 
     public static void sendPlayerDeathMessage(PlayerDeathEvent event) {
+        if (!AverUtils.getCfg().getBoolean("discord.enabled")) {
+            return;
+        }
         try {
             List<ChannelLinkRepo.ChannelRef> channelRef = ChannelLinkRepo.getChannelsFor(ChannelLinkCategory.DEATH);
             for (ChannelLinkRepo.ChannelRef channel : channelRef) {
@@ -100,6 +112,9 @@ public class MinecraftToDiscord {
     }
 
     public static void sendPlayerAdvancementMessage(PlayerAdvancementDoneEvent event) {
+        if (!AverUtils.getCfg().getBoolean("discord.enabled")) {
+            return;
+        }
         Component message = event.message();
         if (message != null) {
             try {

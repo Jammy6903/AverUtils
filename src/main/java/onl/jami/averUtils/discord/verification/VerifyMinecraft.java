@@ -23,6 +23,10 @@ public class VerifyMinecraft implements CommandExecutor {
             sender.sendMessage(Component.text("Only players can run this command!",  NamedTextColor.RED));
             return true;
         }
+        if (!AverUtils.getCfg().getBoolean("discord.enabled")) {
+            sender.sendMessage(Component.text("Discord is not enabled on this server", NamedTextColor.RED));
+            return true;
+        }
         if (args.length < 1) return false;
         Long id = VerificationCodes.checkCode(args[0]);
         if (id == null) {

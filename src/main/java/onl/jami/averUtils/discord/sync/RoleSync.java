@@ -20,6 +20,9 @@ import java.util.UUID;
 public class RoleSync {
 
     public static void sync(Player p) {
+        if (!AverUtils.getCfg().getBoolean("discord.enabled")) {
+            return;
+        }
         Bukkit.getScheduler().runTaskAsynchronously(AverUtils.getPlugin(), () -> {
             clearGroups(p.getUniqueId());
             try {

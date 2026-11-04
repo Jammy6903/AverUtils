@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.chatlink.DiscordToMinecraft;
 import onl.jami.averUtils.discord.chatlink.EditChannels;
 import onl.jami.averUtils.discord.rolelink.EditRoles;
@@ -20,13 +21,19 @@ import onl.jami.averUtils.discord.verification.VerifyDiscord;
 public class Bot {
     public static JDA jda;
 
-    public static JDA jdaInit(String token) {
-        jda = JDABuilder.createLight(token, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_WEBHOOKS, GatewayIntent.MESSAGE_CONTENT)
-                .addEventListeners(new DiscordToMinecraft(), new SyncOnChange(), new VerifyDiscord(), new EditChannels(), new EditRoles())
-                .setMemberCachePolicy(MemberCachePolicy.ALL)
-                .build();
-        jda.updateCommands().addCommands(verifyCommand(), channelCommand(), roleCommand()).queue();
-        return jda;
+    public static boolean jdaInit(String token) {
+        try {
+            jda = JDABuilder.createLight(token, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_WEBHOOKS, GatewayIntent.MESSAGE_CONTENT)
+                    .addEventListeners(new DiscordToMinecraft(), new SyncOnChange(), new VerifyDiscord(), new EditChannels(), new EditRoles())
+                    .setMemberCachePolicy(MemberCachePolicy.ALL)
+                    .build();
+            jda.updateCommands().addCommands(verifyCommand(), channelCommand(), roleCommand()).queue();
+            return true;
+        } catch (Exception e) {
+            AverUtils.logWarning("Failed to initialize the Discord Bot", e);
+            jda = null;
+            return false;
+        }
     }
 
     public static void close() {

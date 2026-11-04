@@ -13,6 +13,9 @@ import java.sql.SQLException;
 public class DiscordToMinecraft extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+        if (!AverUtils.getCfg().getBoolean("discord.enabled")) {
+            return;
+        }
         if (event.getAuthor().isBot() || event.isWebhookMessage() || !event.isFromGuild()) {
             return;
         }
