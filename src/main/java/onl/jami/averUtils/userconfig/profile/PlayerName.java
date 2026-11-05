@@ -9,6 +9,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.luckperms.api.cacheddata.CachedMetaData;
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import org.bukkit.entity.Player;
@@ -50,7 +51,7 @@ public class PlayerName {
 
     public static void updatePlayerList(Player player) {
         PlayerRepo.PlayerData playerData = PlayerCache.getPlayer(player.getUniqueId());
-        String formatString = AverUtils.getCfg().getString("playerlist.format");
+        String formatString = Messages.getString("player.list.format.player");
         CachedMetaData md = AverUtils.getLuckPermsApi().getPlayerAdapter(Player.class).getUser(player).getCachedData().getMetaData();
         String lpPrefixString = md.getPrefix();
         String lpSuffixString = md.getSuffix();
