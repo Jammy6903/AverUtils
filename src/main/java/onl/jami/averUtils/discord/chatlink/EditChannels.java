@@ -21,6 +21,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.ChannelLinkCategory;
 import onl.jami.averUtils.storage.database.ChannelLinkRepo;
 import onl.jami.averUtils.discord.Bot;
@@ -68,8 +69,8 @@ public class EditChannels extends ListenerAdapter {
                     ChannelLinkRepo.deleteChannel(event.getGuild().getIdLong(), textChannel.getIdLong());
                     event.reply("Channel link has been removed").setEphemeral(true).queue();
                 } catch (SQLException exception) {
-                    AverUtils.logWarning("Failed to remove channel link from database", exception);
-                    event.reply("An error has occured, channel link could not be removed.").setEphemeral(true).queue();
+                    AverUtils.logWarning(Messages.getString("discord.commands.generic.failure.unknown"), exception);
+                    event.reply(Messages.getString("errors.database.channel_links")).setEphemeral(true).queue();
                 }
                 break;
             case "list":
@@ -117,13 +118,13 @@ public class EditChannels extends ListenerAdapter {
             }
             try {
                 if (!ChannelLinkRepo.setCategories(event.getGuild().getIdLong(), channelId, categoriesSet, webhook.getUrl())) {
-                    event.reply("An error has occurred, channel link not saved.").setEphemeral(true).queue();
+                    event.reply(Messages.getString("discord.commands.generic.failure.unknown")).setEphemeral(true).queue();
                     return;
                 }
                 event.reply("Channel link has been saved.").setEphemeral(true).queue();
             } catch (SQLException exception) {
-                AverUtils.logWarning("Failed to create channel link in database", exception);
-                event.reply("An error has occurred, channel link not saved.").setEphemeral(true).queue();
+                AverUtils.logWarning(Messages.getString("errors.database.channel_links"), exception);
+                event.reply(Messages.getString("discord.commands.generic.failure.unknown")).setEphemeral(true).queue();
             }
         });
     }

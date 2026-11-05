@@ -2,9 +2,10 @@ package onl.jami.averUtils.discord.verification;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.sync.RoleSync;
+import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import org.bukkit.Bukkit;
@@ -20,37 +21,35 @@ public class VerifyMinecraft implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(Component.text("Only players can run this command!",  NamedTextColor.RED));
+            Messages.send(sender, "commands.generic.failure.players-only");
             return true;
         }
         if (!AverUtils.getCfg().getBoolean("discord.enabled")) {
-            sender.sendMessage(Component.text("Discord is not enabled on this server", NamedTextColor.RED));
+            Messages.send(sender, "commands.verify.failure.not-available");
             return true;
         }
         if (args.length < 1) return false;
         Long id = VerificationCodes.checkCode(args[0]);
         if (id == null) {
-            sender.sendMessage(Component.text("Invalid verification code.",  NamedTextColor.RED));
+            Messages.send(sender, "commands.verify.failure.not-valid");
             return true;
         }
         Guild g = AverUtils.getGuild();
-        if (g == null) {
-            sender.sendMessage(Component.text("Verification is unavailable right now."));
-            return true;
-        }
         g.retrieveMemberById(id).queue(
                 m -> {
                     try {
                         PlayerRepo.verifyPlayer(((Player)sender).getUniqueId(), id, m.getUser().getName(), m.getUser().getGlobalName(), m.getNickname());
                         PlayerCache.addPlayer(((Player)sender).getUniqueId(), PlayerRepo.getPlayer(((Player)sender).getUniqueId()));
-                        sender.sendMessage(Component.text("You have been verified!", NamedTextColor.GREEN));
+                        Messages.send(sender, "commands.verify.success",
+                                Placeholder.component("discord", Component.text(m.getUser().getName()))
+                        );
                         RoleSync.sync((Player)sender);
                     } catch (SQLException exception) {
-                        AverUtils.logWarning("Failed to verify player in database", exception);
-                        Bukkit.getScheduler().runTask(AverUtils.getPlugin(), () -> sender.sendMessage(Component.text("An unknown error has occured.")));
+                        AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
+                        Bukkit.getScheduler().runTask(AverUtils.getPlugin(), () -> Messages.send(sender, "commands.generic.failure.unknown"));
                     }
                 },
-                _ -> Bukkit.getScheduler().runTask(AverUtils.getPlugin(), () -> sender.sendMessage(Component.text("You are not in the Discord.")))
+                _ -> Bukkit.getScheduler().runTask(AverUtils.getPlugin(), () -> Messages.send(sender, "commands.verify.failure.not-in-discord"))
         );
 
         return true;

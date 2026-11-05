@@ -1,8 +1,9 @@
 package onl.jami.averUtils.teleportation.warp;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.WarpRepo;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,19 +17,21 @@ public class SetWarp implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(Component.text("Only players can execute this command!", NamedTextColor.RED));
+            Messages.send(sender, "commands.generic.failure.player-only");
             return true;
         }
         if (args.length == 0) { return false; }
         try {
             if (!WarpRepo.createWarp(args[0], player.getLocation().getWorld().getName(), player.getX(), player.getY(), player.getZ(), player.getPitch(), player.getYaw())) {
-                sender.sendMessage(Component.text("Failed to create warp! Does it already exist?", NamedTextColor.RED));
+                Messages.send(sender, "commands.warp.failure.already-exists");
                 return true;
             }
-            sender.sendMessage(Component.text("Warp has been created: " + args[0], NamedTextColor.GREEN));
+            Messages.send(sender, "commands.warp.success",
+                    Placeholder.component("warp", Component.text(args[0]))
+            );
         } catch (SQLException exception) {
-            sender.sendMessage(Component.text("An unknown error has occured", NamedTextColor.RED));
-            AverUtils.logWarning("Failed to create warp in database", exception);
+            Messages.send(sender, "commands.generic.failure.unknown");
+            AverUtils.logWarning(Messages.getString("errors.database.warps"), exception);
         }
         return true;
     }

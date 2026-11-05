@@ -2,12 +2,12 @@ package onl.jami.averUtils.discord.sync;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.model.user.UserManager;
 import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.InheritanceNode;
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.database.RoleLinkRepo;
 import org.bukkit.Bukkit;
@@ -46,9 +46,7 @@ public class RoleSync {
                     }
                 }
             } catch (SQLException exception) {
-                AverUtils.logWarning("Failed to fetch player or role link from database", exception);
-            } catch (ErrorResponseException ex) {
-
+                AverUtils.logWarning(Messages.getString("errors.database.role_links"), exception);
             }
         });
     }

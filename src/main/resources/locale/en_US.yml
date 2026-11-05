@@ -1,0 +1,278 @@
+meta:
+  language: "US English"
+  version: 1
+
+chat:
+  format:
+    message: "<prefix> <name><pronouns><gray>:</gray> <white><message></white>"
+    pronouns: " <gray><pronouns><gray>"
+    prefix: "<gray>[</gray><prefix><gray>]</gray>"
+    suffix: "<suffix>"
+    discord: "<gray><hover:showtext:'This message originated from Discord'>[</gray><blue>D</blue><gray>]</hover></gray> <prefix> <name><pronouns><grey>:</grey> <white><message></white>"
+  message:
+    format:
+      sending: "<yellow>[✉]</yellow> <prefix> <name><pronouns> ⬅ <message>"
+      receiving: "<yellow>[✉]</yellow> <prefix> <name><pronouns> ➡ <message>"
+      pronouns: " <gray><pronouns><gray>"
+      prefix: "<gray>[</gray><prefix><gray>]</gray>"
+      suffix: "<suffix>"
+
+discord:
+  format:
+    chat:
+      name: "{name}"
+      message: "{message}"
+    join:
+      message: "{message} ({players} online)"
+    leave:
+      message: "{message} ({players} online)"
+    advancement:
+      message: "{message}"
+  commands:
+    generic:
+      failure:
+        unknown: "An unknown error has occurred."
+    channel:
+      add:
+        dialog:
+          header: "Select Categories"
+          body: "Pick the categories to link between Minecraft and {channel}"
+          footer: "You have 5 minutes to select categories."
+        success: "Channel link has been saved."
+      remove:
+        success: "Channel link has been removed."
+      list:
+        success: ""
+    role:
+      add: ""
+      remove: ""
+      list: ""
+    verify: ""
+
+
+player:
+  profile:
+    pronouns:
+      - "he/him"
+      - "she/her"
+      - "they/them"
+      - "ask"
+  moderation:
+    verification:
+      dialog:
+        title: "Please verify your Discord using /verify"
+        code: "Verification code"
+        confirm: "<green>Confirm</green>"
+        confirm-hover: "Click to confirm your input."
+        cancel: "<red>Cancel</red>"
+        cancel-hover: "Cancel verification, you will be kicked."
+      verification-time-out: "Verification timed out"
+      left-discord: "You have left the discord server"
+      not-verified: "You must verify your account in the Discord server"
+      wrong-code: "You must enter a valid verification code"
+    timeout:
+      on-start: "You have been timed out for <duration>"
+      chat-attempt: "You can't chat while timed out, <duration> remaining"
+      on-end: "You are no longer timed out"
+    kick:
+      unknown: "An unknown error has occurred."
+    ban: "You have been banned for <reason>"
+    tempban: "You have been banned for <duration> for <reason>"
+  list:
+    format:
+      player: "<prefix> <name>"
+      pronouns: "<gray><pronouns><gray>"
+      prefix: "<gray>[</gray><prefix><gray>]</gray>"
+      suffix: "<suffix>"
+  join:
+    format:
+      message: "<gray>[</gray><green>+</green><gray>]</gray> <message>"
+      name: "<name>"
+      pronouns: "<gray><pronouns><gray>"
+      prefix: "<gray>[</gray><prefix><gray>]</gray>"
+      suffix: "<suffix>"
+    messages:
+      - "Look out! it's <name>"
+      - "<name> is getting fluffy!"
+  quit:
+    format:
+      message: "<gray>[</gray><red>-</red><gray>]</gray> <message>"
+      name: "<name>"
+      pronouns: "<gray><pronouns><gray>"
+      prefix: "<gray>[</gray><prefix><gray>]</gray>"
+      suffix: "<suffix>"
+    messages:
+      - "<name> doesn't want to play with us any more"
+      - "<name> is getting sleepy"
+  death:
+    format:
+      message: "<dark_aqua>Has died</dark_aqua>"
+      name: "<name>"
+      pronouns: "<gray><pronouns><gray>"
+      prefix: "<gray>[</gray><prefix><gray>]</gray>"
+      suffix: "<suffix>"
+    messages:
+      random:
+        - "<dark_red><name></dark_red> fell into a pool of sharks"
+      specific:
+        generic:
+          - "<dark_red><name></dark_red> has died"
+        drowning:
+          - "<dark_red><name></dark_red> couldn't hold their breath"
+
+commands:
+  generic:
+    prefix: "<grey>[</grey><command><grey>]</grey> "
+    failure:
+      no-permission: "<red>You do not have permission to run that command.</red>"
+      players-only: "<red>Only players can run that command</red>"
+      unknown: "<red>An unknown error has occurred.</red>"
+  delhome:
+    success: "<green>Successfully deleted <home></green>"
+    failure:
+      doesnt-exist: "<red>Unable to delete <selection>, does it exist?</red>"
+  delwarp:
+    success: "<green>Successfully deleted <warp></green>"
+    failure:
+      doesnt-exist: "<red>Unable to delete <selection>, does it exist?</red>"
+  doas:
+    success: "<green>Ran command for <player>:</green> <yellow><command></yellow>"
+    failure:
+      player-not-found: "<red>That player is not online.</red>"
+  home:
+    success: "<green>Successfully teleported you to <home></green>"
+    failure:
+      doesnt-exist: "<red>Could not teleport you to <home>, does it exist?</red>"
+  homes:
+    success: "<green>Your homes:</green> <yellow><homes></yellow>"
+    failure:
+      doesnt-exist: "<red>You do not have any homes</red>"
+  motd:
+    create:
+      success: "<green>Successfully created <name></green><newline><motd>"
+      failure:
+        already-exists: "<red>Unable to create <name>, does it already exist?</red?"
+        wrong-args: "Usage: /motd create [name] [message]"
+    delete:
+      success: "<green>Successfully deleted <name></green>"
+      failure:
+        doesnt-exist: "<red>Unable to delete <name>, does it exist?"
+        wrong-args: "Usage: /motd delete [name]"
+    edit:
+      success: "<green>Successfully edited <name></green><newline><motd>"
+      failure:
+        doesnt-exist: "<red>Unable to edit <name>, does it exist?</red>"
+        wrong-args: "Usage: /motd edit [name] [message]"
+    set:
+      success: "<green>Successfully set <name> to <state></green>"
+      failure:
+        doesnt-exist: "<red>Unable to set <name>, does it exist?</red>"
+        wrong-args: "Usage: /motd set [name] [true/false]"
+    msg:
+      failure:
+        doesnt-exist: "<red>Player not found</red>"
+    reply:
+      failure:
+        not-online: "<red>That player is no longer online</red>"
+        no-messages: "<red>You haven't received any messages recently"
+    namechoice:
+      success: "<green>Successfully updated name choice to <selection></green>"
+    nickname:
+      success: "<green>Looking good, <name>"
+      failure:
+        length: "<red>Nickname must be 3-16 characters!</red>"
+    playerlistdecoration:
+      create:
+        success: "<green>Successfully created <location>:<name></green><newline><decoration>"
+        failure:
+          already-exists: "<red>Unable to create <location>:<name>, does it already exist?"
+          wrong-args: "Usage: /playerlistdecoration create [HEADER/FOOTER] [name] [message]"
+      delete:
+        success: "<green>Successfully deleted <location>:<name></green>"
+        failure:
+          doesnt-exist: "<red>Unable to delete <location>:<name>, does it exist?</red>"
+          wrong-args: "Usage: /playerlistdecoration delete [HEADER/FOOTER] [name]"
+      edit:
+        success: "<green>Successfully edited <location>:<name>:</green><newline><decoration>"
+        failure:
+          doesnt-exist: "<red>Unable to edit <location>:<name>, does it exist?</red>"
+          wrong-args: "Usage: /playerlistdecoration edit [HEADER/FOOTER] [name] [message]"
+      set:
+        success: "<green>Successfully set <location>:<name> to <state></green>"
+        failure:
+          doesnt-exist: "<red>Unable to set <location>:<name>, does it exist?</red>"
+          wrong-args: "Usage: /playerlistdecoration set [HEADER/FOOTER] [name] [true/false]"
+    pronouns:
+      success: "<green>Successfully updated your pronouns to <pronouns></green>"
+      failure:
+        length: "<red>Pronouns must be 1-10 characters!</red>"
+    sethome:
+      success: "<green>Successfully set your new home, <home></green>"
+      failure:
+        not-enough-homes: "<red>You can not set any more homes</red>"
+    setwarp:
+      success: "<green>Successfully set warp point, <warp>"
+      failure:
+        already-exists: "<red>Failed to create warp! Does it already exist?</red>"
+    spawn:
+      success: "<green>Successfully teleported you to spawn</green>"
+    tpa:
+      success:
+        sending: "<yellow>Requesting to teleport to <player></yellow>"
+        receiving: "<yellow><player> is requesting to teleport to you</yellow><newline><green>/tpaccept</green> <yellow>to accept,</yellow> <red>/tpdeny</red> <yellow>to deny</yellow>"
+      failure:
+        player-not-found: "<red>That player is not online</red>"
+    tpaccept:
+      success:
+        tpa:
+          sending: "<green><player> has accepted your teleport request, teleporting you to them</green>"
+          receiving: "<green>Accepted <player>'s teleport request, teleporting them to you</green>"
+        tpahere:
+          sending: "<green><player> has accepted your teleport request, teleporting them to you</green>"
+          receiving: "<green>Accepted <player>'s teleport request, teleporting you to them</green>"
+      failure:
+        player-not-found: "<red>That player is no longer online</red>"
+        no-request: "<red>You have no requests.</red>"
+    tpahere:
+      success:
+        sending: "<yellow>Requesting <player> to teleport to you</yellow>"
+        receiving: "<yellow><player> is requesting you to teleport to them</yellow><newline><green>/tpaccept</green> <yellow>to accept,</yellow> <red>/tpdeny</red> <yellow>to deny</yellow>"
+      failure:
+        player-not-found: "<red>That player is not online</red>"
+    tpdeny:
+      success:
+        sending: "<red><player> denied your teleport request</red>"
+        receiving: "<red>You denied <player>'s teleport request</red>"
+        not-online: "<red>You denied a player's teleport request</red>"
+      failure:
+        no-request: "<red>You have no requests.</red>"
+      timeout:
+        sending: "<red><player> did not accept your teleport request in time</red>"
+        receiving: "<red><player>'s teleport request has timed out</red>"
+    verify:
+      success: "<green>You have been verified. Welcome, <discord></green>"
+      failure:
+        not-in-discord: "<red>You are not in the Discord!</red>"
+        not-valid: "<red>That code is not valid</red>"
+        not-available: "<red>Discord is not enabled on this server</red>"
+    warp:
+      success: "<green>Warping you to <warp></green>"
+      failure:
+        doesnt-exist: "<red>Failed to warp you to <warp>, does it exist?</red>"
+    warps:
+      success: "<green>Warps: <warps></green>"
+      failure:
+        doesnt-exist: "<red>There are no warps available to you</red>"
+
+errors:
+  database:
+    players: "Failed to access players table in database"
+    homes: "Failed to access homes table in database"
+    warps: "Failed to access warps table in database"
+    channel_links: "Failed to access channel_links table in database"
+    role_links: "Failed to access role_links table in database"
+    motds: "Failed to access motds table in database"
+    player_list_decorations: "Failed to access player_list_decorations table in database"
+  discord:
+    setup: "Failed to initialize the Discord bot"
+  generic: "An unknown error has occurred."

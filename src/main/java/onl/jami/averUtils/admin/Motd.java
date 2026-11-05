@@ -1,9 +1,11 @@
 package onl.jami.averUtils.admin;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.listeners.Player;
+import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.MotdRepo;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -23,89 +25,23 @@ public class Motd implements TabExecutor {
             if (sender instanceof Player p) {
                 // Show gui
             }
+            return true;
         }
         switch (args[0].toLowerCase()) {
             case "create":
-                if (args.length < 3) {
-                    sender.sendMessage(Component.text("Usage: /motd create [name] [message]"));
-                    return true;
-                }
-                try {
-                    String motd = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
-                    if (!MotdRepo.create(args[1], motd)) {
-                        sender.sendMessage(Component.text("Failed to create motd, does it already exist?", NamedTextColor.RED));
-                        return true;
-                    }
-                    sender.sendMessage(Component.text("Successfully created motd", NamedTextColor.GREEN));
-                } catch (SQLException exception) {
-                    AverUtils.logWarning("Failed to create motd in database", exception);
-                    sender.sendMessage(Component.text("An unknown error has occurred", NamedTextColor.RED));
-                }
+                create(sender, args);
                 break;
             case "edit":
-                if (args.length < 3) {
-                    sender.sendMessage(Component.text("Usage: /motd edit [name] [message]"));
-                    return true;
-                }
-                try {
-                    String motd = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
-                    if (!MotdRepo.edit(args[1], motd)) {
-                        sender.sendMessage(Component.text("Failed to edit motd, does it exist?", NamedTextColor.RED));
-                        return true;
-                    }
-                    sender.sendMessage(Component.text("Successfully edited motd", NamedTextColor.GREEN));
-                } catch (SQLException exception) {
-                    AverUtils.logWarning("Failed to modify motd in database", exception);
-                    sender.sendMessage(Component.text("An unknown error has occurred", NamedTextColor.RED));
-                }
+                edit(sender, args);
                 break;
             case "delete":
-                if (args.length < 2) {
-                    sender.sendMessage(Component.text("Usage: /motd delete [name]"));
-                    return true;
-                }
-                try {
-                    if (!MotdRepo.delete(args[1])) {
-                        sender.sendMessage(Component.text("Failed to delete motd, does it exist?", NamedTextColor.RED));
-                        return true;
-                    }
-                    sender.sendMessage(Component.text("Successfully deleted motd", NamedTextColor.GREEN));
-                } catch (SQLException exception) {
-                    AverUtils.logWarning("Failed to remove motd from database", exception);
-                    sender.sendMessage(Component.text("An unknown error has occurred", NamedTextColor.RED));
-                }
+                delete(sender, args);
                 break;
             case "set":
-                if (args.length < 2) {
-                    sender.sendMessage(Component.text("Usage: /motd set [name] [true/false]"));
-                    return true;
-                }
-                try {
-                    if (args.length >= 3) {
-                        if (!MotdRepo.setActive(args[1], Boolean.parseBoolean(args[2]))){
-                            sender.sendMessage(Component.text("Failed to set motd, does it exist?", NamedTextColor.RED));
-                            return true;
-                        }
-                        sender.sendMessage(Component.text("Successfully set motd", NamedTextColor.GREEN));
-                        return true;
-                    }
-                    MotdRepo.MotdData motd = MotdRepo.get(args[1]);
-                    if (motd == null) {
-                        sender.sendMessage(Component.text("Failed to set motd, does it exist?", NamedTextColor.RED));
-                        return true;
-                    }
-                    if (motd.isActive()){
-                        MotdRepo.setActive(args[1], false);
-                        sender.sendMessage(Component.text("Successfully unset motd", NamedTextColor.GREEN));
-                        return true;
-                    }
-                    MotdRepo.setActive(args[1], true);
-                    sender.sendMessage(Component.text("Successfully set motd", NamedTextColor.GREEN));
-                } catch (SQLException exception) {
-                    AverUtils.logWarning("Failed to modify motd in database", exception);
-                    sender.sendMessage(Component.text("An unknown error has occurred", NamedTextColor.RED));
-                }
+                set(sender, args);
                 break;
+            default:
+                return false;
         }
         return true;
     }
@@ -114,8 +50,7 @@ public class Motd implements TabExecutor {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (args.length == 1) { return List.of("create", "edit", "delete", "set"); }
         String sub = args[0].toLowerCase();
-        boolean isPresent = sub.equals("edit") || sub.equals("delete") || sub.equals("set");
-        if (args.length == 2 && isPresent) {
+        if (args.length == 2 && (sub.equals("edit") || sub.equals("delete") || sub.equals("set"))) {
             List<String> completions = new ArrayList<>();
             try {
                 List<MotdRepo.MotdData> motds = MotdRepo.list();
@@ -123,10 +58,117 @@ public class Motd implements TabExecutor {
                     completions.add(motd.name());
                 }
                 return completions;
-            } catch (SQLException e) {
-                AverUtils.logWarning("Failed to fetch motds from database", e);
+            } catch (SQLException exception) {
+                AverUtils.logWarning(Messages.getString("errors.database.motds"), exception);
             }
         }
         return List.of();
+    }
+
+    private static void create(CommandSender sender, String[] args) {
+        if (args.length < 3) {
+            Messages.send(sender, "commands.motd.create.failure.wrong-args");
+            return;
+        }
+        try {
+            String motd = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+            if (!MotdRepo.create(args[1], motd)) {
+                Messages.send(sender, "commands.motd.create.failure.already-exists",
+                        Placeholder.component("name", Component.text(args[1]))
+                );
+                return;
+            }
+            Messages.send(sender, "commands.motd.create.success",
+                    Placeholder.component("name", Component.text(args[1])),
+                    Placeholder.component("motd", MiniMessage.miniMessage().deserialize(motd))
+            );
+        } catch (SQLException exception) {
+            AverUtils.logWarning(Messages.getString("errors.database.motds"), exception);
+            Messages.send(sender, "commands.generic.failure.unknown");
+        }
+    }
+
+    private static void edit(CommandSender sender, String[] args) {
+        if (args.length < 3) {
+            Messages.send(sender, "commands.motd.edit.failure.wrong-args");
+            return;
+        }
+        try {
+            String motd = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+            if (!MotdRepo.edit(args[1], motd)) {
+                Messages.send(sender, "commands.motd.edit.failure.doesnt-exist",
+                        Placeholder.component("name", Component.text(args[1]))
+                );
+                return;
+            }
+            Messages.send(sender, "commands.motd.edit.success",
+                    Placeholder.component("name", Component.text(args[1])),
+                    Placeholder.component("motd", MiniMessage.miniMessage().deserialize(motd))
+            );
+        } catch (SQLException exception) {
+            AverUtils.logWarning(Messages.getString("errors.database.motds"), exception);
+            Messages.send(sender, "commands.generic.failure.unknown");
+        }
+    }
+
+    private static void delete(CommandSender sender, String[] args) {
+        if (args.length < 2) {
+            Messages.send(sender, "commands.motd.delete.failure.wrong-args");
+            return;
+        }
+        try {
+            if (!MotdRepo.delete(args[1])) {
+                Messages.send(sender, "commands.motd.delete.failure.doesnt-exist",
+                        Placeholder.component("name", Component.text(args[1]))
+                );
+                return;
+            }
+            Messages.send(sender, "commands.motd.delete.success",
+                    Placeholder.component("name", Component.text(args[1]))
+            );
+        } catch (SQLException exception) {
+            AverUtils.logWarning(Messages.getString("errors.database.motds"), exception);
+            Messages.send(sender, "commands.generic.failure.unknown");
+        }
+    }
+
+    private static void set(CommandSender sender, String[] args) {
+        if (args.length < 2) {
+            Messages.send(sender, "commands.motd.set.failure.wrong-args");
+            return;
+        }
+        try {
+            if (args.length >= 3) {
+                if (!MotdRepo.setActive(args[1], Boolean.parseBoolean(args[2]))){
+                    Messages.send(sender, "commands.motd.set.success",
+                            Placeholder.component("name", Component.text(args[1])),
+                            Placeholder.component("state", Component.text(String.valueOf(args[3])))
+
+                    );
+                    return;
+                }
+                Messages.send(sender, "commands.motd.set.success",
+                        Placeholder.component("name", Component.text(args[1])),
+                        Placeholder.component("state", Component.text(args[2].toLowerCase()))
+                );
+                return;
+            }
+            MotdRepo.MotdData motd = MotdRepo.get(args[1]);
+            if (motd == null) {
+                Messages.send(sender, "commands.motd.set.failure.doesnt-exist",
+                        Placeholder.component("name", Component.text(args[1]))
+                );
+                return;
+            }
+            boolean active = !motd.isActive();
+            MotdRepo.setActive(args[1], active);
+            Messages.send(sender, "commands.motd.set.success",
+                    Placeholder.component("name", Component.text(args[1])),
+                    Placeholder.component("state", Component.text(String.valueOf(active)))
+            );
+        } catch (SQLException exception) {
+            AverUtils.logWarning(Messages.getString("errors.database.motds"), exception);
+            Messages.send(sender, "commands.generic.failure.unknown");
+        }
     }
 }

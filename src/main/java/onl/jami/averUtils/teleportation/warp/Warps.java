@@ -1,8 +1,9 @@
 package onl.jami.averUtils.teleportation.warp;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.WarpRepo;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,15 +18,21 @@ public class Warps implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         try {
             List<WarpRepo.WarpData> warps = WarpRepo.listWarps();
+            if (warps.isEmpty()) {
+                Messages.send(sender, "commands.warp.failure.doesnt-exist");
+                return true;
+            }
             StringBuilder warpsString = new StringBuilder();
             for (WarpRepo.WarpData warp : warps) {
                 warpsString.append(warp.name()).append(", ");
             }
             warpsString.delete(warpsString.length() - 2, warpsString.length());
-            sender.sendMessage(Component.text("Warps: \n" + warpsString,  NamedTextColor.YELLOW));
+            Messages.send(sender, "commands.warps.success",
+                    Placeholder.component("warps", Component.text(warpsString.toString()))
+            );
         } catch (SQLException exception) {
-            sender.sendMessage(Component.text("An unknown error has occurred", NamedTextColor.RED));
-            AverUtils.logWarning("Failed to fetch warps from database", exception);
+            Messages.send(sender, "commands.generic.failure.unknown");
+            AverUtils.logWarning(Messages.getString("errors.database.warps"), exception);
         }
         return true;
     }

@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.ChannelLinkCategory;
 import onl.jami.averUtils.storage.database.ChannelLinkRepo;
 import onl.jami.averUtils.discord.Bot;
@@ -54,7 +55,7 @@ public class MinecraftToDiscord {
                         });
             }
         } catch (SQLException exception) {
-            AverUtils.logWarning("Failed to fetch channel links from database", exception);}
+            AverUtils.logWarning(Messages.getString("errors.database.channel_links"), exception);}
     }
 
     public static void sendJoinMessage(PlayerJoinEvent event) {
@@ -71,7 +72,7 @@ public class MinecraftToDiscord {
                 c.sendMessage(event.getPlayer().getName() + " joined the game").queue();
             }
         } catch (SQLException exception) {
-            AverUtils.logWarning("Failed to fetch channel links from database", exception);
+            AverUtils.logWarning(Messages.getString("errors.database.channel_links"), exception);
         }
     }
 
@@ -89,7 +90,7 @@ public class MinecraftToDiscord {
                 c.sendMessage(event.getPlayer().getName() + " left the game").queue();
             }
         } catch (SQLException exception) {
-            AverUtils.logWarning("Failed to fetch channel links from database", exception);
+            AverUtils.logWarning(Messages.getString("errors.database.channel_links"), exception);
         }
     }
 
@@ -107,7 +108,7 @@ public class MinecraftToDiscord {
                 c.sendMessage(PlainTextComponentSerializer.plainText().serialize(event.deathMessage())).queue();
             }
         } catch (SQLException exception) {
-            AverUtils.logWarning("Failed to fetch channel links from database", exception);
+            AverUtils.logWarning(Messages.getString("errors.database.channel_links"), exception);
         }
     }
 
@@ -127,7 +128,7 @@ public class MinecraftToDiscord {
                     c.sendMessage(PlainTextComponentSerializer.plainText().serialize(message)).queue();
                 }
             } catch (SQLException exception) {
-                AverUtils.logWarning("Failed to fetch channel links from database", exception);
+                AverUtils.logWarning(Messages.getString("errors.database.channel_links"), exception);
             }
         }
     }

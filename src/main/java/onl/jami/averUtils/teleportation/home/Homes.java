@@ -1,8 +1,9 @@
 package onl.jami.averUtils.teleportation.home;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.HomeRepo;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,7 +18,7 @@ public class Homes implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(Component.text("Only players can use this command",  NamedTextColor.RED));
+            Messages.send(sender, "commands.generic.failure.players-only");
             return true;
         }
 
@@ -28,9 +29,11 @@ public class Homes implements CommandExecutor {
                 homesString.append(home.name()).append(", ");
             }
             homesString.delete(homesString.length() - 2, homesString.length());
-            sender.sendMessage(Component.text("Your homes: \n" + homesString,  NamedTextColor.YELLOW));
+            Messages.send(sender, "commands.homes.success",
+                    Placeholder.component("homes", Component.text(homesString.toString()))
+            );
         } catch (SQLException exception) {
-            AverUtils.logWarning("Failed to fetch homes for player from database", exception);
+            AverUtils.logWarning(Messages.getString("errors.database.homes"), exception);
         }
         return true;
     }

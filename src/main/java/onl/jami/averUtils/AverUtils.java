@@ -6,7 +6,7 @@ import onl.jami.averUtils.admin.DoAs;
 import onl.jami.averUtils.admin.Motd;
 import onl.jami.averUtils.admin.PlayerListDecoration;
 import onl.jami.averUtils.listeners.Chat;
-import onl.jami.averUtils.listeners.Ping;
+import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.userconfig.profile.NameChoice;
 import onl.jami.averUtils.userconfig.profile.Nickname;
 import onl.jami.averUtils.userconfig.profile.Pronouns;
@@ -51,7 +51,9 @@ public final class AverUtils extends JavaPlugin {
         // save default config if it doesn't already exist
         this.saveDefaultConfig();
 
+        // load config and locale
         cfg = this.getConfig();
+        Messages.load(this);
 
         // initialize database/tables, migrate if necessary
         try {
@@ -67,7 +69,7 @@ public final class AverUtils extends JavaPlugin {
         // check for discord config, start bot, disable discord on incorrect config
         if (cfg.getBoolean("discord.enabled")) {
             String token = cfg.getString("discord.token");
-            long id = cfg.getLong("discord.id");
+            long id = cfg.getLong("discord.verification-guild-id");
             if (token != null && !token.isEmpty() && id != 0 ) {
                 if (!Bot.jdaInit(cfg.getString("discord.token"))) {
                     cfg.set("discord.enabled", false);
@@ -106,6 +108,8 @@ public final class AverUtils extends JavaPlugin {
         registerCommand("warps", new Warps());
         registerCommand("delWarp", new DelWarp());
         registerCommand("setWarp", new SetWarp());
+        registerCommand("motd", new Motd());
+        registerCommand("playerlistdecoration", new PlayerListDecoration());
     }
 
     @Override

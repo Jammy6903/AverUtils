@@ -1,10 +1,10 @@
 package onl.jami.averUtils.listeners;
 
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.chatlink.MinecraftToDiscord;
 import onl.jami.averUtils.discord.sync.RoleSync;
+import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import onl.jami.averUtils.storage.database.PlayerListDecorationRepo;
 import onl.jami.averUtils.storage.database.PlayerRepo;
@@ -63,8 +63,8 @@ public class Player implements Listener {
             // cache player
             PlayerCache.addPlayer(uuid, PlayerRepo.getPlayer(uuid));
         } catch (SQLException exception) {
-            AverUtils.logWarning("Failed to access database on player join", exception);
-            player.kick(Component.text("An unknown error has occurred."));
+            AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
+            player.kick(MiniMessage.miniMessage().deserialize(Messages.getString(Messages.getString("errors.generic"))));
         }
     }
 

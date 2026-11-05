@@ -17,6 +17,7 @@ import onl.jami.averUtils.discord.chatlink.EditChannels;
 import onl.jami.averUtils.discord.rolelink.EditRoles;
 import onl.jami.averUtils.discord.sync.SyncOnChange;
 import onl.jami.averUtils.discord.verification.VerifyDiscord;
+import onl.jami.averUtils.locale.Messages;
 
 public class Bot {
     public static JDA jda;
@@ -30,7 +31,7 @@ public class Bot {
             jda.updateCommands().addCommands(verifyCommand(), channelCommand(), roleCommand()).queue();
             return true;
         } catch (Exception e) {
-            AverUtils.logWarning("Failed to initialize the Discord Bot", e);
+            AverUtils.logWarning(Messages.getString("errors.discord.setup"), e);
             jda = null;
             return false;
         }

@@ -3,6 +3,7 @@ package onl.jami.averUtils.listeners;
 import com.destroystokyo.paper.event.server.PaperServerListPingEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.MotdRepo;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,7 +26,7 @@ public class Ping implements Listener {
             int random = ThreadLocalRandom.current().nextInt(0, motds.size());
             e.motd(MiniMessage.miniMessage().deserialize(motds.get(random).message()));
         } catch (SQLException exception) {
-            AverUtils.logWarning("Failed to fetch motds from database", exception);
+            AverUtils.logWarning(Messages.getString("errors.database.motds"), exception);
         }
     }
 }

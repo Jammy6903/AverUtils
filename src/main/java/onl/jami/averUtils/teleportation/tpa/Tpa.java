@@ -1,7 +1,8 @@
 package onl.jami.averUtils.teleportation.tpa;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import onl.jami.averUtils.locale.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -12,16 +13,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Tpa implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(Component.text("Only players can execute this command.", NamedTextColor.RED));
+            Messages.send(sender, "commands.generic.failure.player-only");
             return true;
         }
         if  (args.length == 0) {
@@ -29,12 +27,16 @@ public class Tpa implements TabExecutor {
         }
         Player recipient = Bukkit.getPlayerExact(args[0]);
         if (recipient == null) {
-            sender.sendMessage(Component.text("Player not found.", NamedTextColor.RED));
-        } else {
-            TpRequestCache.addRequest(recipient.getUniqueId(), new TpRequestCache.TpRequest(((Player) sender).getUniqueId(), TpRequestCache.TpRequest.Direction.TO_RECIPIENT));
-            sender.sendMessage("Requesting to teleport to " + recipient.getName());
-            recipient.sendMessage(sender.getName() + " is requesting to teleport to you, /tpaccept to accept, /tpdeny to deny");
+            Messages.send(sender, "commands.tpa.failure.player-not-found");
+            return true;
         }
+        TpRequestCache.addRequest(recipient.getUniqueId(), new TpRequestCache.TpRequest(((Player) sender).getUniqueId(), TpRequestCache.TpRequest.Direction.TO_RECIPIENT));
+        Messages.send(sender, "commands.tpa.success.sending",
+                Placeholder.component("player", Component.text(recipient.getName()))
+        );
+        Messages.send(recipient, "commands.tpa.success.receiving",
+                Placeholder.component("player", Component.text(sender.getName()))
+        );
         return true;
     }
 

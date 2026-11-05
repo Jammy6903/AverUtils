@@ -1,8 +1,9 @@
 package onl.jami.averUtils.teleportation.home;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.HomeRepo;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -22,7 +23,7 @@ public class Home implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(Component.text("Only players can use this command!",  NamedTextColor.RED));
+            Messages.send(sender, "commands.generic.failure.players-only");
             return true;
         }
         String name = "home";
@@ -32,15 +33,19 @@ public class Home implements TabExecutor {
         try {
             HomeRepo.HomeData homeData = HomeRepo.getHome(((Player) sender).getUniqueId(), name);
             if (homeData == null) {
-                sender.sendMessage(Component.text("Home: " + name + " does not exist.", NamedTextColor.RED));
+                Messages.send(sender, "commands.home.failure.doesnt-exist",
+                        Placeholder.component("home", Component.text(args[0]))
+                );
                 return true;
             }
             Location location = new Location(Bukkit.getWorld(homeData.world()), homeData.x(), homeData.y(), homeData.z(),  homeData.yaw(), homeData.pitch());
             ((Player) sender).teleport(location);
-            sender.sendMessage(Component.text("Successfully teleported to " + name, NamedTextColor.GREEN));
+            Messages.send(sender, "commands.home.success",
+                    Placeholder.component("home", Component.text(args[0]))
+            );
         } catch (SQLException exception) {
-            sender.sendMessage(Component.text("Failed to teleport to " + name, NamedTextColor.RED));
-            AverUtils.logWarning("Failed to fetch home for player from database", exception);
+            Messages.send(sender, "commands.generic.failure.unknown");
+            AverUtils.logWarning(Messages.getString("errors.database.homes"), exception);
         }
         return true;
     }
@@ -56,7 +61,7 @@ public class Home implements TabExecutor {
                 }
                 return results;
             } catch (SQLException exception) {
-                AverUtils.logWarning("Failed to fetch homes for player from database", exception);
+                AverUtils.logWarning(Messages.getString("errors.database.homes"), exception);
             }
         }
         return null;

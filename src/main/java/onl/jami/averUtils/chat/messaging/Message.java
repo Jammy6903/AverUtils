@@ -1,8 +1,10 @@
 package onl.jami.averUtils.chat.messaging;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import onl.jami.averUtils.userconfig.profile.PlayerName;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import onl.jami.averUtils.chat.Formatter;
+import onl.jami.averUtils.locale.Messages;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -13,24 +15,39 @@ public class Message {
 
     private final Map<CommandSender, Component> messages = new HashMap<>();
 
-    public void formatMessage(CommandSender recipient, CommandSender other, String message, Integer direction) {
-        Component prefix = Component.text("Member", NamedTextColor.BLUE);
+    public void formatMessage(CommandSender recipient, CommandSender other, String message) {
+        messages.put(recipient, buildForRecipient(other, message, true));
+        messages.put(other, buildForRecipient(recipient, message, false));
+    }
 
-        String dir = " ⬅ ";
+    public Component buildForRecipient(CommandSender recipient, String message, boolean forSender) {
+        String messageFormatString = Messages.getString("chat.format.message.receiving");
+        if (forSender) {
+            messageFormatString = Messages.getString("chat.format.message.sending");
+        }
+        String prefixFormatString = Messages.getString("chat.format.message.prefix");
+        String suffixFormatString = Messages.getString("chat.format.message.suffix");
+        String pronounsFormatString = Messages.getString("chat.format.message.pronouns");
 
-        if (direction == 1) {
-            dir = " ➡ ";
+        Component prefix = Component.empty();
+        Component suffix = Component.empty();
+        Component pronouns = Component.empty();
+        Component name = Component.text("CONSOLE");
+
+        if (recipient instanceof Player player) {
+            Formatter.MessageData messageData = Formatter.getMessageData(player, prefixFormatString, suffixFormatString, pronounsFormatString);
+            prefix = messageData.prefix();
+            suffix = messageData.suffix();
+            pronouns = messageData.pronouns();
+            name = messageData.name();
         }
 
-        Component finalMessage = Component.text("[✉] ", NamedTextColor.YELLOW)
-                .append(Component.text("[", NamedTextColor.GRAY))
-                .append(prefix)
-                .append(Component.text("] ", NamedTextColor.GRAY))
-                .append(PlayerName.getComponent((Player) other))
-                .append(Component.text(dir, NamedTextColor.GRAY))
-                .append(Component.text(message, NamedTextColor.WHITE));
-
-        messages.put(recipient, finalMessage);
+        return MiniMessage.miniMessage().deserialize(messageFormatString,
+                Placeholder.component("prefix", prefix),
+                Placeholder.component("suffix", suffix),
+                Placeholder.component("name", name),
+                Placeholder.component("pronouns", pronouns),
+                Placeholder.component("message", Component.text(message)));
     }
 
     public void sendToRecipients() {

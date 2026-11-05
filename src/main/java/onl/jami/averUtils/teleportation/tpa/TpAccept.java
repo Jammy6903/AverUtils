@@ -1,7 +1,8 @@
 package onl.jami.averUtils.teleportation.tpa;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import onl.jami.averUtils.locale.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,32 +10,39 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
-
 public class TpAccept implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         TpRequestCache.TpRequest latestRequest = TpRequestCache.getLatestRequest(((Player) sender).getUniqueId());
         if (latestRequest == null) {
-            sender.sendMessage(Component.text("There is no request for you!", NamedTextColor.RED));
+            Messages.send(sender, "commands.tpaccept.failure.no-request");
             return true;
         }
         Player requester = Bukkit.getPlayer(latestRequest.requester());
-        if (!(requester == null)) {
-            if (latestRequest.direction().equals(TpRequestCache.TpRequest.Direction.TO_RECIPIENT)) {
-                requester.teleport(((Player) sender).getLocation());
-                requester.sendMessage(Component.text("Successfully teleported you to " + sender.getName(), NamedTextColor.GREEN));
-                sender.sendMessage(Component.text("Sucessfully teleported " + requester.getName() + " to you.", NamedTextColor.GREEN));
-            } else {
-                ((Player) sender).teleport(requester.getLocation());
-                requester.sendMessage(Component.text("Sucessfully teleported " + sender.getName() + " to you.", NamedTextColor.GREEN));
-                sender.sendMessage(Component.text("Successfully teleported you to " + requester.getName(), NamedTextColor.GREEN));
-            }
-            TpRequestCache.removeLatestRequest(((Player) sender).getUniqueId());
-            return true;
+        if (requester == null) {
+            Messages.send(sender, "commands.tpaccept.failure.player-not-found");
         }
-        sender.sendMessage(Component.text("The requester is currently offline.", NamedTextColor.RED));
+
+        if (latestRequest.direction().equals(TpRequestCache.TpRequest.Direction.TO_RECIPIENT)) {
+            requester.teleport(((Player) sender).getLocation());
+            Messages.send(requester, "commands.tpaccept.success.tpa.sending",
+                    Placeholder.component("player", Component.text(requester.getName()))
+            );
+            Messages.send(sender, "commands.tpaccept.success.tpa.receiving",
+                    Placeholder.component("player", Component.text(sender.getName()))
+            );
+        } else {
+            ((Player) sender).teleport(requester.getLocation());
+            Messages.send(requester, "commands.tpaccept.success.tpahere.sending",
+                    Placeholder.component("player", Component.text(requester.getName()))
+            );
+            Messages.send(sender, "commands.tpaccept.success.tpahere.receiving",
+                    Placeholder.component("player", Component.text(sender.getName()))
+            );
+        }
+        TpRequestCache.removeLatestRequest(((Player) sender).getUniqueId());
+
         return true;
     }
 }
