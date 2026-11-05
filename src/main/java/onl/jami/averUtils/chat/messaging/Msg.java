@@ -1,6 +1,5 @@
 package onl.jami.averUtils.chat.messaging;
 
-import net.kyori.adventure.text.format.NamedTextColor;
 import onl.jami.averUtils.locale.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

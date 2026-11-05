@@ -8,12 +8,13 @@ import onl.jami.averUtils.chat.Formatter;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.ChannelLinkRepo;
 import org.bukkit.Bukkit;
+import org.jspecify.annotations.NonNull;
 
 import java.sql.SQLException;
 
 public class DiscordToMinecraft extends ListenerAdapter {
     @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
+    public void onMessageReceived(@NonNull MessageReceivedEvent event) {
         if (!AverUtils.getCfg().getBoolean("discord.enabled") || event.getAuthor().isBot() || event.isWebhookMessage() || !event.isFromGuild()) {
             return;
         }

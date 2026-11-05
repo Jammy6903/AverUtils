@@ -2,15 +2,12 @@ package onl.jami.averUtils.chat;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.luckperms.api.cacheddata.CachedMetaData;
 import onl.jami.averUtils.AverUtils;
-import onl.jami.averUtils.chat.messaging.Message;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.PlayerRepo;
-import onl.jami.averUtils.discord.Bot;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import onl.jami.averUtils.userconfig.profile.PlayerName;
 import org.bukkit.Bukkit;

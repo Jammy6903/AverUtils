@@ -1,7 +1,6 @@
 package onl.jami.averUtils.teleportation.tpa;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.locale.Messages;
 import org.bukkit.Bukkit;
@@ -10,8 +9,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.UUID;
 
 public class TpDeny implements CommandExecutor {
     @Override
@@ -22,10 +19,14 @@ public class TpDeny implements CommandExecutor {
             return true;
         }
         Player requester = Bukkit.getPlayer(latestRequest.requester());
-        Messages.send(sender, "commands.tpdeny.receiving",
-                Placeholder.component("player", Component.text(requester.getDisplayName()))
+        if (requester == null) {
+            Messages.send(sender, "commands.tpdenny.success.not-online");
+            return true;
+        }
+        Messages.send(sender, "commands.tpdeny.success.receiving",
+                Placeholder.component("player", Component.text(requester.getName()))
         );
-        Messages.send(requester, "commands.tpdeny.sending",
+        Messages.send(requester, "commands.tpdeny.success.sending",
                 Placeholder.component("player", Component.text(sender.getName()))
         );
         TpRequestCache.removeLatestRequest(((Player) sender).getUniqueId());

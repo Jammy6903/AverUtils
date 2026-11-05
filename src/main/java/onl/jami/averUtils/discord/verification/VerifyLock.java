@@ -21,8 +21,6 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 import java.util.List;
 
-import static net.kyori.adventure.text.Component.text;
-
 public class VerifyLock {
     public static void verifyOnLogin(Player p) {
         try {

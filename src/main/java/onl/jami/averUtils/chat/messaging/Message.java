@@ -1,15 +1,10 @@
 package onl.jami.averUtils.chat.messaging;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.luckperms.api.cacheddata.CachedMetaData;
-import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.chat.Formatter;
 import onl.jami.averUtils.locale.Messages;
-import onl.jami.averUtils.storage.cache.PlayerCache;
-import onl.jami.averUtils.userconfig.profile.PlayerName;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

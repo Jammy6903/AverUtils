@@ -1,6 +1,5 @@
 package onl.jami.averUtils.listeners;
 
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.chatlink.MinecraftToDiscord;

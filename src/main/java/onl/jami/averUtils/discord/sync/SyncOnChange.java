@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateTimeOutEv
 import net.dv8tion.jda.api.events.user.update.UserUpdateGlobalNameEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.luckperms.api.node.NodeType;
 import onl.jami.averUtils.AverUtils;

@@ -2,7 +2,6 @@ package onl.jami.averUtils.listeners;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
-import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.chat.Formatter;
 import onl.jami.averUtils.discord.chatlink.MinecraftToDiscord;
 import org.bukkit.event.EventHandler;

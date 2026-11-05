@@ -2,7 +2,6 @@ package onl.jami.averUtils.discord.sync;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.model.user.UserManager;
 import net.luckperms.api.node.NodeType;
@@ -48,8 +47,6 @@ public class RoleSync {
                 }
             } catch (SQLException exception) {
                 AverUtils.logWarning(Messages.getString("errors.database.role_links"), exception);
-            } catch (ErrorResponseException ex) {
-
             }
         });
     }

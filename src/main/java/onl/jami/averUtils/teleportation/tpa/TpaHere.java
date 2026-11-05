@@ -1,7 +1,6 @@
 package onl.jami.averUtils.teleportation.tpa;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.locale.Messages;
 import org.bukkit.Bukkit;

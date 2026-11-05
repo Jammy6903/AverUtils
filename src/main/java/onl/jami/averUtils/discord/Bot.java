@@ -12,7 +12,6 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import onl.jami.averUtils.AverUtils;
-import onl.jami.averUtils.chat.messaging.Message;
 import onl.jami.averUtils.discord.chatlink.DiscordToMinecraft;
 import onl.jami.averUtils.discord.chatlink.EditChannels;
 import onl.jami.averUtils.discord.rolelink.EditRoles;

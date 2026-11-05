@@ -240,8 +240,10 @@ commands:
       failure:
         player-not-found: "<red>That player is not online</red>"
     tpdeny:
-      sending: "<red><player> denied your teleport request</red>"
-      receiving: "<red>You denied <player>'s teleport request</red>"
+      success:
+        sending: "<red><player> denied your teleport request</red>"
+        receiving: "<red>You denied <player>'s teleport request</red>"
+        not-online: "<red>You denied a player's teleport request</red>"
       failure:
         no-request: "<red>You have no requests.</red>"
       timeout:
