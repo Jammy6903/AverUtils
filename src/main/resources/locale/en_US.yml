@@ -168,101 +168,101 @@ commands:
       failure:
         doesnt-exist: "<red>Unable to set <name>, does it exist?</red>"
         wrong-args: "Usage: /motd set [name] [true/false]"
-    msg:
+  msg:
+    failure:
+      doesnt-exist: "<red>Player not found</red>"
+  reply:
+    failure:
+      not-online: "<red>That player is no longer online</red>"
+      no-messages: "<red>You haven't received any messages recently"
+  namechoice:
+    success: "<green>Successfully updated name choice to <selection></green>"
+  nickname:
+    success: "<green>Looking good, <name>"
+    failure:
+      length: "<red>Nickname must be 3-16 characters!</red>"
+  playerlistdecoration:
+    create:
+      success: "<green>Successfully created <location>:<name></green><newline><decoration>"
       failure:
-        doesnt-exist: "<red>Player not found</red>"
-    reply:
+        already-exists: "<red>Unable to create <location>:<name>, does it already exist?"
+        wrong-args: "Usage: /playerlistdecoration create [HEADER/FOOTER] [name] [message]"
+    delete:
+      success: "<green>Successfully deleted <location>:<name></green>"
       failure:
-        not-online: "<red>That player is no longer online</red>"
-        no-messages: "<red>You haven't received any messages recently"
-    namechoice:
-      success: "<green>Successfully updated name choice to <selection></green>"
-    nickname:
-      success: "<green>Looking good, <name>"
+        doesnt-exist: "<red>Unable to delete <location>:<name>, does it exist?</red>"
+        wrong-args: "Usage: /playerlistdecoration delete [HEADER/FOOTER] [name]"
+    edit:
+      success: "<green>Successfully edited <location>:<name>:</green><newline><decoration>"
       failure:
-        length: "<red>Nickname must be 3-16 characters!</red>"
-    playerlistdecoration:
-      create:
-        success: "<green>Successfully created <location>:<name></green><newline><decoration>"
-        failure:
-          already-exists: "<red>Unable to create <location>:<name>, does it already exist?"
-          wrong-args: "Usage: /playerlistdecoration create [HEADER/FOOTER] [name] [message]"
-      delete:
-        success: "<green>Successfully deleted <location>:<name></green>"
-        failure:
-          doesnt-exist: "<red>Unable to delete <location>:<name>, does it exist?</red>"
-          wrong-args: "Usage: /playerlistdecoration delete [HEADER/FOOTER] [name]"
-      edit:
-        success: "<green>Successfully edited <location>:<name>:</green><newline><decoration>"
-        failure:
-          doesnt-exist: "<red>Unable to edit <location>:<name>, does it exist?</red>"
-          wrong-args: "Usage: /playerlistdecoration edit [HEADER/FOOTER] [name] [message]"
-      set:
-        success: "<green>Successfully set <location>:<name> to <state></green>"
-        failure:
-          doesnt-exist: "<red>Unable to set <location>:<name>, does it exist?</red>"
-          wrong-args: "Usage: /playerlistdecoration set [HEADER/FOOTER] [name] [true/false]"
-    pronouns:
-      success: "<green>Successfully updated your pronouns to <pronouns></green>"
+        doesnt-exist: "<red>Unable to edit <location>:<name>, does it exist?</red>"
+        wrong-args: "Usage: /playerlistdecoration edit [HEADER/FOOTER] [name] [message]"
+    set:
+      success: "<green>Successfully set <location>:<name> to <state></green>"
       failure:
-        length: "<red>Pronouns must be 1-10 characters!</red>"
-    sethome:
-      success: "<green>Successfully set your new home, <home></green>"
-      failure:
-        not-enough-homes: "<red>You can not set any more homes</red>"
-    setwarp:
-      success: "<green>Successfully set warp point, <warp>"
-      failure:
-        already-exists: "<red>Failed to create warp! Does it already exist?</red>"
-    spawn:
-      success: "<green>Successfully teleported you to spawn</green>"
-    tpa:
-      success:
-        sending: "<yellow>Requesting to teleport to <player></yellow>"
-        receiving: "<yellow><player> is requesting to teleport to you</yellow><newline><green>/tpaccept</green> <yellow>to accept,</yellow> <red>/tpdeny</red> <yellow>to deny</yellow>"
-      failure:
-        player-not-found: "<red>That player is not online</red>"
-    tpaccept:
-      success:
-        tpa:
-          sending: "<green><player> has accepted your teleport request, teleporting you to them</green>"
-          receiving: "<green>Accepted <player>'s teleport request, teleporting them to you</green>"
-        tpahere:
-          sending: "<green><player> has accepted your teleport request, teleporting them to you</green>"
-          receiving: "<green>Accepted <player>'s teleport request, teleporting you to them</green>"
-      failure:
-        player-not-found: "<red>That player is no longer online</red>"
-        no-request: "<red>You have no requests.</red>"
-    tpahere:
-      success:
-        sending: "<yellow>Requesting <player> to teleport to you</yellow>"
-        receiving: "<yellow><player> is requesting you to teleport to them</yellow><newline><green>/tpaccept</green> <yellow>to accept,</yellow> <red>/tpdeny</red> <yellow>to deny</yellow>"
-      failure:
-        player-not-found: "<red>That player is not online</red>"
-    tpdeny:
-      success:
-        sending: "<red><player> denied your teleport request</red>"
-        receiving: "<red>You denied <player>'s teleport request</red>"
-        not-online: "<red>You denied a player's teleport request</red>"
-      failure:
-        no-request: "<red>You have no requests.</red>"
-      timeout:
-        sending: "<red><player> did not accept your teleport request in time</red>"
-        receiving: "<red><player>'s teleport request has timed out</red>"
-    verify:
-      success: "<green>You have been verified. Welcome, <discord></green>"
-      failure:
-        not-in-discord: "<red>You are not in the Discord!</red>"
-        not-valid: "<red>That code is not valid</red>"
-        not-available: "<red>Discord is not enabled on this server</red>"
-    warp:
-      success: "<green>Warping you to <warp></green>"
-      failure:
-        doesnt-exist: "<red>Failed to warp you to <warp>, does it exist?</red>"
-    warps:
-      success: "<green>Warps: <warps></green>"
-      failure:
-        doesnt-exist: "<red>There are no warps available to you</red>"
+        doesnt-exist: "<red>Unable to set <location>:<name>, does it exist?</red>"
+        wrong-args: "Usage: /playerlistdecoration set [HEADER/FOOTER] [name] [true/false]"
+  pronouns:
+    success: "<green>Successfully updated your pronouns to <pronouns></green>"
+    failure:
+      length: "<red>Pronouns must be 1-10 characters!</red>"
+  sethome:
+    success: "<green>Successfully set your new home, <home></green>"
+    failure:
+      not-enough-homes: "<red>You can not set any more homes</red>"
+  setwarp:
+    success: "<green>Successfully set warp point, <warp>"
+    failure:
+      already-exists: "<red>Failed to create warp! Does it already exist?</red>"
+  spawn:
+    success: "<green>Successfully teleported you to spawn</green>"
+  tpa:
+    success:
+      sending: "<yellow>Requesting to teleport to <player></yellow>"
+      receiving: "<yellow><player> is requesting to teleport to you</yellow><newline><green>/tpaccept</green> <yellow>to accept,</yellow> <red>/tpdeny</red> <yellow>to deny</yellow>"
+    failure:
+      player-not-found: "<red>That player is not online</red>"
+  tpaccept:
+    success:
+      tpa:
+        sending: "<green><player> has accepted your teleport request, teleporting you to them</green>"
+        receiving: "<green>Accepted <player>'s teleport request, teleporting them to you</green>"
+      tpahere:
+        sending: "<green><player> has accepted your teleport request, teleporting them to you</green>"
+        receiving: "<green>Accepted <player>'s teleport request, teleporting you to them</green>"
+    failure:
+      player-not-found: "<red>That player is no longer online</red>"
+      no-request: "<red>You have no requests.</red>"
+  tpahere:
+    success:
+      sending: "<yellow>Requesting <player> to teleport to you</yellow>"
+      receiving: "<yellow><player> is requesting you to teleport to them</yellow><newline><green>/tpaccept</green> <yellow>to accept,</yellow> <red>/tpdeny</red> <yellow>to deny</yellow>"
+    failure:
+      player-not-found: "<red>That player is not online</red>"
+  tpdeny:
+    success:
+      sending: "<red><player> denied your teleport request</red>"
+      receiving: "<red>You denied <player>'s teleport request</red>"
+      not-online: "<red>You denied a player's teleport request</red>"
+    failure:
+      no-request: "<red>You have no requests.</red>"
+    timeout:
+      sending: "<red><player> did not accept your teleport request in time</red>"
+      receiving: "<red><player>'s teleport request has timed out</red>"
+  verify:
+    success: "<green>You have been verified. Welcome, <discord></green>"
+    failure:
+      not-in-discord: "<red>You are not in the Discord!</red>"
+      not-valid: "<red>That code is not valid</red>"
+      not-available: "<red>Discord is not enabled on this server</red>"
+  warp:
+    success: "<green>Warping you to <warp></green>"
+    failure:
+      doesnt-exist: "<red>Failed to warp you to <warp>, does it exist?</red>"
+  warps:
+    success: "<green>Warps: <warps></green>"
+    failure:
+      doesnt-exist: "<red>There are no warps available to you</red>"
 
 errors:
   database:
