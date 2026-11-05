@@ -8,6 +8,7 @@ import net.luckperms.api.model.user.UserManager;
 import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.InheritanceNode;
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.database.RoleLinkRepo;
 import org.bukkit.Bukkit;
@@ -46,7 +47,7 @@ public class RoleSync {
                     }
                 }
             } catch (SQLException exception) {
-                AverUtils.logWarning("Failed to fetch player or role link from database", exception);
+                AverUtils.logWarning(Messages.getString("errors.database.role_links"), exception);
             } catch (ErrorResponseException ex) {
 
             }

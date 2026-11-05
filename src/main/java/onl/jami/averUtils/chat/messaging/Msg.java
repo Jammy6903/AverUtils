@@ -1,6 +1,7 @@
 package onl.jami.averUtils.chat.messaging;
 
 import net.kyori.adventure.text.format.NamedTextColor;
+import onl.jami.averUtils.locale.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -22,13 +23,12 @@ public class Msg implements TabExecutor {
         }
         Player target = Bukkit.getPlayerExact(args[0]);
         if (target == null) {
-            sender.sendMessage(NamedTextColor.RED + "Player not found.");
+            Messages.send(sender, "commands.msg.failure.doesnt-exist");
             return true;
         }
-        String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+
         Message m = new Message();
-        m.formatMessage(target, sender, message, 1);
-        m.formatMessage(sender, target, message, 0);
+        m.formatMessage(target, sender, String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
         m.sendToRecipients();
 
         if (sender instanceof Player) {
@@ -41,9 +41,7 @@ public class Msg implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-        if (args.length == 1) {
-            return null;
-        }
+        if (args.length == 1) { return null; }
         return Collections.emptyList();
     }
 

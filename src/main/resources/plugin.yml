@@ -61,7 +61,7 @@ commands:
     permission: averutils.spawn
   msg:
     description: Message a player privately
-    aliases: [tell, w, whisper]
+    aliases: [tell, w, whisper, message]
     usage: /msg [player] [message]
     permission: averutils.msg
   reply:

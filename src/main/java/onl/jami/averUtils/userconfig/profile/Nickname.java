@@ -2,7 +2,9 @@ package onl.jami.averUtils.userconfig.profile;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import org.bukkit.command.Command;
@@ -17,24 +19,26 @@ public class Nickname implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(Component.text("Only players can execute this command!", NamedTextColor.RED));
+            Messages.send(sender, "commands.generic.failure.player-only");
             return true;
         }
         if (args.length == 0) {
             return false;
         }
         if (args[0].length() > 16 || args[0].length() < 3) {
-            sender.sendMessage(Component.text("Nickname must be 3-16 characters!", NamedTextColor.RED));
+            Messages.send(sender, "commands.nickname.failure.length");
             return true;
         }
 
         try {
             PlayerRepo.updateNickname(((Player) sender).getUniqueId(), args[0]);
             PlayerCache.updatePlayer(((Player) sender).getUniqueId());
-            sender.sendMessage(Component.text("Nickname has been updated!", NamedTextColor.GREEN));
+            Messages.send(sender, "commands.nickname.success",
+                    Placeholder.component("name", Component.text(args[0]))
+            );
         } catch (SQLException exception) {
-            sender.sendMessage(Component.text("Failed to update nickname!", NamedTextColor.RED));
-            AverUtils.logWarning("Failed to fetch player or role link from database", exception);
+            Messages.send(sender, "commands.generic.failure.unknown");
+            AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
         }
         return true;
     }

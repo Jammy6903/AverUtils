@@ -16,7 +16,7 @@ public class Chat implements Listener {
         MinecraftToDiscord.sendChatMessage(e);
 
         // format chat message
-        Component formattedMessage = Formatter.formatChat(e.getPlayer(), e.message(), Component.empty());
+        Component formattedMessage = Formatter.formatChat(e.getPlayer(), e.message());
         e.message(formattedMessage);
         e.renderer(((_, _, message, _) -> message));
     }

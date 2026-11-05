@@ -1,7 +1,8 @@
 package onl.jami.averUtils.admin;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import onl.jami.averUtils.locale.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -22,12 +23,15 @@ public class DoAs implements TabExecutor {
         }
         Player player = Bukkit.getPlayer(args[0]);
         if (player == null) {
-            sender.sendMessage(Component.text("That player is not online!", NamedTextColor.RED));
+            Messages.send(sender, "commands.doas.failure.player-not-found");
             return true;
         }
         String c = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
         player.performCommand(c);
-        sender.sendMessage(Component.text("Successfully executed as " + player.getName() + ":" + c, NamedTextColor.GREEN));
+        Messages.send(sender, "commands.doas.success",
+                Placeholder.component("player", Component.text(player.getName())),
+                Placeholder.component("command", Component.text(c))
+        );
         return true;
     }
 

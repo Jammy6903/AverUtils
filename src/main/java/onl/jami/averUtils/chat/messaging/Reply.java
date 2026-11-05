@@ -1,6 +1,7 @@
 package onl.jami.averUtils.chat.messaging;
 
 import net.kyori.adventure.text.format.NamedTextColor;
+import onl.jami.averUtils.locale.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,24 +16,22 @@ public class Reply implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(NamedTextColor.RED + "Only players can execute this command.");
+            Messages.send(sender, "commands.generic.failure.players-only");
             return true;
         }
         UUID targetId = Msg.getLastMessagedBy(((Player) sender).getUniqueId());
-        if (targetId != null) {
-            Player target = Bukkit.getPlayer(targetId);
-            if (!(target == null)) {
-                String message = String.join(" ", Arrays.copyOfRange(args, 0, args.length));
-                Message m = new Message();
-                m.formatMessage(target, sender, message, 1);
-                m.formatMessage(sender, target, message, 0);
-                m.sendToRecipients();
-            } else {
-                sender.sendMessage(NamedTextColor.RED + "Player is not online!");
-            }
-        } else {
-            sender.sendMessage(NamedTextColor.RED + "You haven't received a message recently.");
+        if (targetId == null) {
+            Messages.send(sender, "commands.reply.failure.not-online");
         }
+        Player target = Bukkit.getPlayer(targetId);
+        if (target == null) {
+            Messages.send(sender, "commands.reply.failure.no-messages");
+        }
+
+        Message m = new Message();
+        m.formatMessage(target, sender, String.join(" ", Arrays.copyOfRange(args, 0, args.length)));
+        m.sendToRecipients();
+
         return true;
     }
 }

@@ -1,6 +1,7 @@
 package onl.jami.averUtils.storage.cache;
 
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 
 import java.sql.SQLException;
@@ -24,7 +25,7 @@ public class PlayerCache {
         try {
             players.put(uuid, PlayerRepo.getPlayer(uuid));
         } catch (SQLException exception) {
-            AverUtils.logWarning("Failed to fetch player from database", exception);
+            AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
         }
     }
 

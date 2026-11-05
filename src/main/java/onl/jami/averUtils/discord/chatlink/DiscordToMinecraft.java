@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.chat.Formatter;
+import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.ChannelLinkRepo;
 import org.bukkit.Bukkit;
 
@@ -13,10 +14,7 @@ import java.sql.SQLException;
 public class DiscordToMinecraft extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (!AverUtils.getCfg().getBoolean("discord.enabled")) {
-            return;
-        }
-        if (event.getAuthor().isBot() || event.isWebhookMessage() || !event.isFromGuild()) {
+        if (!AverUtils.getCfg().getBoolean("discord.enabled") || event.getAuthor().isBot() || event.isWebhookMessage() || !event.isFromGuild()) {
             return;
         }
         try {
@@ -28,11 +26,11 @@ public class DiscordToMinecraft extends ListenerAdapter {
             if (!event.getMessage().getAttachments().isEmpty()) {
                 message = message + " [attachments]";
             }
-            Component component = Formatter.formatDiscordChat(event.getAuthor().getIdLong(), message);
+            Component component = Formatter.formatDiscordChat(event, message);
             if (component == null) { return; }
             Bukkit.broadcast(component);
         } catch (SQLException exception) {
-            AverUtils.logWarning("Failed to fetch channel link from database", exception);
+            AverUtils.logWarning(Messages.getString("errors.database.channel_links"), exception);
         }
     }
 }

@@ -2,6 +2,8 @@ package onl.jami.averUtils.teleportation.tpa;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import onl.jami.averUtils.locale.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -18,18 +20,21 @@ public class TpaHere implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(Component.text("Only players can execute this command.", NamedTextColor.RED));
+            Messages.send(sender, "commands.generic.failure.player-only");
             return true;
         }
         if  (args.length == 0) { return false; }
         Player recipient = Bukkit.getPlayerExact(args[0]);
         if (recipient == null) {
-            sender.sendMessage(Component.text("Player not found.", NamedTextColor.RED));
-        } else {
-            TpRequestCache.addRequest(recipient.getUniqueId(), new TpRequestCache.TpRequest(((Player) sender).getUniqueId(), TpRequestCache.TpRequest.Direction.TO_REQUESTER));
-            sender.sendMessage("Requesting " + recipient.getName() + " to teleport to you.");
-            recipient.sendMessage(sender.getName() + " is requesting you teleport to them, /tpaccept to accept, /tpdeny to deny");
+            Messages.send(sender, "commands.tpahere.failure.player-not-found");
         }
+        TpRequestCache.addRequest(recipient.getUniqueId(), new TpRequestCache.TpRequest(((Player) sender).getUniqueId(), TpRequestCache.TpRequest.Direction.TO_REQUESTER));
+        Messages.send(sender, "commands.tpahere.success.sending",
+                Placeholder.component("player", Component.text(recipient.getName()))
+        );
+        Messages.send(recipient, "commands.tpahere.success.receiving",
+                Placeholder.component("player", Component.text(sender.getName()))
+        );
         return true;
     }
 

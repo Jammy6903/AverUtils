@@ -2,6 +2,8 @@ package onl.jami.averUtils.teleportation.tpa;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import onl.jami.averUtils.locale.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,15 +18,17 @@ public class TpDeny implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         TpRequestCache.TpRequest latestRequest = TpRequestCache.getLatestRequest(((Player) sender).getUniqueId());
         if (latestRequest == null) {
-            sender.sendMessage(Component.text("There is no request for you!", NamedTextColor.RED));
+            Messages.send(sender, "commands.tpdeny.failure.no-request");
             return true;
         }
         Player requester = Bukkit.getPlayer(latestRequest.requester());
-        sender.sendMessage(Component.text("Request denied.", NamedTextColor.YELLOW));
+        Messages.send(sender, "commands.tpdeny.receiving",
+                Placeholder.component("player", Component.text(requester.getDisplayName()))
+        );
+        Messages.send(requester, "commands.tpdeny.sending",
+                Placeholder.component("player", Component.text(sender.getName()))
+        );
         TpRequestCache.removeLatestRequest(((Player) sender).getUniqueId());
-        if (!(requester == null)) {
-            requester.sendMessage(sender.getName() + " denied your tp request");
-        }
         return true;
     }
 }

@@ -9,8 +9,10 @@ import net.dv8tion.jda.api.events.user.update.UserUpdateGlobalNameEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.luckperms.api.node.NodeType;
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import org.bukkit.Bukkit;
@@ -30,7 +32,7 @@ public class SyncOnChange extends ListenerAdapter {
                 RoleSync.sync(player);
             }
         } catch (SQLException exception) {
-            AverUtils.logWarning("Failed to fetch player from database", exception);
+            AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
         }
     }
 
@@ -44,7 +46,7 @@ public class SyncOnChange extends ListenerAdapter {
                 RoleSync.sync(player);
             }
         } catch (SQLException exception) {
-            AverUtils.logWarning("Failed to fetch player from database", exception);
+            AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
         }
     }
 
@@ -61,9 +63,11 @@ public class SyncOnChange extends ListenerAdapter {
             PlayerRepo.deletePlayer(player.uuid());
             PlayerCache.updatePlayer(player.uuid());
             Player p = Bukkit.getPlayer(player.uuid());
-            if (p != null) {p.kick(Component.text("You have left the Discord server!"));}
+            if (p != null) {
+                p.kick(MiniMessage.miniMessage().deserialize(Messages.getString("player.moderation.verification.verification-time-out")));
+            }
         } catch (SQLException exception) {
-            AverUtils.logWarning("Failed to fetch player from database", exception);
+            AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
         }
     }
 
@@ -80,7 +84,7 @@ public class SyncOnChange extends ListenerAdapter {
             PlayerRepo.updateDiscordGobalName(player.uuid(), e.getNewGlobalName());
             PlayerCache.updatePlayer(player.uuid());
         } catch (SQLException exception) {
-            AverUtils.logWarning("Failed to fetch player from database", exception);
+            AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
         }
     }
 
@@ -92,7 +96,7 @@ public class SyncOnChange extends ListenerAdapter {
             PlayerRepo.updateDiscordUserName(player.uuid(), e.getNewName());
             PlayerCache.updatePlayer(player.uuid());
         } catch (SQLException exception) {
-            AverUtils.logWarning("Failed to fetch player from database", exception);
+            AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
         }
     }
 
@@ -104,7 +108,7 @@ public class SyncOnChange extends ListenerAdapter {
             PlayerRepo.updateDiscordNickname(player.uuid(), e.getNewNickname());
             PlayerCache.updatePlayer(player.uuid());
         } catch (SQLException exception) {
-            AverUtils.logWarning("Failed to fetch player from database", exception);
+            AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
         }
     }
 }

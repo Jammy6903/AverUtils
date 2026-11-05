@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.luckperms.api.model.group.Group;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.sync.RoleSync;
+import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.RoleLinkRepo;
 
 import java.sql.SQLException;
@@ -32,8 +33,8 @@ public class EditRoles extends ListenerAdapter {
                     RoleSync.syncOnline();
                     event.reply("Successfully added role").setEphemeral(true).queue();
                 } catch (SQLException exception) {
-                    AverUtils.logWarning("Failed to create role link in database", exception);
-                    event.reply("An unknown error has occured").setEphemeral(true).queue();
+                    AverUtils.logWarning(Messages.getString("errors.database.role_links"), exception);
+                    event.reply(Messages.getString("discord.commands.generic.failure.unknown")).setEphemeral(true).queue();
                     return;
                 }
                 break;
@@ -44,8 +45,8 @@ public class EditRoles extends ListenerAdapter {
                     RoleSync.syncOnline();
                     event.reply("Successfully removed role").setEphemeral(true).queue();
                 } catch (SQLException exception) {
-                    AverUtils.logWarning("Failed to remove role link from database", exception);
-                    event.reply("An unknown error has occured").setEphemeral(true).queue();
+                    AverUtils.logWarning(Messages.getString("errors.database.role_links"), exception);
+                    event.reply(Messages.getString("discord.commands.generic.failure.unknown")).setEphemeral(true).queue();
                     return;
                 }
                 break;
