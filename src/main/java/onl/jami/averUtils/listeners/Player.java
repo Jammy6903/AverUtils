@@ -33,6 +33,9 @@ public class Player implements Listener {
             // create player if not exists
             PlayerRepo.createPlayer(uuid);
 
+            // cache player
+            PlayerCache.addPlayer(uuid, PlayerRepo.getPlayer(uuid));
+
             // verify player if required, sync roles with discord and send join message to any linked channels
             VerifyLock.verifyOnLogin(e.getPlayer());
             RoleSync.sync(e.getPlayer());
@@ -59,9 +62,6 @@ public class Player implements Listener {
                     player.sendPlayerListFooter(MiniMessage.miniMessage().deserialize(footers.get(random).message()));
                 }
             }
-
-            // cache player
-            PlayerCache.addPlayer(uuid, PlayerRepo.getPlayer(uuid));
         } catch (SQLException exception) {
             AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
             player.kick(MiniMessage.miniMessage().deserialize(Messages.getString(Messages.getString("errors.generic"))));

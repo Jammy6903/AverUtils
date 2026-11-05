@@ -92,11 +92,11 @@ public final class AverUtils extends JavaPlugin {
         registerCommand("reply", new Reply());
         registerCommand("tpa", new Tpa());
         registerCommand("tpahere", new TpaHere());
-        registerCommand("tpaaccept", new TpAccept());
+        registerCommand("tpaccept", new TpAccept());
         registerCommand("tpdeny", new TpDeny());
         registerCommand("spawn", new Spawn());
         registerCommand("setHome", new SetHome());
-        registerCommand("homep", new Home());
+        registerCommand("home", new Home());
         registerCommand("homes", new Homes());
         registerCommand("delHome", new DelHome());
         registerCommand("verify", new VerifyMinecraft());

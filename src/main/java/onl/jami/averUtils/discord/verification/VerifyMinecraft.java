@@ -39,7 +39,7 @@ public class VerifyMinecraft implements CommandExecutor {
                 m -> {
                     try {
                         PlayerRepo.verifyPlayer(((Player)sender).getUniqueId(), id, m.getUser().getName(), m.getUser().getGlobalName(), m.getNickname());
-                        PlayerCache.addPlayer(((Player)sender).getUniqueId(), PlayerRepo.getPlayer(((Player)sender).getUniqueId()));
+                        PlayerCache.updatePlayer(((Player)sender).getUniqueId());
                         Messages.send(sender, "commands.verify.success",
                                 Placeholder.component("discord", Component.text(m.getUser().getName()))
                         );

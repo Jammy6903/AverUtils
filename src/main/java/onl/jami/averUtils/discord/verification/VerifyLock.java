@@ -72,7 +72,7 @@ public class VerifyLock {
                                             m -> {
                                                 try {
                                                     PlayerRepo.verifyPlayer(p.getUniqueId(), id, m.getUser().getName(), m.getUser().getGlobalName(), m.getNickname());
-                                                    PlayerCache.addPlayer(p.getUniqueId(), PlayerRepo.getPlayer(p.getUniqueId()));
+                                                    PlayerCache.updatePlayer(p.getUniqueId());
                                                     Messages.send(p, Messages.getString("commands.verify.success"));
                                                     RoleSync.sync(p);
                                                 } catch (SQLException exception) {
