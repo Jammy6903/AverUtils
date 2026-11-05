@@ -25,7 +25,7 @@ public class DelWarp implements CommandExecutor {
                 return true;
             }
             Messages.send(sender, "commands.delwarp.failure.doesnt-exist",
-                    Placeholder.component("warp", Component.text(args[0]))
+                    Placeholder.component("selection", Component.text(args[0]))
             );
         } catch (SQLException exception) {
             Messages.send(sender, "commands.generic.failure.unknown");

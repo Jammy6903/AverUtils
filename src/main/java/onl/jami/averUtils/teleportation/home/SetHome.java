@@ -29,7 +29,7 @@ public class SetHome implements CommandExecutor {
         Location location = player.getLocation();
         try {
             HomeRepo.createHome(player.getUniqueId(), name, location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), location.getPitch(), location.getYaw());
-            Messages.send(sender, "commands.sehome.success",
+            Messages.send(sender, "commands.sethome.success",
                     Placeholder.component("home", Component.text(name))
             );
             return true;

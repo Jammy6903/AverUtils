@@ -34,7 +34,7 @@ public class Home implements TabExecutor {
             HomeRepo.HomeData homeData = HomeRepo.getHome(((Player) sender).getUniqueId(), name);
             if (homeData == null) {
                 Messages.send(sender, "commands.home.failure.doesnt-exist",
-                        Placeholder.component("home", Component.text(args[0]))
+                        Placeholder.component("home", Component.text(name))
                 );
                 return true;
             }

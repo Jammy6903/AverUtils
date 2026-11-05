@@ -5,6 +5,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.HomeRepo;
+import onl.jami.averUtils.storage.database.WarpRepo;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -28,8 +29,13 @@ public class DelHome implements TabExecutor {
             return false;
         }
         try {
-            HomeRepo.deleteHome(((Player) sender).getUniqueId(), args[0]);
-            Messages.send(sender, "commands.delhome.success",
+            if (HomeRepo.deleteHome(((Player) sender).getUniqueId(), args[0])) {
+                Messages.send(sender, "commands.delwhome.success",
+                        Placeholder.component("home", Component.text(args[0]))
+                );
+                return true;
+            }
+            Messages.send(sender, "commands.delhome.failure.doesnt-exist",
                     Placeholder.component("home", Component.text(args[0]))
             );
         } catch (SQLException exception) {

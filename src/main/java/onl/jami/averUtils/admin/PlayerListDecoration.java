@@ -171,7 +171,7 @@ public class PlayerListDecoration implements TabExecutor {
                 return;
             }
             boolean active = !decoration.isActive();
-            PlayerListDecorationRepo.setActive(args[2], location, true);
+            PlayerListDecorationRepo.setActive(args[2], location, active);
             Messages.send(sender, "commands.playerlistdecoration.set.success",
                     Placeholder.component("location", Component.text(args[1])),
                     Placeholder.component("name", Component.text(args[2])),

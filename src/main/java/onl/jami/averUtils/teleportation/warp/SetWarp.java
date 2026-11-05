@@ -23,10 +23,10 @@ public class SetWarp implements CommandExecutor {
         if (args.length == 0) { return false; }
         try {
             if (!WarpRepo.createWarp(args[0], player.getLocation().getWorld().getName(), player.getX(), player.getY(), player.getZ(), player.getPitch(), player.getYaw())) {
-                Messages.send(sender, "commands.warp.failure.already-exists");
+                Messages.send(sender, "commands.setwarp.failure.already-exists");
                 return true;
             }
-            Messages.send(sender, "commands.warp.success",
+            Messages.send(sender, "commands.setwarp.success",
                     Placeholder.component("warp", Component.text(args[0]))
             );
         } catch (SQLException exception) {

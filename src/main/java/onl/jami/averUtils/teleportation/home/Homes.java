@@ -24,6 +24,9 @@ public class Homes implements CommandExecutor {
 
         try {
             List<HomeRepo.HomeData> homes = HomeRepo.listHomes(((Player) sender).getUniqueId());
+            if (homes.isEmpty()) {
+                Messages.send(sender, "commands.homes.failure.doesnt-exist");
+            }
             StringBuilder homesString = new StringBuilder();
             for (HomeRepo.HomeData home : homes) {
                 homesString.append(home.name()).append(", ");

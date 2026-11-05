@@ -6,6 +6,7 @@ import onl.jami.averUtils.admin.DoAs;
 import onl.jami.averUtils.admin.Motd;
 import onl.jami.averUtils.admin.PlayerListDecoration;
 import onl.jami.averUtils.listeners.Chat;
+import onl.jami.averUtils.listeners.Ping;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.userconfig.profile.NameChoice;
 import onl.jami.averUtils.userconfig.profile.Nickname;
@@ -88,6 +89,7 @@ public final class AverUtils extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new Chat(), this);
         getServer().getPluginManager().registerEvents(new Player(), this);
+        getServer().getPluginManager().registerEvents(new Ping(), this);
         registerCommand("msg", new Msg());
         registerCommand("reply", new Reply());
         registerCommand("tpa", new Tpa());

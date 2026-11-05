@@ -21,13 +21,13 @@ public class Message {
     }
 
     public Component buildForRecipient(CommandSender recipient, String message, boolean forSender) {
-        String messageFormatString = Messages.getString("chat.format.message.receiving");
+        String messageFormatString = Messages.getString("chat.message.format.receiving");
         if (forSender) {
-            messageFormatString = Messages.getString("chat.format.message.sending");
+            messageFormatString = Messages.getString("chat.message.format.sending");
         }
-        String prefixFormatString = Messages.getString("chat.format.message.prefix");
-        String suffixFormatString = Messages.getString("chat.format.message.suffix");
-        String pronounsFormatString = Messages.getString("chat.format.message.pronouns");
+        String prefixFormatString = Messages.getString("chat.message.format.prefix");
+        String suffixFormatString = Messages.getString("chat.message.format.suffix");
+        String pronounsFormatString = Messages.getString("chat.message.format.pronouns");
 
         Component prefix = Component.empty();
         Component suffix = Component.empty();

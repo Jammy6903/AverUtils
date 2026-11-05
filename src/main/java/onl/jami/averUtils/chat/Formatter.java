@@ -47,10 +47,10 @@ public class Formatter {
     }
 
     public static Component formatChat(Player player, Component message) {
-        String chatFormatString = Messages.getString("format.chat.message");
-        String prefixFormatString = Messages.getString("format.chat.prefix");
-        String suffixFormatString = Messages.getString("format.chat.suffix");
-        String pronounsFormatString = Messages.getString("format.chat.pronouns");
+        String chatFormatString = Messages.getString("chat.format.message");
+        String prefixFormatString = Messages.getString("chat.format.prefix");
+        String suffixFormatString = Messages.getString("chat.format.suffix");
+        String pronounsFormatString = Messages.getString("chat.format.pronouns");
 
         MessageData messageData = getMessageData(player, prefixFormatString, suffixFormatString, pronounsFormatString);
 
@@ -65,6 +65,10 @@ public class Formatter {
 
     public static Component formatDiscordChat(MessageReceivedEvent event, String message) {
         String discordFormatString = Messages.getString("chat.format.discord");
+        String prefixFormatString = Messages.getString("chat.format.prefix");
+        String suffixFormatString = Messages.getString("chat.format.suffix");
+        String pronounsFormatString = Messages.getString("chat.format.pronouns");
+
         String playerName = event.getAuthor().getName();
         try {
             PlayerRepo.PlayerData playerData = PlayerRepo.getPlayerByDiscordId(event.getAuthor().getIdLong());
@@ -77,11 +81,11 @@ public class Formatter {
                 return discordNonPlayer(discordFormatString, playerName, message);
             }
 
-            MessageData messageData = getMessageData(p, discordFormatString, playerName, message);
+            MessageData messageData = getMessageData(p, prefixFormatString, suffixFormatString, pronounsFormatString);
             return MiniMessage.miniMessage().deserialize(discordFormatString,
                     Placeholder.component("prefix", messageData.prefix),
                     Placeholder.component("suffix", messageData.suffix),
-                    Placeholder.component("name", Component.text(playerName)),
+                    Placeholder.component("name", messageData.name),
                     Placeholder.component("pronouns", messageData.pronouns),
                     Placeholder.component("message", Component.text(message))
             );

@@ -19,7 +19,7 @@ public class Warps implements CommandExecutor {
         try {
             List<WarpRepo.WarpData> warps = WarpRepo.listWarps();
             if (warps.isEmpty()) {
-                Messages.send(sender, "commands.warp.failure.doesnt-exist");
+                Messages.send(sender, "commands.warps.failure.doesnt-exist");
                 return true;
             }
             StringBuilder warpsString = new StringBuilder();
