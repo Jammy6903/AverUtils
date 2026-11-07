@@ -9,7 +9,7 @@ chat:
     prefix: "<gray>[</gray><prefix><gray>]</gray>"
     suffix: "<suffix>"
     discord:
-      message: "<gray><hover:showtext:'This message originated from Discord'>[</gray><blue>D</blue><gray>]</hover></gray> <prefix> <name><pronouns><grey>:</grey> <reply><white><message></white>"
+      message: "<hover:show_text:'This message originated from Discord'><gray>[</gray><blue>D</blue><gray>]</gray></hover> <prefix> <name><pronouns><grey>:</grey> <reply><white><message></white>"
       reply-indicator: "↩ "
       reply-hover: "Replying to <name>: <message>"
   message:

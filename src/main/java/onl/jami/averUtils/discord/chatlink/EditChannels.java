@@ -70,6 +70,7 @@ public class EditChannels extends ListenerAdapter {
                     });
                     if (!ChannelLinkRepo.deleteChannel(event.getGuild().getIdLong(), textChannel.getIdLong())) {
                         event.reply("That channel link doesn't exist").setEphemeral(true).queue();
+                        return;
                     }
                     event.reply("Channel link has been removed").setEphemeral(true).queue();
                     ChannelLinkCache.updateChannels();
@@ -129,11 +130,11 @@ public class EditChannels extends ListenerAdapter {
                     return;
                 }
                 event.reply("Channel link has been saved.").setEphemeral(true).queue();
+                ChannelLinkCache.updateChannels();
             } catch (SQLException exception) {
                 AverUtils.logWarning(Messages.getString("errors.database.channel_links"), exception);
                 event.reply(Messages.getString("discord.commands.generic.failure.unknown")).setEphemeral(true).queue();
             }
         });
-        ChannelLinkCache.updateChannels();
     }
 }
