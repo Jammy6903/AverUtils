@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickCallback;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.sync.RoleSync;
 import onl.jami.averUtils.locale.Messages;
@@ -26,12 +27,17 @@ public class VerifyLock {
         if (!AverUtils.getCfg().getBoolean("discord.enabled")) {
             return;
         }
-        if (PlayerCache.getPlayer(p).isVerified()) {
+        PlayerRepo.PlayerData playerData = PlayerCache.getPlayer(p);
+        if (playerData == null) {
+            return;
+        }
+        if (playerData.isVerified()) {
             return;
         }
         VerifyLock.showVerifyDialog(p);
         Bukkit.getScheduler().runTaskLater(AverUtils.getPlugin(), () -> {
-            if (!PlayerCache.getPlayer(p).isVerified()) {
+            PlayerRepo.PlayerData pd = PlayerCache.getPlayer(p);
+            if (pd == null || !pd.isVerified()) {
                 p.kick(MiniMessage.miniMessage().deserialize(Messages.getString("player.moderation.verification.not-verified")));
             }
         }, 20L * 300);
@@ -62,7 +68,9 @@ public class VerifyLock {
                                             m -> {
                                                 try {
                                                     PlayerRepo.verifyPlayer(p.getUniqueId(), id, m.getUser().getName(), m.getUser().getGlobalName(), m.getNickname());
-                                                    Messages.send(p, Messages.getString("commands.verify.success"));
+                                                    Messages.send(p, Messages.getString("commands.verify.success"),
+                                                            Placeholder.component("discord", Component.text(m.getEffectiveName()))
+                                                    );
                                                     PlayerCache.updatePlayer(p.getUniqueId());
                                                     RoleSync.sync(p);
                                                 } catch (SQLException exception) {
