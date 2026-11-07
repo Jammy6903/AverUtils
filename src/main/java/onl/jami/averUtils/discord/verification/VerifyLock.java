@@ -7,11 +7,16 @@ import io.papermc.paper.registry.data.dialog.action.DialogAction;
 import io.papermc.paper.registry.data.dialog.input.DialogInput;
 import io.papermc.paper.registry.data.dialog.type.DialogType;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
+import net.dv8tion.jda.api.requests.ErrorResponse;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickCallback;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.chat.messaging.Message;
+import onl.jami.averUtils.discord.Bot;
 import onl.jami.averUtils.discord.sync.RoleSync;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.PlayerRepo;
@@ -32,6 +37,7 @@ public class VerifyLock {
             return;
         }
         if (playerData.isVerified()) {
+            checkDiscordStatus(p, playerData.discordId());
             return;
         }
         VerifyLock.showVerifyDialog(p);
@@ -41,6 +47,19 @@ public class VerifyLock {
                 p.kick(MiniMessage.miniMessage().deserialize(Messages.getString("player.moderation.verification.not-verified")));
             }
         }, 20L * 300);
+    }
+
+    private static void checkDiscordStatus(Player p, long id) {
+        Guild g = AverUtils.getGuild();
+        if (g.getMemberById(id) != null) { return; }
+        g.retrieveMemberById(id).queue(_ -> { }, failure -> {
+            if (failure instanceof ErrorResponseException exception && exception.getErrorResponse() == ErrorResponse.UNKNOWN_MEMBER) {
+                Bukkit.getScheduler().runTask(AverUtils.getPlugin(), () -> p.kick(Messages.getComponent("player.moderation.verification.left-discord")));
+                return;
+            }
+            AverUtils.logWarning("Failed to check Discord membership for " + p.getName(), (Exception) failure);
+        });
+
     }
 
     private static void showVerifyDialog(Player p) {
