@@ -34,7 +34,7 @@ public class NameChoice implements TabExecutor {
         }
 
         try {
-            PlayerRepo.updateNameChoice(((Player) sender).getUniqueId(), args[0]);
+            PlayerRepo.updateNameChoice(((Player) sender).getUniqueId(), PlayerRepo.PlayerData.NameChoice.valueOf(args[0].toUpperCase()));
             PlayerCache.updatePlayer(((Player) sender).getUniqueId());
             Messages.send(sender, "commands.namechoice.success",
                     Placeholder.component("selection", Component.text(args[0]))

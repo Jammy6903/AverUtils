@@ -130,10 +130,10 @@ public class PlayerRepo {
         }
     }
 
-    public static void updateNameChoice(UUID uuid, String choice) throws SQLException {
+    public static void updateNameChoice(UUID uuid, PlayerData.NameChoice choice) throws SQLException {
         String sql = "UPDATE players SET name_choice = ? WHERE uuid = ?";
         try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
-            ps.setString(1, choice);
+            ps.setString(1, choice.toString());
             ps.setString(2, uuid.toString());
             ps.executeUpdate();
         }

@@ -34,6 +34,7 @@ public class Nickname implements TabExecutor {
 
         try {
             PlayerRepo.updateNickname(((Player) sender).getUniqueId(), args[0]);
+            PlayerRepo.updateNameChoice(((Player) sender).getUniqueId(), PlayerRepo.PlayerData.NameChoice.NICKNAME);
             PlayerCache.updatePlayer(((Player) sender).getUniqueId());
             Messages.send(sender, "commands.nickname.success",
                     Placeholder.component("name", Component.text(args[0]))
