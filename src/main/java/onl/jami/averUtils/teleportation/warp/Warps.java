@@ -8,12 +8,14 @@ import onl.jami.averUtils.storage.database.WarpRepo;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public class Warps implements CommandExecutor {
+public class Warps implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         try {
@@ -35,5 +37,10 @@ public class Warps implements CommandExecutor {
             AverUtils.logWarning(Messages.getString("errors.database.warps"), exception);
         }
         return true;
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        return List.of();
     }
 }
