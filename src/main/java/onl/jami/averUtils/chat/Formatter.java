@@ -83,6 +83,8 @@ public class Formatter {
                 return discordNonPlayer(discordFormatString, playerName, message);
             }
 
+            MessageData messageData = getMessageData(p, prefixFormatString, suffixFormatString, pronounsFormatString);
+
             Component r = Component.empty();
             if (reply != null) {
                 r = Component.text(Messages.getString("chat.format.discord.reply-indicator")).hoverEvent(
@@ -92,7 +94,7 @@ public class Formatter {
                         )
                 ));
             }
-            MessageData messageData = getMessageData(p, prefixFormatString, suffixFormatString, pronounsFormatString);
+
             return MiniMessage.miniMessage().deserialize(discordFormatString,
                     Placeholder.component("prefix", messageData.prefix),
                     Placeholder.component("suffix", messageData.suffix),
@@ -113,6 +115,7 @@ public class Formatter {
                 Placeholder.component("suffix", Component.empty()),
                 Placeholder.component("name", Component.text(name)),
                 Placeholder.component("pronouns", Component.empty()),
+                Placeholder.component("reply",  Component.empty()),
                 Placeholder.component("message", Component.text(message)));
     }
 }
