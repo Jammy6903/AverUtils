@@ -1,6 +1,5 @@
 package onl.jami.averUtils.storage.cache;
 
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.PlayerRepo;

@@ -22,7 +22,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
-import java.util.logging.Level;
 
 public class MinecraftToDiscord {
     private static final HttpClient http = HttpClient.newHttpClient();
@@ -89,7 +88,9 @@ public class MinecraftToDiscord {
             if (g == null) { return; }
             TextChannel c = g.getChannelById(TextChannel.class, channel.channelId());
             if  (c == null) { return; }
-            c.sendMessage(PlainTextComponentSerializer.plainText().serialize(event.deathMessage())).queue();
+            Component m = event.deathMessage();
+            if (m == null) { return; }
+            c.sendMessage(PlainTextComponentSerializer.plainText().serialize(m)).queue();
         }
     }
 

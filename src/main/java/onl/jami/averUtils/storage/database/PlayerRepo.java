@@ -29,7 +29,7 @@ public class PlayerRepo {
             ps.setString(1, uuid.toString());
             try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()) return null;
-                Long id = rs.getLong("discord_id");
+                long id = rs.getLong("discord_id");
                 Long discordId = rs.wasNull() ? null : id;
                 return new PlayerData(
                         uuid,
@@ -51,7 +51,6 @@ public class PlayerRepo {
             ps.setLong(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()) return null;
-                Long uuid = rs.getLong("uuid");
                 return new PlayerData(
                         UUID.fromString(rs.getString("uuid")),
                         rs.getBoolean("is_verified"), id,

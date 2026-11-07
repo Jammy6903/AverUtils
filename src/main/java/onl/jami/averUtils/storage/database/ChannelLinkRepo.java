@@ -9,18 +9,6 @@ import java.util.List;
 import java.util.Set;
 
 public class ChannelLinkRepo {
-    public static EnumSet<ChannelLinkCategory> getCategories(long guildId, long channelId) throws SQLException {
-        String sql = "SELECT categories FROM channel_links WHERE guild_id = ? AND channel_id = ?";
-        try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
-            ps.setLong(1, guildId);
-            ps.setLong(2, channelId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (!rs.next()) return null;
-                return ChannelLinkCategory.fromMask(rs.getInt("categories"));
-            }
-        }
-    }
-
     public record ChannelData(long guildId, long channelId, EnumSet<ChannelLinkCategory> categories, String webhookUrl) {}
 
     public static List<ChannelData> getChannelsFor(ChannelLinkCategory c) throws SQLException {
