@@ -5,12 +5,9 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.chat.Formatter;
-import onl.jami.averUtils.locale.Messages;
-import onl.jami.averUtils.storage.database.ChannelLinkRepo;
+import onl.jami.averUtils.storage.cache.ChannelLinkCache;
 import org.bukkit.Bukkit;
 import org.jspecify.annotations.NonNull;
-
-import java.sql.SQLException;
 
 public class DiscordToMinecraft extends ListenerAdapter {
     @Override
@@ -18,20 +15,16 @@ public class DiscordToMinecraft extends ListenerAdapter {
         if (!AverUtils.getCfg().getBoolean("discord.enabled") || event.getAuthor().isBot() || event.isWebhookMessage() || !event.isFromGuild()) {
             return;
         }
-        try {
-            if (!ChannelLinkRepo.isLinked(event.getGuild().getIdLong(), event.getChannel().getIdLong())) { return; }
-            String message = event.getMessage().getContentRaw();
-            if (!event.getMessage().getStickers().isEmpty()) {
-                message = "[sticker]";
-            }
-            if (!event.getMessage().getAttachments().isEmpty()) {
-                message = message + " [attachments]";
-            }
-            Component component = Formatter.formatDiscordChat(event, message);
-            if (component == null) { return; }
-            Bukkit.broadcast(component);
-        } catch (SQLException exception) {
-            AverUtils.logWarning(Messages.getString("errors.database.channel_links"), exception);
+        if (!ChannelLinkCache.isLinked(event.getGuild().getIdLong(), event.getChannel().getIdLong())) { return; }
+        String message = event.getMessage().getContentRaw();
+        if (!event.getMessage().getStickers().isEmpty()) {
+            message = "[sticker]";
         }
+        if (!event.getMessage().getAttachments().isEmpty()) {
+            message = message + " [attachments]";
+        }
+        Component component = Formatter.formatDiscordChat(event, message);
+        if (component == null) { return; }
+        Bukkit.broadcast(component);
     }
 }

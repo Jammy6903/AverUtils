@@ -8,6 +8,9 @@ import onl.jami.averUtils.admin.PlayerListDecoration;
 import onl.jami.averUtils.listeners.Chat;
 import onl.jami.averUtils.listeners.Ping;
 import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.storage.cache.MotdCache;
+import onl.jami.averUtils.storage.cache.PlayerListDecorationCache;
+import onl.jami.averUtils.storage.cache.RoleLinkCache;
 import onl.jami.averUtils.userconfig.profile.NameChoice;
 import onl.jami.averUtils.userconfig.profile.Nickname;
 import onl.jami.averUtils.userconfig.profile.Pronouns;
@@ -112,6 +115,10 @@ public final class AverUtils extends JavaPlugin {
         registerCommand("setWarp", new SetWarp());
         registerCommand("motd", new Motd());
         registerCommand("playerlistdecoration", new PlayerListDecoration());
+
+        MotdCache.updateMotds();
+        RoleLinkCache.updateRoles();
+        PlayerListDecorationCache.updateDecorations();
     }
 
     @Override

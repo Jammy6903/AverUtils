@@ -6,6 +6,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.listeners.Player;
 import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.storage.cache.MotdCache;
 import onl.jami.averUtils.storage.database.MotdRepo;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -43,6 +44,7 @@ public class Motd implements TabExecutor {
             default:
                 return false;
         }
+        MotdCache.updateMotds();
         return true;
     }
 

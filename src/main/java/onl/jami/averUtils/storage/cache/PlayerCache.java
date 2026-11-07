@@ -1,8 +1,10 @@
 package onl.jami.averUtils.storage.cache;
 
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.PlayerRepo;
+import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.Map;
@@ -13,19 +15,26 @@ public class PlayerCache {
 
     private static final Map<UUID, PlayerRepo.PlayerData> players = new ConcurrentHashMap<>();
 
-    public static PlayerRepo.PlayerData getPlayer(UUID uuid) {
-        return players.get(uuid);
+    public static PlayerRepo.PlayerData getPlayer(Player player) {
+        PlayerRepo.PlayerData playerData = players.get(player.getUniqueId());
+        if (playerData == null) {
+            playerData = updatePlayer(player.getUniqueId());
+        }
+        if (playerData == null) {
+            player.kick(MiniMessage.miniMessage().deserialize(Messages.getString("player.moderation.kick.unknown")));
+            return null;
+        }
+        return playerData;
     }
 
-    public static void addPlayer(UUID uuid, PlayerRepo.PlayerData data) {
-        players.put(uuid, data);
-    }
-
-    public static void updatePlayer(UUID uuid) {
+    public static PlayerRepo.PlayerData updatePlayer(UUID uuid) {
         try {
-            players.put(uuid, PlayerRepo.getPlayer(uuid));
+            PlayerRepo.PlayerData playerData = PlayerRepo.getPlayer(uuid);
+            players.put(uuid, playerData);
+            return playerData;
         } catch (SQLException exception) {
             AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
+            return null;
         }
     }
 

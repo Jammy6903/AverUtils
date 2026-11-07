@@ -30,7 +30,7 @@ public class Formatter {
         }
         Component lpPrefix = MiniMessage.miniMessage().deserialize(lpPrefixString);
         Component lpSuffix = MiniMessage.miniMessage().deserialize(lpSuffixString);
-        String playerPronouns = PlayerCache.getPlayer(player.getUniqueId()).pronouns();
+        String playerPronouns = PlayerCache.getPlayer(player).pronouns();
 
         Component prefix = MiniMessage.miniMessage().deserialize(prefixFormatString,
                 Placeholder.component("prefix", lpPrefix));

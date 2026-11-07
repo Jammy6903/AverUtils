@@ -23,28 +23,18 @@ import java.util.List;
 
 public class VerifyLock {
     public static void verifyOnLogin(Player p) {
-        try {
-            if (!AverUtils.getCfg().getBoolean("discord.enabled")) {
-                return;
-            }
-            if (PlayerRepo.getPlayer(p.getUniqueId()).isVerified()) {
-                return;
-            }
-            VerifyLock.showVerifyDialog(p);
-            Bukkit.getScheduler().runTaskLater(AverUtils.getPlugin(), () -> {
-                try {
-                    if (!PlayerRepo.getPlayer(p.getUniqueId()).isVerified()) {
-                        p.kick(MiniMessage.miniMessage().deserialize(Messages.getString("player.moderation.verification.not-verified")));
-                    }
-                } catch (SQLException exception) {
-                    AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
-                    p.kick(MiniMessage.miniMessage().deserialize(Messages.getString("player.moderation.kick.unknown")));
-                }
-            }, 20L * 300);
-        } catch (SQLException exception) {
-            AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
-            p.kick(MiniMessage.miniMessage().deserialize(Messages.getString("player.moderation.kick.unknown")));
+        if (!AverUtils.getCfg().getBoolean("discord.enabled")) {
+            return;
         }
+        if (PlayerCache.getPlayer(p).isVerified()) {
+            return;
+        }
+        VerifyLock.showVerifyDialog(p);
+        Bukkit.getScheduler().runTaskLater(AverUtils.getPlugin(), () -> {
+            if (!PlayerCache.getPlayer(p).isVerified()) {
+                p.kick(MiniMessage.miniMessage().deserialize(Messages.getString("player.moderation.verification.not-verified")));
+            }
+        }, 20L * 300);
     }
 
     private static void showVerifyDialog(Player p) {
@@ -72,8 +62,8 @@ public class VerifyLock {
                                             m -> {
                                                 try {
                                                     PlayerRepo.verifyPlayer(p.getUniqueId(), id, m.getUser().getName(), m.getUser().getGlobalName(), m.getNickname());
-                                                    PlayerCache.updatePlayer(p.getUniqueId());
                                                     Messages.send(p, Messages.getString("commands.verify.success"));
+                                                    PlayerCache.updatePlayer(p.getUniqueId());
                                                     RoleSync.sync(p);
                                                 } catch (SQLException exception) {
                                                     AverUtils.logWarning(Messages.getString("errors.database.players"), exception);

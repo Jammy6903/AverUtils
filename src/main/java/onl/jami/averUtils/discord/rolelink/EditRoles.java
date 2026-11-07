@@ -7,6 +7,7 @@ import net.luckperms.api.model.group.Group;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.sync.RoleSync;
 import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.storage.cache.RoleLinkCache;
 import onl.jami.averUtils.storage.database.RoleLinkRepo;
 
 import java.sql.SQLException;
@@ -26,7 +27,7 @@ public class EditRoles extends ListenerAdapter {
                 Group group = AverUtils.getLuckPermsApi().getGroupManager().getGroup(event.getOption("group").getAsString());
                 if (group == null) {
                     event.reply("The group you are trying to add or edit does not exist").setEphemeral(true).queue();
-                    return;
+                    break;
                 }
                 try {
                     RoleLinkRepo.addRole(roleToAdd.getIdLong(), group.getName());
@@ -35,7 +36,7 @@ public class EditRoles extends ListenerAdapter {
                 } catch (SQLException exception) {
                     AverUtils.logWarning(Messages.getString("errors.database.role_links"), exception);
                     event.reply(Messages.getString("discord.commands.generic.failure.unknown")).setEphemeral(true).queue();
-                    return;
+                    break;
                 }
                 break;
             case "remove":
@@ -47,11 +48,12 @@ public class EditRoles extends ListenerAdapter {
                 } catch (SQLException exception) {
                     AverUtils.logWarning(Messages.getString("errors.database.role_links"), exception);
                     event.reply(Messages.getString("discord.commands.generic.failure.unknown")).setEphemeral(true).queue();
-                    return;
+                    break;
                 }
                 break;
             case "list":
-                break;
+                return;
         }
+        RoleLinkCache.updateRoles();
     }
 }

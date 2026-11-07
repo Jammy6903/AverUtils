@@ -22,6 +22,7 @@ import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionE
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.storage.cache.ChannelLinkCache;
 import onl.jami.averUtils.storage.database.ChannelLinkCategory;
 import onl.jami.averUtils.storage.database.ChannelLinkRepo;
 import onl.jami.averUtils.discord.Bot;
@@ -53,6 +54,7 @@ public class EditChannels extends ListenerAdapter {
                 }
                 if (!event.getGuild().getSelfMember().hasPermission((GuildChannel) channel, Permission.MANAGE_WEBHOOKS)) {
                     event.reply("I need the Manage Webhooks permission in " + channel.getAsMention()).setEphemeral(true).queue();
+                    return;
                 }
                 addEmbed(event);
                 break;
@@ -66,7 +68,9 @@ public class EditChannels extends ListenerAdapter {
                             }
                         }
                     });
-                    ChannelLinkRepo.deleteChannel(event.getGuild().getIdLong(), textChannel.getIdLong());
+                    if (!ChannelLinkRepo.deleteChannel(event.getGuild().getIdLong(), textChannel.getIdLong())) {
+                        event.reply("That channel link doesn't exist").setEphemeral(true).queue();
+                    }
                     event.reply("Channel link has been removed").setEphemeral(true).queue();
                 } catch (SQLException exception) {
                     AverUtils.logWarning(Messages.getString("discord.commands.generic.failure.unknown"), exception);
@@ -76,6 +80,7 @@ public class EditChannels extends ListenerAdapter {
             case "list":
                 break;
         }
+        ChannelLinkCache.updateChannels();
     }
 
     private static void addEmbed(SlashCommandInteractionEvent event) {

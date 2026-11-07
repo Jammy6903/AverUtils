@@ -41,7 +41,6 @@ public class DelHome implements TabExecutor {
         } catch (SQLException exception) {
             AverUtils.logWarning(Messages.getString("errors.database.homes"), exception);
             Messages.send(sender, "commands.generic.failure.unknown");
-
         }
         return true;
     }

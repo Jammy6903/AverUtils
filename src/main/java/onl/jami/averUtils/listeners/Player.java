@@ -6,6 +6,7 @@ import onl.jami.averUtils.discord.chatlink.MinecraftToDiscord;
 import onl.jami.averUtils.discord.sync.RoleSync;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.cache.PlayerCache;
+import onl.jami.averUtils.storage.cache.PlayerListDecorationCache;
 import onl.jami.averUtils.storage.database.PlayerListDecorationRepo;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.discord.verification.VerifyLock;
@@ -28,44 +29,27 @@ public class Player implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         org.bukkit.entity.Player player = e.getPlayer();
         try {
-            UUID uuid = player.getUniqueId();
-
             // create player if not exists
-            PlayerRepo.createPlayer(uuid);
+            PlayerRepo.createPlayer(player.getUniqueId());
 
-            // cache player
-            PlayerCache.addPlayer(uuid, PlayerRepo.getPlayer(uuid));
-
-            // verify player if required, sync roles with discord and send join message to any linked channels
-            VerifyLock.verifyOnLogin(e.getPlayer());
-            RoleSync.sync(e.getPlayer());
-            MinecraftToDiscord.sendJoinMessage(e);
-
-            PlayerName.updatePlayerList(e.getPlayer());
-
-            // TODO: cache this, also simplify it
-            List<PlayerListDecorationRepo.PlayerListDecorationData> headers = PlayerListDecorationRepo.getActive(PlayerListDecorationRepo.PlayerListDecorationData.Location.HEADER);
-            List<PlayerListDecorationRepo.PlayerListDecorationData> footers = PlayerListDecorationRepo.getActive(PlayerListDecorationRepo.PlayerListDecorationData.Location.FOOTER);
-            if (!headers.isEmpty()) {
-                if (headers.size() == 1) {
-                    player.sendPlayerListHeader(MiniMessage.miniMessage().deserialize(headers.getFirst().message()));
-                } else {
-                    int random = ThreadLocalRandom.current().nextInt(0, headers.size());
-                    player.sendPlayerListHeader(MiniMessage.miniMessage().deserialize(headers.get(random).message()));
-                }
-            }
-            if (!footers.isEmpty()) {
-                if (footers.size() == 1) {
-                    player.sendPlayerListFooter(MiniMessage.miniMessage().deserialize(footers.getFirst().message()));
-                } else {
-                    int random = ThreadLocalRandom.current().nextInt(0, headers.size());
-                    player.sendPlayerListFooter(MiniMessage.miniMessage().deserialize(footers.get(random).message()));
-                }
-            }
         } catch (SQLException exception) {
             AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
             player.kick(MiniMessage.miniMessage().deserialize(Messages.getString(Messages.getString("errors.generic"))));
+            return;
         }
+
+        // cache player
+        PlayerCache.updatePlayer(player.getUniqueId());
+
+        // verify player if required, sync roles with discord and send join message to any linked channels
+        VerifyLock.verifyOnLogin(player);
+        RoleSync.sync(player);
+        MinecraftToDiscord.sendJoinMessage(e);
+
+        PlayerName.updatePlayerList(player);
+
+        player.sendPlayerListHeader(MiniMessage.miniMessage().deserialize(PlayerListDecorationCache.getRandom(PlayerListDecorationRepo.PlayerListDecorationData.Location.HEADER).message()));
+        player.sendPlayerListFooter(MiniMessage.miniMessage().deserialize(PlayerListDecorationCache.getRandom(PlayerListDecorationRepo.PlayerListDecorationData.Location.FOOTER).message()));
     }
 
     @EventHandler

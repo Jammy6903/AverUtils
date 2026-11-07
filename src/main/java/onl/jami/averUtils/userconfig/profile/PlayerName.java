@@ -18,12 +18,8 @@ import java.sql.SQLException;
 
 public class PlayerName {
     public static Component getComponent(Player player) {
-        PlayerRepo.PlayerData playerData = PlayerCache.getPlayer(player.getUniqueId());
-        if (playerData == null) {
-            return Component.text(player.getName()).color(NamedTextColor.WHITE)
-                    .hoverEvent(HoverEvent.showText(Component.text("Click to message!")))
-                    .clickEvent(ClickEvent.suggestCommand("/msg " + player.getName() + " "));
-        }
+        PlayerRepo.PlayerData playerData = PlayerCache.getPlayer(player);
+        if (playerData == null) { return null; }
 
         String playerName = switch (playerData.nameChoice()) {
             case null -> player.getName();
@@ -50,7 +46,9 @@ public class PlayerName {
     }
 
     public static void updatePlayerList(Player player) {
-        PlayerRepo.PlayerData playerData = PlayerCache.getPlayer(player.getUniqueId());
+        PlayerRepo.PlayerData playerData = PlayerCache.getPlayer(player);
+        if (playerData == null) { return; }
+
         String formatString = Messages.getString("player.list.format.player");
         CachedMetaData md = AverUtils.getLuckPermsApi().getPlayerAdapter(Player.class).getUser(player).getCachedData().getMetaData();
         String lpPrefixString = md.getPrefix();

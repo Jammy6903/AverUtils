@@ -2,12 +2,15 @@ package onl.jami.averUtils.discord.sync;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.model.user.UserManager;
 import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.InheritanceNode;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.storage.cache.PlayerCache;
+import onl.jami.averUtils.storage.cache.RoleLinkCache;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.database.RoleLinkRepo;
 import org.bukkit.Bukkit;
@@ -23,31 +26,31 @@ public class RoleSync {
         if (!AverUtils.getCfg().getBoolean("discord.enabled")) {
             return;
         }
+
         Bukkit.getScheduler().runTaskAsynchronously(AverUtils.getPlugin(), () -> {
             clearGroups(p.getUniqueId());
-            try {
-                PlayerRepo.PlayerData playerData = PlayerRepo.getPlayer(p.getUniqueId());
-                if (playerData == null || !playerData.isVerified()) {
-                    return;
-                }
 
-                List<RoleLinkRepo.RoleData> rolesData = RoleLinkRepo.getRoles();
-                Member m = AverUtils.getGuild().getMemberById(playerData.discordId());
-                if (m == null) {
-                    m = AverUtils.getGuild().retrieveMemberById(playerData.discordId()).complete();
-                }
-                for (RoleLinkRepo.RoleData roleData : rolesData) {
-                    for (Role role : m.getRoles()) {
-                        if (role.getIdLong() == roleData.roleId()) {
-                            AverUtils.getLuckPermsApi().getUserManager().modifyUser(playerData.uuid(), user ->
-                                user.data().add(InheritanceNode.builder(roleData.lpGroup()).build())
-                            );
-                        }
+            PlayerRepo.PlayerData playerData = PlayerCache.getPlayer(p);
+            if (playerData == null) { return; }
+
+            List<RoleLinkRepo.RoleData> rolesData = RoleLinkCache.getRoles();
+            if (rolesData.isEmpty()) { return; }
+
+            Member m = AverUtils.getGuild().getMemberById(playerData.discordId());
+            if (m == null) {
+                m = AverUtils.getGuild().retrieveMemberById(playerData.discordId()).complete();
+            }
+
+            for (RoleLinkRepo.RoleData roleData : rolesData) {
+                for (Role role : m.getRoles()) {
+                    if (role.getIdLong() == roleData.roleId()) {
+                        AverUtils.getLuckPermsApi().getUserManager().modifyUser(playerData.uuid(), user ->
+                            user.data().add(InheritanceNode.builder(roleData.lpGroup()).build())
+                        );
                     }
                 }
-            } catch (SQLException exception) {
-                AverUtils.logWarning(Messages.getString("errors.database.role_links"), exception);
             }
+
         });
     }
 
