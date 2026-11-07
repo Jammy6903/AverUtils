@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.selections.StringSelectMenu;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Webhook;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
@@ -20,6 +21,7 @@ import net.dv8tion.jda.api.entities.channel.unions.GuildChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.cache.ChannelLinkCache;
@@ -30,6 +32,9 @@ import org.jspecify.annotations.NonNull;
 
 import java.awt.*;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 
 public class EditChannels extends ListenerAdapter {
 
@@ -45,22 +50,28 @@ public class EditChannels extends ListenerAdapter {
             return;
         }
 
-        Channel channel = event.getOption("channel").getAsChannel();
+        OptionMapping channelOption = event.getOption("channel");
+        if (channelOption == null) { return; }
+        GuildChannelUnion channel = channelOption.getAsChannel();
+        Guild guild = event.getGuild();
+        if (guild == null) { return; }
+
         switch(event.getSubcommandName()) {
             case "add":
                 if (channel.getType() != ChannelType.TEXT) {
                     event.reply("Channel must be a text channel").setEphemeral(true).queue();
                     return;
                 }
-                if (!event.getGuild().getSelfMember().hasPermission((GuildChannel) channel, Permission.MANAGE_WEBHOOKS)) {
+                if (!guild.getSelfMember().hasPermission(channel, Permission.MANAGE_WEBHOOKS)) {
                     event.reply("I need the Manage Webhooks permission in " + channel.getAsMention()).setEphemeral(true).queue();
                     return;
                 }
+
                 addEmbed(event);
                 break;
             case "remove":
                 try {
-                    TextChannel textChannel = ((GuildChannelUnion) channel).asTextChannel();
+                    TextChannel textChannel = channel.asTextChannel();
                     textChannel.retrieveWebhooks().queue(webhooks -> {
                         for (Webhook webhook : webhooks) {
                             if (webhook.getName().equals("averutils-chatlink") && webhook.getOwnerAsUser() != null && webhook.getOwnerAsUser().getIdLong() == Bot.getJDA().getSelfUser().getIdLong()) {
@@ -108,9 +119,51 @@ public class EditChannels extends ListenerAdapter {
         String eventName = event.getInteraction().getComponentId();
         if (!(eventName.startsWith("categories"))) { return; }
 
+        Guild guild = event.getGuild();
+        if (guild == null) { return; }
+        long guildId = guild.getIdLong();
         Long channelId = interactionCache.getIfPresent(eventName);
+        if (channelId == null) {
+            event.reply("An unknown error has occurred.").setEphemeral(true).queue();
+            return;
+        }
 
-        TextChannel channel = event.getGuild().getChannelById(TextChannel.class, channelId);
+        List<String> categories = event.getInteraction().getValues();
+        Set<ChannelLinkCategory> categoriesSet = new HashSet<>();
+        for (String category : categories) {
+            categoriesSet.add(ChannelLinkCategory.valueOf(category.toUpperCase()));
+        }
+
+        try {
+            ChannelLinkRepo.setCategories(guildId, channelId, categoriesSet, generateWebhook(guildId, channelId).get());
+        } catch (Exception exception) {
+            AverUtils.logWarning(Messages.getString("errors.database.channel_links"), exception);
+            event.reply("An error has occurred.").setEphemeral(true).queue();
+            return;
+        }
+        event.reply("Channel link has been saved.").setEphemeral(true).queue();
+    }
+
+    private static final Set<Long> regenerating = ConcurrentHashMap.newKeySet();
+
+    public static CompletableFuture<String> regenerateWebhook(long guildId, long channelId) {
+        if (!regenerating.add(channelId)) {
+            return CompletableFuture.failedFuture(new IllegalStateException("already generating"));
+        }
+        return generateWebhook(guildId, channelId)
+                .whenComplete((_, _) -> regenerating.remove(channelId));
+    }
+
+    public static CompletableFuture<String> generateWebhook(long guildId, long channelId) {
+        CompletableFuture<String> future = new CompletableFuture<>();
+
+        Guild guild = Bot.getJDA().getGuildById(guildId);
+        TextChannel channel = guild == null ? null : guild.getTextChannelById(channelId);
+        if (channel == null) {
+            future.completeExceptionally(new IllegalStateException("channel not found"));
+            return future;
+        }
+
         channel.retrieveWebhooks().queue(webhooks -> {
             for (Webhook webhook : webhooks) {
                 if (webhook.getName().equals("averutils-chatlink") && webhook.getOwnerAsUser() != null && webhook.getOwnerAsUser().getIdLong() == Bot.getJDA().getSelfUser().getIdLong()) {
@@ -119,22 +172,15 @@ public class EditChannels extends ListenerAdapter {
             }
         });
         channel.createWebhook("averutils-chatlink").queue(webhook -> {
-            List<String> categories = event.getInteraction().getValues();
-            Set<ChannelLinkCategory> categoriesSet = new HashSet<>();
-            for (String category : categories) {
-                categoriesSet.add(ChannelLinkCategory.valueOf(category.toUpperCase()));
-            }
             try {
-                if (!ChannelLinkRepo.setCategories(event.getGuild().getIdLong(), channelId, categoriesSet, webhook.getUrl())) {
-                    event.reply(Messages.getString("discord.commands.generic.failure.unknown")).setEphemeral(true).queue();
-                    return;
-                }
-                event.reply("Channel link has been saved.").setEphemeral(true).queue();
+                ChannelLinkRepo.setWebhook(channel.getGuild().getIdLong(), channel.getIdLong(), webhook.getUrl());
                 ChannelLinkCache.updateChannels();
+                future.complete(webhook.getUrl());
             } catch (SQLException exception) {
                 AverUtils.logWarning(Messages.getString("errors.database.channel_links"), exception);
-                event.reply(Messages.getString("discord.commands.generic.failure.unknown")).setEphemeral(true).queue();
+                future.completeExceptionally(exception);
             }
         });
+        return future;
     }
 }

@@ -3,6 +3,7 @@ package onl.jami.averUtils.discord.chatlink;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -46,8 +47,8 @@ public class MinecraftToDiscord {
 
             http.sendAsync(request, HttpResponse.BodyHandlers.discarding())
                     .thenAccept(response -> {
-                        if (response.statusCode() == 300) {
-                            AverUtils.getPlugin().getLogger().log(Level.WARNING, "Failed to post to webhook url");
+                        if (response.statusCode() == 404 || response.statusCode() == 401) {
+                            EditChannels.regenerateWebhook(channel.guildId(), channel.channelId());
                         }
                     });
         }
@@ -58,7 +59,9 @@ public class MinecraftToDiscord {
 
         List<ChannelLinkRepo.ChannelData> channelData = ChannelLinkCache.getChannels(ChannelLinkCategory.JOIN);
         for (ChannelLinkRepo.ChannelData channel : channelData) {
-            TextChannel c = Bot.getJDA().getGuildById(channel.guildId()).getChannelById(TextChannel.class, channel.channelId());
+            Guild g = Bot.getJDA().getGuildById(channel.guildId());
+            if (g == null) { return; }
+            TextChannel c = g.getChannelById(TextChannel.class, channel.channelId());
             if  (c == null) { return; }
             c.sendMessage(event.getPlayer().getName() + " joined the game").queue();
         }
@@ -69,7 +72,9 @@ public class MinecraftToDiscord {
 
         List<ChannelLinkRepo.ChannelData> channelData = ChannelLinkCache.getChannels(ChannelLinkCategory.QUIT);
         for (ChannelLinkRepo.ChannelData channel : channelData) {
-            TextChannel c = Bot.getJDA().getGuildById(channel.guildId()).getChannelById(TextChannel.class, channel.channelId());
+            Guild g = Bot.getJDA().getGuildById(channel.guildId());
+            if (g == null) { return; }
+            TextChannel c = g.getChannelById(TextChannel.class, channel.channelId());
             if  (c == null) { return; }
             c.sendMessage(event.getPlayer().getName() + " left the game").queue();
         }
@@ -80,7 +85,9 @@ public class MinecraftToDiscord {
 
         List<ChannelLinkRepo.ChannelData> channelData = ChannelLinkCache.getChannels(ChannelLinkCategory.DEATH);
         for (ChannelLinkRepo.ChannelData channel : channelData) {
-            TextChannel c = Bot.getJDA().getGuildById(channel.guildId()).getChannelById(TextChannel.class, channel.channelId());
+            Guild g = Bot.getJDA().getGuildById(channel.guildId());
+            if (g == null) { return; }
+            TextChannel c = g.getChannelById(TextChannel.class, channel.channelId());
             if  (c == null) { return; }
             c.sendMessage(PlainTextComponentSerializer.plainText().serialize(event.deathMessage())).queue();
         }
@@ -93,8 +100,10 @@ public class MinecraftToDiscord {
         if (message == null) { return; }
         List<ChannelLinkRepo.ChannelData> channelData = ChannelLinkCache.getChannels(ChannelLinkCategory.ADVANCEMENT);
         for (ChannelLinkRepo.ChannelData channel : channelData) {
-            TextChannel c = Bot.getJDA().getGuildById(channel.guildId()).getChannelById(TextChannel.class, channel.channelId());
-            if (c == null) { return; }
+            Guild g = Bot.getJDA().getGuildById(channel.guildId());
+            if (g == null) { return; }
+            TextChannel c = g.getChannelById(TextChannel.class, channel.channelId());
+            if  (c == null) { return; }
             c.sendMessage(PlainTextComponentSerializer.plainText().serialize(message)).queue();
         }
     }
