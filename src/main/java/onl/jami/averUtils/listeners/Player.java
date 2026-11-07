@@ -1,5 +1,6 @@
 package onl.jami.averUtils.listeners;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.chatlink.MinecraftToDiscord;
@@ -19,9 +20,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.sql.SQLException;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Player implements Listener {
 
@@ -39,7 +37,7 @@ public class Player implements Listener {
         }
 
         // cache player
-        PlayerCache.updatePlayer(player.getUniqueId());
+        PlayerCache.loadPlayer(player.getUniqueId());
 
         // verify player if required, sync roles with discord and send join message to any linked channels
         VerifyLock.verifyOnLogin(player);
@@ -48,8 +46,14 @@ public class Player implements Listener {
 
         PlayerName.updatePlayerList(player);
 
-        player.sendPlayerListHeader(MiniMessage.miniMessage().deserialize(PlayerListDecorationCache.getRandom(PlayerListDecorationRepo.PlayerListDecorationData.Location.HEADER).message()));
-        player.sendPlayerListFooter(MiniMessage.miniMessage().deserialize(PlayerListDecorationCache.getRandom(PlayerListDecorationRepo.PlayerListDecorationData.Location.FOOTER).message()));
+        String playerListHeader = PlayerListDecorationCache.getRandom(PlayerListDecorationRepo.PlayerListDecorationData.Location.HEADER);
+        if (playerListHeader != null) {
+            player.sendPlayerListHeader(MiniMessage.miniMessage().deserialize(playerListHeader));
+        }
+        String playerListFooter = PlayerListDecorationCache.getRandom(PlayerListDecorationRepo.PlayerListDecorationData.Location.FOOTER);
+        if (playerListFooter != null) {
+            player.sendPlayerListFooter(MiniMessage.miniMessage().deserialize(playerListFooter));
+        }
     }
 
     @EventHandler

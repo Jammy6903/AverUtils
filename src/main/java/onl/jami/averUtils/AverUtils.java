@@ -8,6 +8,7 @@ import onl.jami.averUtils.admin.PlayerListDecoration;
 import onl.jami.averUtils.listeners.Chat;
 import onl.jami.averUtils.listeners.Ping;
 import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.storage.cache.ChannelLinkCache;
 import onl.jami.averUtils.storage.cache.MotdCache;
 import onl.jami.averUtils.storage.cache.PlayerListDecorationCache;
 import onl.jami.averUtils.storage.cache.RoleLinkCache;
@@ -64,6 +65,11 @@ public final class AverUtils extends JavaPlugin {
             Driver.initDb();
             Driver.initTables();
             Driver.migrate();
+
+            MotdCache.updateMotds();
+            RoleLinkCache.updateRoles();
+            ChannelLinkCache.updateChannels();
+            PlayerListDecorationCache.updateDecorations();
         } catch (ClassNotFoundException | SQLException e) {
             this.getLogger().log(Level.SEVERE, "Could not initialize or migrate the database!", e);
             getServer().getPluginManager().disablePlugin(this);
@@ -115,10 +121,6 @@ public final class AverUtils extends JavaPlugin {
         registerCommand("setWarp", new SetWarp());
         registerCommand("motd", new Motd());
         registerCommand("playerlistdecoration", new PlayerListDecoration());
-
-        MotdCache.updateMotds();
-        RoleLinkCache.updateRoles();
-        PlayerListDecorationCache.updateDecorations();
     }
 
     @Override

@@ -29,12 +29,24 @@ public class PlayerCache {
 
     public static PlayerRepo.PlayerData updatePlayer(UUID uuid) {
         try {
+            if (!players.containsKey(uuid)) {
+                return null;
+            }
             PlayerRepo.PlayerData playerData = PlayerRepo.getPlayer(uuid);
             players.put(uuid, playerData);
             return playerData;
         } catch (SQLException exception) {
             AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
             return null;
+        }
+    }
+
+    public static void loadPlayer(UUID uuid) {
+        try {
+            PlayerRepo.PlayerData playerData = PlayerRepo.getPlayer(uuid);
+            players.put(uuid, playerData);
+        } catch (SQLException exception) {
+            AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
         }
     }
 

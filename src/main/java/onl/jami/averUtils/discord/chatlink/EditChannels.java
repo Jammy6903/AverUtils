@@ -72,6 +72,7 @@ public class EditChannels extends ListenerAdapter {
                         event.reply("That channel link doesn't exist").setEphemeral(true).queue();
                     }
                     event.reply("Channel link has been removed").setEphemeral(true).queue();
+                    ChannelLinkCache.updateChannels();
                 } catch (SQLException exception) {
                     AverUtils.logWarning(Messages.getString("discord.commands.generic.failure.unknown"), exception);
                     event.reply(Messages.getString("errors.database.channel_links")).setEphemeral(true).queue();
@@ -80,7 +81,6 @@ public class EditChannels extends ListenerAdapter {
             case "list":
                 break;
         }
-        ChannelLinkCache.updateChannels();
     }
 
     private static void addEmbed(SlashCommandInteractionEvent event) {
@@ -106,7 +106,9 @@ public class EditChannels extends ListenerAdapter {
     public void onStringSelectInteraction(@NonNull StringSelectInteractionEvent event) {
         String eventName = event.getInteraction().getComponentId();
         if (!(eventName.startsWith("categories"))) { return; }
+
         Long channelId = interactionCache.getIfPresent(eventName);
+
         TextChannel channel = event.getGuild().getChannelById(TextChannel.class, channelId);
         channel.retrieveWebhooks().queue(webhooks -> {
             for (Webhook webhook : webhooks) {
@@ -132,5 +134,6 @@ public class EditChannels extends ListenerAdapter {
                 event.reply(Messages.getString("discord.commands.generic.failure.unknown")).setEphemeral(true).queue();
             }
         });
+        ChannelLinkCache.updateChannels();
     }
 }

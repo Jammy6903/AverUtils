@@ -13,6 +13,7 @@ import onl.jami.averUtils.storage.database.RoleLinkRepo;
 import java.sql.SQLException;
 
 public class EditRoles extends ListenerAdapter {
+
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!(event.getName().equals("role"))) { return; }
@@ -20,40 +21,34 @@ public class EditRoles extends ListenerAdapter {
             event.reply("You need to pick a subcommand").setEphemeral(true).queue();
             return;
         }
-
-        switch (event.getSubcommandName()) {
-            case "add":
-                Role roleToAdd = event.getOption("role").getAsRole();
-                Group group = AverUtils.getLuckPermsApi().getGroupManager().getGroup(event.getOption("group").getAsString());
-                if (group == null) {
-                    event.reply("The group you are trying to add or edit does not exist").setEphemeral(true).queue();
-                    break;
-                }
-                try {
+        try {
+            switch (event.getSubcommandName()) {
+                case "add":
+                    Role roleToAdd = event.getOption("role").getAsRole();
+                    Group group = AverUtils.getLuckPermsApi().getGroupManager().getGroup(event.getOption("group").getAsString());
+                    if (group == null) {
+                        event.reply("The group you are trying to add or edit does not exist").setEphemeral(true).queue();
+                        return;
+                    }
                     RoleLinkRepo.addRole(roleToAdd.getIdLong(), group.getName());
-                    RoleSync.syncOnline();
                     event.reply("Successfully added role").setEphemeral(true).queue();
-                } catch (SQLException exception) {
-                    AverUtils.logWarning(Messages.getString("errors.database.role_links"), exception);
-                    event.reply(Messages.getString("discord.commands.generic.failure.unknown")).setEphemeral(true).queue();
                     break;
-                }
-                break;
-            case "remove":
-                Role roleToRemove = event.getOption("role").getAsRole();
-                try {
-                    RoleLinkRepo.deleteRole(roleToRemove.getIdLong());
-                    RoleSync.syncOnline();
+                case "remove":
+                    Role roleToRemove = event.getOption("role").getAsRole();
+                    if (!RoleLinkRepo.deleteRole(roleToRemove.getIdLong())) {
+                        event.reply("Couldn't delete role, does it exist?").setEphemeral(true).queue();
+                    }
                     event.reply("Successfully removed role").setEphemeral(true).queue();
-                } catch (SQLException exception) {
-                    AverUtils.logWarning(Messages.getString("errors.database.role_links"), exception);
-                    event.reply(Messages.getString("discord.commands.generic.failure.unknown")).setEphemeral(true).queue();
                     break;
-                }
-                break;
-            case "list":
-                return;
+                case "list":
+                    return;
+            }
+        } catch (SQLException exception) {
+            AverUtils.logWarning(Messages.getString("errors.database.role_links"), exception);
+            event.reply(Messages.getString("discord.commands.generic.failure.unknown")).setEphemeral(true).queue();
+            return;
         }
         RoleLinkCache.updateRoles();
+        RoleSync.syncOnline();
     }
 }

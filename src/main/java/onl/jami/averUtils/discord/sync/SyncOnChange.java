@@ -60,7 +60,7 @@ public class SyncOnChange extends ListenerAdapter {
                 ))
             );
             PlayerRepo.deletePlayer(player.uuid());
-            PlayerCache.updatePlayer(player.uuid());
+            PlayerCache.removePlayer(player.uuid());
             Player p = Bukkit.getPlayer(player.uuid());
             if (p != null) {
                 p.kick(MiniMessage.miniMessage().deserialize(Messages.getString("player.moderation.verification.verification-time-out")));

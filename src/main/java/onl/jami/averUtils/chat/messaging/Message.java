@@ -21,9 +21,9 @@ public class Message {
     }
 
     public Component buildForRecipient(CommandSender recipient, String message, boolean forSender) {
-        String messageFormatString = Messages.getString("chat.message.format.receiving");
+        String messageFormatString = Messages.getString("chat.message.format.sending");
         if (forSender) {
-            messageFormatString = Messages.getString("chat.message.format.sending");
+            messageFormatString = Messages.getString("chat.message.format.receiving");
         }
         String prefixFormatString = Messages.getString("chat.message.format.prefix");
         String suffixFormatString = Messages.getString("chat.message.format.suffix");

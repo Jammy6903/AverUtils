@@ -16,7 +16,6 @@ import onl.jami.averUtils.storage.database.RoleLinkRepo;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 

@@ -17,13 +17,8 @@ public class ChannelLinkCache {
         return channels.get(category);
     }
 
-    public static boolean isLinked(long guildId, long channelId) {
-        for (ChannelLinkCategory category : ChannelLinkCategory.values()) {
-            if (channels.getOrDefault(category, List.of()).stream().anyMatch(c -> c.guildId() == guildId && c.channelId() == channelId)) {
-                return true;
-            }
-        }
-        return false;
+    public static boolean isLinked(long guildId, long channelId, ChannelLinkCategory category) {
+        return channels.getOrDefault(category, List.of()).stream().anyMatch(c -> c.guildId() == guildId && c.channelId() == channelId);
     }
 
     public static void updateChannels() {

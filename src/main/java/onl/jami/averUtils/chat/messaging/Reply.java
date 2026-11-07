@@ -26,12 +26,12 @@ public class Reply implements CommandExecutor {
         Player target = Bukkit.getPlayer(targetId);
         if (target == null) {
             Messages.send(sender, "commands.reply.failure.no-messages");
+            return true;
         }
 
         Message m = new Message();
         m.formatMessage(target, sender, String.join(" ", Arrays.copyOfRange(args, 0, args.length)));
         m.sendToRecipients();
-
         return true;
     }
 }

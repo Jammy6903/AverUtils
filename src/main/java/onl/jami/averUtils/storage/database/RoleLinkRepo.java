@@ -9,20 +9,20 @@ import java.util.List;
 public class RoleLinkRepo {
     public record RoleData(long roleId, String lpGroup) {}
 
-    public static void addRole(long roleId, String lpGroup) throws SQLException {
+    public static boolean addRole(long roleId, String lpGroup) throws SQLException {
         String sql = "INSERT OR REPLACE INTO role_links VALUES (?, ?)";
         try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
             ps.setLong(1, roleId);
             ps.setString(2, lpGroup);
-            ps.executeUpdate();
+            return ps.executeUpdate() != 0;
         }
     }
 
-    public static void deleteRole(long roleId) throws SQLException {
+    public static boolean deleteRole(long roleId) throws SQLException {
         String sql = "DELETE FROM role_links WHERE role_id = ?";
         try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
             ps.setLong(1, roleId);
-            ps.executeUpdate();
+            return ps.executeUpdate() != 0;
         }
     }
 

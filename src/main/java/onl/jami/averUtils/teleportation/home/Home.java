@@ -41,7 +41,7 @@ public class Home implements TabExecutor {
             Location location = new Location(Bukkit.getWorld(homeData.world()), homeData.x(), homeData.y(), homeData.z(),  homeData.yaw(), homeData.pitch());
             ((Player) sender).teleport(location);
             Messages.send(sender, "commands.home.success",
-                    Placeholder.component("home", Component.text(args[0]))
+                    Placeholder.component("home", Component.text(name))
             );
         } catch (SQLException exception) {
             Messages.send(sender, "commands.generic.failure.unknown");

@@ -85,7 +85,7 @@ public class PlayerListDecoration implements TabExecutor {
             }
             Messages.send(sender, "commands.playerlistdecoration.create.success",
                     Placeholder.component("location", Component.text(args[1])),
-                    Placeholder.component("name", Component.text(args[1])),
+                    Placeholder.component("name", Component.text(args[2])),
                     Placeholder.component("decoration", MiniMessage.miniMessage().deserialize(message))
             );
         } catch (SQLException exception) {
@@ -110,7 +110,7 @@ public class PlayerListDecoration implements TabExecutor {
             }
             Messages.send(sender, "commands.playerlistdecoration.edit.success",
                     Placeholder.component("location", Component.text(args[1])),
-                    Placeholder.component("name", Component.text(args[1])),
+                    Placeholder.component("name", Component.text(args[2])),
                     Placeholder.component("decoration", MiniMessage.miniMessage().deserialize(message))
             );        } catch (SQLException exception) {
             AverUtils.logWarning(Messages.getString("errors.database.player_list_decorations"), exception);
@@ -133,7 +133,7 @@ public class PlayerListDecoration implements TabExecutor {
             }
             Messages.send(sender, "commands.playerlistdecoration.delete.success",
                     Placeholder.component("location", Component.text(args[1])),
-                    Placeholder.component("name", Component.text(args[1]))
+                    Placeholder.component("name", Component.text(args[2]))
             );
         } catch (SQLException exception) {
             AverUtils.logWarning(Messages.getString("errors.database.player_list_decorations"), exception);

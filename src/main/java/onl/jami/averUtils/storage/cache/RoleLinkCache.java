@@ -5,24 +5,18 @@ import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.RoleLinkRepo;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class RoleLinkCache {
-    private static final Map<Long, RoleLinkRepo.RoleData> roles = new ConcurrentHashMap<>();
+    private static volatile List<RoleLinkRepo.RoleData> roles = List.of();
 
     public static List<RoleLinkRepo.RoleData> getRoles() {
-        return new ArrayList<>(roles.values());
+        return roles;
     }
 
     public static void updateRoles() {
         try {
-            List<RoleLinkRepo.RoleData> roleData = RoleLinkRepo.getRoles();
-            for (RoleLinkRepo.RoleData role : roleData) {
-                roles.put(role.roleId(), role);
-            }
+            roles = List.copyOf(RoleLinkRepo.getRoles());
         } catch (SQLException exception) {
             AverUtils.logWarning(Messages.getString("errors.database.role_links"), exception);
         }
