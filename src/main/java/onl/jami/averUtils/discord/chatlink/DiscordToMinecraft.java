@@ -17,7 +17,7 @@ public class DiscordToMinecraft extends ListenerAdapter {
             return;
         }
         if (!ChannelLinkCache.isLinked(event.getGuild().getIdLong(), event.getChannel().getIdLong(), ChannelLinkCategory.CHAT)) { return; }
-        String message = event.getMessage().getContentRaw();
+        String message = event.getMessage().getContentDisplay();
         if (!event.getMessage().getStickers().isEmpty()) {
             message = "[sticker]";
         }
