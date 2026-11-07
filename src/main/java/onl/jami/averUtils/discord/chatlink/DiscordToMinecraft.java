@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.chat.Formatter;
 import onl.jami.averUtils.storage.cache.ChannelLinkCache;
+import onl.jami.averUtils.storage.database.ChannelLinkCategory;
 import org.bukkit.Bukkit;
 import org.jspecify.annotations.NonNull;
 
@@ -15,7 +16,7 @@ public class DiscordToMinecraft extends ListenerAdapter {
         if (!AverUtils.getCfg().getBoolean("discord.enabled") || event.getAuthor().isBot() || event.isWebhookMessage() || !event.isFromGuild()) {
             return;
         }
-        if (!ChannelLinkCache.isLinked(event.getGuild().getIdLong(), event.getChannel().getIdLong())) { return; }
+        if (!ChannelLinkCache.isLinked(event.getGuild().getIdLong(), event.getChannel().getIdLong(), ChannelLinkCategory.CHAT)) { return; }
         String message = event.getMessage().getContentRaw();
         if (!event.getMessage().getStickers().isEmpty()) {
             message = "[sticker]";
@@ -23,7 +24,8 @@ public class DiscordToMinecraft extends ListenerAdapter {
         if (!event.getMessage().getAttachments().isEmpty()) {
             message = message + " [attachments]";
         }
-        Component component = Formatter.formatDiscordChat(event, message);
+
+        Component component = Formatter.formatDiscordChat(event, message, event.getMessage().getReferencedMessage());
         if (component == null) { return; }
         Bukkit.broadcast(component);
     }

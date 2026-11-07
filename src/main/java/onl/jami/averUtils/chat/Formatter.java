@@ -1,7 +1,9 @@
 package onl.jami.averUtils.chat;
 
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.luckperms.api.cacheddata.CachedMetaData;
@@ -63,8 +65,8 @@ public class Formatter {
         );
     }
 
-    public static Component formatDiscordChat(MessageReceivedEvent event, String message) {
-        String discordFormatString = Messages.getString("chat.format.discord");
+    public static Component formatDiscordChat(MessageReceivedEvent event, String message, Message reply) {
+        String discordFormatString = Messages.getString("chat.format.discord.message");
         String prefixFormatString = Messages.getString("chat.format.prefix");
         String suffixFormatString = Messages.getString("chat.format.suffix");
         String pronounsFormatString = Messages.getString("chat.format.pronouns");
@@ -81,12 +83,22 @@ public class Formatter {
                 return discordNonPlayer(discordFormatString, playerName, message);
             }
 
+            Component r = Component.empty();
+            if (reply != null) {
+                r = Component.text(Messages.getString("chat.format.discord.reply-indicator")).hoverEvent(
+                        HoverEvent.showText(Messages.getComponent("chat.format.discord.reply-hover",
+                                Placeholder.component("name", Component.text(reply.getAuthor().getName())),
+                                Placeholder.component("message", Component.text(reply.getContentDisplay()))
+                        )
+                ));
+            }
             MessageData messageData = getMessageData(p, prefixFormatString, suffixFormatString, pronounsFormatString);
             return MiniMessage.miniMessage().deserialize(discordFormatString,
                     Placeholder.component("prefix", messageData.prefix),
                     Placeholder.component("suffix", messageData.suffix),
                     Placeholder.component("name", messageData.name),
                     Placeholder.component("pronouns", messageData.pronouns),
+                    Placeholder.component("reply", r),
                     Placeholder.component("message", Component.text(message))
             );
         } catch (SQLException exception) {

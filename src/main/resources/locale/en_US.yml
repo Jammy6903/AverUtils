@@ -8,7 +8,10 @@ chat:
     pronouns: " <gray><pronouns><gray>"
     prefix: "<gray>[</gray><prefix><gray>]</gray>"
     suffix: "<suffix>"
-    discord: "<gray><hover:showtext:'This message originated from Discord'>[</gray><blue>D</blue><gray>]</hover></gray> <prefix> <name><pronouns><grey>:</grey> <white><message></white>"
+    discord:
+      message: "<gray><hover:showtext:'This message originated from Discord'>[</gray><blue>D</blue><gray>]</hover></gray> <prefix> <name><pronouns><grey>:</grey> <reply><white><message></white>"
+      reply-indicator: "↩ "
+      reply-hover: "Replying to <name>: <message>"
   message:
     format:
       sending: "<yellow>[✉]</yellow> <prefix> <name><pronouns> ⬅ <message>"
