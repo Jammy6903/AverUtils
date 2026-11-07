@@ -9,14 +9,14 @@ chat:
     prefix: "<gray>[</gray><prefix><gray>]</gray>"
     suffix: "<suffix>"
     discord:
-      message: "<hover:show_text:'This message originated from Discord'><gray>[</gray><blue>D</blue><gray>]</gray></hover> <prefix> <name><pronouns><grey>:</grey> <reply><white><message></white>"
+      message: "<hover:show_text:'This message originated from Discord'><gray>[</gray><blue>D</blue><gray>]</gray></hover> <prefix> <name><pronouns><gray>:</gray> <reply><white><message></white>"
       reply-indicator: "↩ "
       reply-hover: "Replying to <name>: <message>"
   message:
     format:
       sending: "<yellow>[✉]</yellow> <prefix> <name><pronouns> ⬅ <message>"
       receiving: "<yellow>[✉]</yellow> <prefix> <name><pronouns> ➡ <message>"
-      pronouns: " <gray><pronouns><gray>"
+      pronouns: " <gray><pronouns></gray>"
       prefix: "<gray>[</gray><prefix><gray>]</gray>"
       suffix: "<suffix>"
 
@@ -125,7 +125,7 @@ player:
 
 commands:
   generic:
-    prefix: "<grey>[</grey><command><grey>]</grey> "
+    prefix: "<gray>[</gray><command><gray>]</gray> "
     failure:
       no-permission: "<red>You do not have permission to run that command.</red>"
       players-only: "<red>Only players can run that command</red>"
