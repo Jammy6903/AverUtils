@@ -37,7 +37,7 @@ public class Player implements Listener {
         }
 
         // cache player
-        PlayerCache.loadPlayer(player.getUniqueId());
+        PlayerCache.loadPlayer(player);
 
         // verify player if required, sync roles with discord and send join message to any linked channels
         VerifyLock.verifyOnLogin(player);

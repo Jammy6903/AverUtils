@@ -21,7 +21,7 @@ public class PlayerCache {
             playerData = updatePlayer(player.getUniqueId());
         }
         if (playerData == null) {
-            player.kick(MiniMessage.miniMessage().deserialize(Messages.getString("player.moderation.kick.unknown")));
+            player.kick(Messages.getComponent("player.moderation.kick.unknown"));
             return null;
         }
         return playerData;
@@ -41,12 +41,13 @@ public class PlayerCache {
         }
     }
 
-    public static void loadPlayer(UUID uuid) {
+    public static void loadPlayer(Player player) {
         try {
-            PlayerRepo.PlayerData playerData = PlayerRepo.getPlayer(uuid);
-            players.put(uuid, playerData);
+            PlayerRepo.PlayerData playerData = PlayerRepo.getPlayer(player.getUniqueId());
+            players.put(player.getUniqueId(), playerData);
         } catch (SQLException exception) {
             AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
+            player.kick(Messages.getComponent("player.moderation.kick.unknown"));
         }
     }
 
