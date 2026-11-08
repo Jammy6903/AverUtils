@@ -4,8 +4,12 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.luckperms.api.cacheddata.CachedMetaData;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;
@@ -16,6 +20,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.time.format.ResolverStyle;
+import java.util.Map;
 
 public class Formatter {
     public record MessageData(Component name, Component prefix, Component suffix, Component pronouns) {}
@@ -61,13 +67,34 @@ public class Formatter {
 
         MessageData messageData = getMessageData(player, prefixFormatString, suffixFormatString, pronounsFormatString);
 
+        Component styled = parseChat(player, message);
+
         return MiniMessage.miniMessage().deserialize(chatFormatString,
                 Placeholder.component("prefix", messageData.prefix),
                 Placeholder.component("suffix", messageData.suffix),
                 Placeholder.component("name", PlayerName.getComponent(player, true)),
                 Placeholder.component("pronouns", messageData.pronouns),
-                Placeholder.component("message", message)
+                Placeholder.component("message", styled)
         );
+    }
+
+    private static final MiniMessage BASE = MiniMessage.builder().tags(TagResolver.empty()).build();
+
+    private static final Map<String, TagResolver> TAGS = Map.of(
+            "averutils.chat.style.color", StandardTags.color(),
+            "averutils.chat.style.decoration", StandardTags.decorations(),
+            "averutils.chat.style.gradient", StandardTags.gradient()
+    );
+
+    private static Component parseChat(Player player, Component message) {
+        String raw = PlainTextComponentSerializer.plainText().serialize(message);
+        TagResolver.Builder allowed = TagResolver.builder();
+        TAGS.forEach((permission, resolver) -> {
+            if (player.hasPermission(permission)) {
+                allowed.resolver(resolver);
+            }
+        });
+        return BASE.deserialize(raw, allowed.build());
     }
 
     public static Component formatDiscordChat(MessageReceivedEvent event, String message, Message reply) {
