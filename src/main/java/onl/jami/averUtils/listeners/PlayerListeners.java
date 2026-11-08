@@ -101,7 +101,8 @@ public class PlayerListeners implements Listener {
                 (
                         victimData.pvpEnabled() &&
                         attackerData.pvpEnabled() &&
-                        !(block != null && block.categories().contains(BlockCategory.PVP))
+                        !(block != null && block.categories().contains(BlockCategory.PVP)) ||
+                        attacker.hasPermission("averutils.bypass-block")
                 )
         ) { return; }
         e.setCancelled(true);

@@ -21,13 +21,15 @@ public class ChatListener implements Listener {
         // format chat message
         Component formattedMessage = Formatter.formatChat(e.getPlayer(), e.message());
         e.message(formattedMessage);
-        e.viewers().removeIf(audience -> {
-            if (audience instanceof Player p) {
-                BlockRepo.BlockData block = BlockCache.getBlockForPlayers(p.getUniqueId(), e.getPlayer().getUniqueId());
-                return block != null && block.categories().contains(BlockCategory.CHAT);
-            }
-            return false;
-        });
+        if (!e.getPlayer().hasPermission("averutils.bypass-block")) {
+            e.viewers().removeIf(audience -> {
+                if (audience instanceof Player p) {
+                    BlockRepo.BlockData block = BlockCache.getBlockForPlayers(p.getUniqueId(), e.getPlayer().getUniqueId());
+                    return block != null && block.categories().contains(BlockCategory.CHAT);
+                }
+                return false;
+            });
+        }
         e.renderer(((_, _, message, _) -> message));
     }
 }

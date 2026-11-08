@@ -31,7 +31,7 @@ public class Msg implements TabExecutor {
         }
         if (sender instanceof Player p) {
             BlockRepo.BlockData block = BlockCache.getBlockForPlayers(target.getUniqueId(), p.getUniqueId());
-            if (block != null && block.categories().contains(BlockCategory.MESSAGES)) {
+            if (block != null && block.categories().contains(BlockCategory.MESSAGES) && !p.hasPermission("averutils.bypass-block")) {
                 Messages.send(sender, "commands.msg.failure.blocked");
                 return true;
             }
