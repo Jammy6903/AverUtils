@@ -8,6 +8,7 @@ import onl.jami.averUtils.admin.PlayerListDecoration;
 import onl.jami.averUtils.listeners.Chat;
 import onl.jami.averUtils.listeners.Ping;
 import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.locale.Reload;
 import onl.jami.averUtils.storage.cache.ChannelLinkCache;
 import onl.jami.averUtils.storage.cache.MotdCache;
 import onl.jami.averUtils.storage.cache.PlayerListDecorationCache;
@@ -54,12 +55,8 @@ public final class AverUtils extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        // save default config if it doesn't already exist
-        this.saveDefaultConfig();
-
-        // load config and locale
-        cfg = this.getConfig();
-        Messages.load(this);
+        // save and load default config and locale
+        loadConfig(this);
 
         // initialize database/tables, migrate if necessary
         try {
@@ -123,6 +120,7 @@ public final class AverUtils extends JavaPlugin {
         registerCommand("motd", new Motd());
         registerCommand("playerlistdecoration", new PlayerListDecoration());
         registerCommand("namestyle", new NameStyle());
+        registerCommand("reload", new Reload());
     }
 
     @Override
@@ -148,9 +146,15 @@ public final class AverUtils extends JavaPlugin {
         }
     }
 
-    public static void logWarning(String message, Exception e) {
-        AverUtils.getPlugin().getLogger().log(Level.WARNING, message, e);
+    public static void loadConfig(Plugin plugin) {
+        plugin.saveDefaultConfig();
+
+        // load config and locale
+        cfg = plugin.getConfig();
+        Messages.load((AverUtils) plugin);
     }
+
+    public static void logWarning(String message, Exception e) { AverUtils.getPlugin().getLogger().log(Level.WARNING, message, e); }
 
     public static Plugin getPlugin() {return instance;}
 

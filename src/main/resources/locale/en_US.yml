@@ -221,6 +221,8 @@ commands:
     success: "<green>Successfully updated your pronouns to <pronouns></green>"
     failure:
       length: "<red>Pronouns must be 1-10 characters!</red>"
+  reload:
+    success: "<green>Successfully reloaded config and locale</green>"
   sethome:
     success: "<green>Successfully set your new home, <home></green>"
     failure:

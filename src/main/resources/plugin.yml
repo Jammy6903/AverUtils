@@ -105,3 +105,7 @@ commands:
     aliases: [style]
     usage: /namestyle [RESET|#color|gradient(#color1:#color2)] [BOLD|UNDERLINE|ITALIC]
     permission: averutils.namestyle
+  reload:
+    description: Reload config and locale
+    usage: /reload
+    permission: op
