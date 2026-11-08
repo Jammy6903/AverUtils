@@ -41,7 +41,7 @@ public class TpaHere implements TabExecutor {
         }
 
         BlockRepo.BlockData block = BlockCache.getBlockForPlayers(recipient.getUniqueId(), p.getUniqueId());
-        if (block != null && block.categories().contains(BlockCategory.MESSAGES)) {
+        if (block != null && block.categories().contains(BlockCategory.TPA)) {
             Messages.send(sender, "commands.tpahere.failure.blocked");
             return true;
         }

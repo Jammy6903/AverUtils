@@ -28,7 +28,7 @@ public class PlayerListDecoration implements TabExecutor {
             }
             return true;
         }
-        PlayerListDecorationRepo.PlayerListDecorationData.Location location = PlayerListDecorationRepo.PlayerListDecorationData.Location.valueOf(args[1]);
+        PlayerListDecorationRepo.PlayerListDecorationData.Location location = PlayerListDecorationRepo.PlayerListDecorationData.Location.valueOf(args[1].toUpperCase());
         switch (args[0].toLowerCase()) {
             case "create":
                 create(sender, args, location);

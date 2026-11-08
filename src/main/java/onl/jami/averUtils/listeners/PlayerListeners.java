@@ -40,7 +40,7 @@ public class PlayerListeners implements Listener {
 
         } catch (SQLException exception) {
             AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
-            player.kick(MiniMessage.miniMessage().deserialize(Messages.getString(Messages.getString("errors.generic"))));
+            player.kick(MiniMessage.miniMessage().deserialize(Messages.getString("errors.generic")));
             return;
         }
 
@@ -98,8 +98,7 @@ public class PlayerListeners implements Listener {
         BlockRepo.BlockData block = BlockCache.getBlockForPlayers(victim.getUniqueId(), attacker.getUniqueId());
         if (victimData == null ||
                 attackerData == null ||
-                victimData.pvpEnabled() ||
-                attackerData.pvpEnabled() ||
+                (victimData.pvpEnabled() && attackerData.pvpEnabled()) ||
                 !(block != null && block.categories().contains(BlockCategory.PVP))
         ) { return; }
         e.setCancelled(true);

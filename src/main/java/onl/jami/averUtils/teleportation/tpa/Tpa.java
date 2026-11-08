@@ -43,7 +43,7 @@ public class Tpa implements TabExecutor {
         }
 
         BlockRepo.BlockData block = BlockCache.getBlockForPlayers(recipient.getUniqueId(), p.getUniqueId());
-        if (block != null && block.categories().contains(BlockCategory.MESSAGES)) {
+        if (block != null && block.categories().contains(BlockCategory.TPA)) {
             Messages.send(sender, "commands.tpa.failure.blocked");
             return true;
         }
