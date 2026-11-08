@@ -22,7 +22,7 @@ import onl.jami.averUtils.chat.messaging.Reply;
 import onl.jami.averUtils.storage.database.Driver;
 import onl.jami.averUtils.discord.Bot;
 import onl.jami.averUtils.discord.verification.VerifyMinecraft;
-import onl.jami.averUtils.listeners.Player;
+import onl.jami.averUtils.listeners.PlayerListeners;
 import onl.jami.averUtils.teleportation.Spawn;
 import onl.jami.averUtils.teleportation.home.*;
 import onl.jami.averUtils.teleportation.tpa.TpAccept;
@@ -95,7 +95,7 @@ public final class AverUtils extends JavaPlugin {
         }
 
         getServer().getPluginManager().registerEvents(new Chat(), this);
-        getServer().getPluginManager().registerEvents(new Player(), this);
+        getServer().getPluginManager().registerEvents(new PlayerListeners(), this);
         getServer().getPluginManager().registerEvents(new Ping(), this);
         registerCommand("msg", new Msg());
         registerCommand("reply", new Reply());

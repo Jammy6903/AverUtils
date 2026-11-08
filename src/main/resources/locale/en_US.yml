@@ -55,11 +55,6 @@ discord:
 
 player:
   profile:
-    pronouns:
-      - "he/him"
-      - "she/her"
-      - "they/them"
-      - "ask"
     name-hover:
       - "<name><bold><underlined><aqua>'s Profile</aqua></underlined></bold>"
       - ""
@@ -70,6 +65,12 @@ player:
       - "<gray>Discord Nickname:</gray>    <discord-nick>"
       - ""
       - "<yellow>Click to message!</yellow>"
+    pronouns:
+      - "he/him"
+      - "she/her"
+      - "they/them"
+      - "ask"
+    pvp: "<red><victim> has PVP disabled!</red>"
   moderation:
     verification:
       dialog:
@@ -221,6 +222,8 @@ commands:
     success: "<green>Successfully updated your pronouns to <pronouns></green>"
     failure:
       length: "<red>Pronouns must be 1-10 characters!</red>"
+  pvp:
+    success: "<green>Successfully set PVP to <state></green>"
   reload:
     success: "<green>Successfully reloaded config and locale</green>"
   sethome:
