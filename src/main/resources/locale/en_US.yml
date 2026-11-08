@@ -62,6 +62,9 @@ discord:
       list: ""
     verify: ""
 
+moderation:
+  punishment-ui:
+    title: "Punishment Menu"
 
 player:
   profile:
@@ -84,7 +87,8 @@ player:
   moderation:
     verification:
       dialog:
-        title: "Please verify your Discord using /verify"
+        title: "Discord Verification"
+        body: "You must verify your Discord account in the Discord server (<click:open_url:'<invite-link>'><aqua><u>HERE</u></aqua></click>)<newline>Run the command <green>/verify</green> and enter the code you are given below.<newline>By verifying you are agreeing to the SMP and Discord Server rules."
         code: "Verification code"
         confirm: "<green>Confirm</green>"
         confirm-hover: "Click to confirm your input."

@@ -4,6 +4,7 @@ import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.registry.data.dialog.ActionButton;
 import io.papermc.paper.registry.data.dialog.DialogBase;
 import io.papermc.paper.registry.data.dialog.action.DialogAction;
+import io.papermc.paper.registry.data.dialog.body.DialogBody;
 import io.papermc.paper.registry.data.dialog.input.DialogInput;
 import io.papermc.paper.registry.data.dialog.type.DialogType;
 import net.dv8tion.jda.api.entities.Guild;
@@ -61,7 +62,13 @@ public class VerifyLock {
 
     private static void showVerifyDialog(Player p) {
         Dialog dialog = Dialog.create(builder -> builder.empty()
-                .base(DialogBase.builder(MiniMessage.miniMessage().deserialize(Messages.getString("player.moderation.verification.dialog.title"))).canCloseWithEscape(false)
+                .base(DialogBase.builder(Messages.getComponent("player.moderation.verification.dialog.title"))
+                        .canCloseWithEscape(false)
+                        .body(List.of(
+                                DialogBody.plainMessage(Messages.getComponent("player.moderation.verification.dialog.body",
+                                        Placeholder.parsed("invite-link", AverUtils.getCfg().getString("discord.invite-link")))
+                                )
+                        ))
                         .inputs(List.of(
                                 DialogInput.text("code", MiniMessage.miniMessage().deserialize(Messages.getString("player.moderation.verification.dialog.code")))
                                         .build()

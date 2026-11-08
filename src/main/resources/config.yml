@@ -3,5 +3,6 @@ discord:
   token: [insert discord bot token here]
   verification-guild-id: [insert guild id here]
   require-verification: false
+  invite-link: [insert discord invite link here]
 
 locale: "en_US"
