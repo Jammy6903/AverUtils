@@ -98,8 +98,11 @@ public class PlayerListeners implements Listener {
         BlockRepo.BlockData block = BlockCache.getBlockForPlayers(victim.getUniqueId(), attacker.getUniqueId());
         if (victimData == null ||
                 attackerData == null ||
-                (victimData.pvpEnabled() && attackerData.pvpEnabled()) ||
-                !(block != null && block.categories().contains(BlockCategory.PVP))
+                (
+                        victimData.pvpEnabled() &&
+                        attackerData.pvpEnabled() &&
+                        !(block != null && block.categories().contains(BlockCategory.PVP))
+                )
         ) { return; }
         e.setCancelled(true);
         Messages.send(attacker, "player.profile.pvp",

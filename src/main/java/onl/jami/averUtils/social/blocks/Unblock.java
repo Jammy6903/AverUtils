@@ -27,9 +27,9 @@ public class Unblock implements TabExecutor {
 
         if (args.length == 0) { return false; }
 
-        OfflinePlayer blocked = Bukkit.getOfflinePlayer(args[0]);
+        OfflinePlayer blocked = Bukkit.getOfflinePlayerIfCached(args[0]);
 
-        if (blocked.getUniqueId().equals(p.getUniqueId())) {
+        if (blocked == null || blocked.getUniqueId().equals(p.getUniqueId())) {
             Messages.send(p, "commands.unblock.failure.self");
             return true;
         }

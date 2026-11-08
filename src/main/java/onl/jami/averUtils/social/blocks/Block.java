@@ -48,9 +48,9 @@ public class Block implements TabExecutor {
             }
         }
 
-        OfflinePlayer blocked = Bukkit.getOfflinePlayer(args[0]);
+        OfflinePlayer blocked = Bukkit.getOfflinePlayerIfCached(args[0]);
 
-        if (blocked.getUniqueId().equals(p.getUniqueId())) {
+        if (blocked == null || blocked.getUniqueId().equals(p.getUniqueId())) {
             Messages.send(p, "commands.block.failure.self");
             return true;
         }

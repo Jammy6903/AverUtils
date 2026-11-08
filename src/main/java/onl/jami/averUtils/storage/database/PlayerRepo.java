@@ -179,4 +179,12 @@ public class PlayerRepo {
             ps.executeUpdate();
         }
     }
+
+    public static void unVerify(UUID uuid) throws SQLException {
+        String sql = "UPDATE players SET is_verified = false, discord_globalname = null, discord_id = null, discord_nickname = null, discord_username = null, name_choice = 'PLAYER_NAME' WHERE uuid = ?";
+        try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.executeUpdate();
+        }
+    }
 }

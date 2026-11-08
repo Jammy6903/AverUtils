@@ -28,7 +28,7 @@ public class ToggleTpa implements TabExecutor {
         if (playerData == null) { return true; }
         boolean tp = !playerData.tpEnabled();
         try {
-            PlayerRepo.updatePvp(p.getUniqueId(), tp);
+            PlayerRepo.updateTp(p.getUniqueId(), tp);
             Messages.send(p, "commands.toggletpa.success",
                     Placeholder.component("state", Component.text(tp))
             );
