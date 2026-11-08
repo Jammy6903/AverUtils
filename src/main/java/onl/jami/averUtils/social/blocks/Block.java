@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Block implements TabExecutor {
 
@@ -70,7 +71,8 @@ public class Block implements TabExecutor {
             }
             BlockRepo.createBlock(p.getUniqueId(), blocked.getUniqueId(), categories);
             Messages.send(sender, "commands.block.success",
-                    Placeholder.component("player", Component.text(args[0]))
+                    Placeholder.component("player", Component.text(args[0])),
+                    Placeholder.component("categories", Component.text(categories.stream().map(Enum::name).collect(Collectors.joining(", "))))
             );
             BlockCache.loadBlocksForPlayer(p.getUniqueId());
         } catch (SQLException exception) {

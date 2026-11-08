@@ -29,7 +29,7 @@ public class TogglePvp implements TabExecutor {
         boolean pvp = !playerData.pvpEnabled();
         try {
             PlayerRepo.updatePvp(p.getUniqueId(), pvp);
-            Messages.send(p, "commands.pvp.success",
+            Messages.send(p, "commands.togglepvp.success",
                     Placeholder.component("state", Component.text(pvp))
             );
             PlayerCache.updatePlayer(p.getUniqueId());

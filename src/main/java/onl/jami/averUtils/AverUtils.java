@@ -123,7 +123,7 @@ public final class AverUtils extends JavaPlugin {
         registerCommand("togglepvp", new TogglePvp());
         registerCommand("block", new Block());
         registerCommand("unblock", new Unblock());
-        registerCommand("toggletpa", new TogglePvp());
+        registerCommand("toggletpa", new ToggleTpa());
     }
 
     @Override

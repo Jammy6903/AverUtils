@@ -163,7 +163,7 @@ public class PlayerRepo {
     }
 
     public static void updatePvp(UUID uuid, boolean pvpEnabled) throws SQLException {
-        String sql = "UPDATE players SET pvp = ? WHERE uuid = ?";
+        String sql = "UPDATE players SET pvp_enabled = ? WHERE uuid = ?";
         try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
             ps.setBoolean(1, pvpEnabled);
             ps.setString(2, uuid.toString());
@@ -172,7 +172,7 @@ public class PlayerRepo {
     }
 
     public static void updateTp(UUID uuid, boolean tpEnabled) throws SQLException {
-        String sql = "UPDATE players SET tp = ? WHERE uuid = ?";
+        String sql = "UPDATE players SET tp_enabled = ? WHERE uuid = ?";
         try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
             ps.setBoolean(1, tpEnabled);
             ps.setString(2, uuid.toString());
