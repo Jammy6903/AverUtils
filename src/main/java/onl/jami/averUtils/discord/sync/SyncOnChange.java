@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.luckperms.api.node.NodeType;
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.discord.sync.roles.RoleSync;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import onl.jami.averUtils.storage.database.PlayerRepo;

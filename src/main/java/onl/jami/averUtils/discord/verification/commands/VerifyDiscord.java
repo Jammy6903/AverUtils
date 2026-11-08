@@ -1,7 +1,8 @@
-package onl.jami.averUtils.discord.verification;
+package onl.jami.averUtils.discord.verification.commands;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import onl.jami.averUtils.discord.verification.VerificationCodes;
 
 public class VerifyDiscord extends ListenerAdapter {
     @Override

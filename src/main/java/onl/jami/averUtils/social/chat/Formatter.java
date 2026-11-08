@@ -1,4 +1,4 @@
-package onl.jami.averUtils.chat;
+package onl.jami.averUtils.social.chat;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -14,7 +14,7 @@ import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.cache.PlayerCache;
-import onl.jami.averUtils.userconfig.profile.PlayerName;
+import onl.jami.averUtils.userconfig.PlayerName;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

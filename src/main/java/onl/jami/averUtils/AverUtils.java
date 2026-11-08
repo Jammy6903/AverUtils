@@ -2,11 +2,11 @@ package onl.jami.averUtils;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.luckperms.api.LuckPerms;
-import onl.jami.averUtils.admin.DoAs;
-import onl.jami.averUtils.admin.Motd;
-import onl.jami.averUtils.admin.PlayerListDecoration;
-import onl.jami.averUtils.listeners.Chat;
-import onl.jami.averUtils.listeners.Ping;
+import onl.jami.averUtils.staff.admin.DoAs;
+import onl.jami.averUtils.staff.admin.Motd;
+import onl.jami.averUtils.staff.admin.PlayerListDecoration;
+import onl.jami.averUtils.listeners.ChatListener;
+import onl.jami.averUtils.listeners.PingListener;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.locale.Reload;
 import onl.jami.averUtils.storage.cache.ChannelLinkCache;
@@ -14,11 +14,11 @@ import onl.jami.averUtils.storage.cache.MotdCache;
 import onl.jami.averUtils.storage.cache.PlayerListDecorationCache;
 import onl.jami.averUtils.storage.cache.RoleLinkCache;
 import onl.jami.averUtils.userconfig.profile.*;
-import onl.jami.averUtils.chat.messaging.Msg;
-import onl.jami.averUtils.chat.messaging.Reply;
+import onl.jami.averUtils.social.chat.messaging.commands.Msg;
+import onl.jami.averUtils.social.chat.messaging.commands.Reply;
 import onl.jami.averUtils.storage.database.Driver;
 import onl.jami.averUtils.discord.Bot;
-import onl.jami.averUtils.discord.verification.VerifyMinecraft;
+import onl.jami.averUtils.discord.verification.commands.VerifyMinecraft;
 import onl.jami.averUtils.listeners.PlayerListeners;
 import onl.jami.averUtils.teleportation.Spawn;
 import onl.jami.averUtils.teleportation.home.*;
@@ -91,9 +91,9 @@ public final class AverUtils extends JavaPlugin {
             luckPermsApi = provider.getProvider();
         }
 
-        getServer().getPluginManager().registerEvents(new Chat(), this);
+        getServer().getPluginManager().registerEvents(new ChatListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerListeners(), this);
-        getServer().getPluginManager().registerEvents(new Ping(), this);
+        getServer().getPluginManager().registerEvents(new PingListener(), this);
         registerCommand("msg", new Msg());
         registerCommand("reply", new Reply());
         registerCommand("tpa", new Tpa());

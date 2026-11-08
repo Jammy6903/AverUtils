@@ -1,4 +1,4 @@
-package onl.jami.averUtils.userconfig.profile;
+package onl.jami.averUtils.userconfig;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -10,6 +10,7 @@ import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.cache.PlayerCache;
+import onl.jami.averUtils.userconfig.profile.NameStyle;
 import org.bukkit.entity.Player;
 
 public class PlayerName {

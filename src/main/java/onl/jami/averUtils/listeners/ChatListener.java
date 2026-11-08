@@ -2,12 +2,12 @@ package onl.jami.averUtils.listeners;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
-import onl.jami.averUtils.chat.Formatter;
-import onl.jami.averUtils.discord.chatlink.MinecraftToDiscord;
+import onl.jami.averUtils.social.chat.Formatter;
+import onl.jami.averUtils.discord.sync.chat.MinecraftToDiscord;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class Chat implements Listener {
+public class ChatListener implements Listener {
 
     @EventHandler
     public void onChat(AsyncChatEvent e) {

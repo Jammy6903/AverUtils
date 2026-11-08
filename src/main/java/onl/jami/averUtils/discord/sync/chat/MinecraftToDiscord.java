@@ -1,4 +1,4 @@
-package onl.jami.averUtils.discord.chatlink;
+package onl.jami.averUtils.discord.sync.chat;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.discord.chatlink.EditChannels;
 import onl.jami.averUtils.storage.cache.ChannelLinkCache;
 import onl.jami.averUtils.storage.database.ChannelLinkCategory;
 import onl.jami.averUtils.storage.database.ChannelLinkRepo;

@@ -1,10 +1,11 @@
-package onl.jami.averUtils.discord.verification;
+package onl.jami.averUtils.discord.verification.commands;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
-import onl.jami.averUtils.discord.sync.RoleSync;
+import onl.jami.averUtils.discord.sync.roles.RoleSync;
+import onl.jami.averUtils.discord.verification.VerificationCodes;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.cache.PlayerCache;

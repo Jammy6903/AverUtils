@@ -1,9 +1,9 @@
-package onl.jami.averUtils.chat.messaging;
+package onl.jami.averUtils.social.chat.messaging;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import onl.jami.averUtils.chat.Formatter;
+import onl.jami.averUtils.social.chat.Formatter;
 import onl.jami.averUtils.locale.Messages;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.luckperms.api.model.group.Group;
 import onl.jami.averUtils.AverUtils;
-import onl.jami.averUtils.discord.sync.RoleSync;
+import onl.jami.averUtils.discord.sync.roles.RoleSync;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.cache.RoleLinkCache;
 import onl.jami.averUtils.storage.database.RoleLinkRepo;

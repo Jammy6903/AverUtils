@@ -1,10 +1,10 @@
-package onl.jami.averUtils.discord.chatlink;
+package onl.jami.averUtils.discord.sync.chat;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
 import onl.jami.averUtils.AverUtils;
-import onl.jami.averUtils.chat.Formatter;
+import onl.jami.averUtils.social.chat.Formatter;
 import onl.jami.averUtils.storage.cache.ChannelLinkCache;
 import onl.jami.averUtils.storage.database.ChannelLinkCategory;
 import org.bukkit.Bukkit;

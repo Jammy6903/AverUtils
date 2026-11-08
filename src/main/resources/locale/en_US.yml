@@ -19,6 +19,16 @@ chat:
       pronouns: " <gray><pronouns></gray>"
       prefix: "<gray>[</gray><prefix><gray>]</gray>"
       suffix: "<suffix>"
+  staff:
+    format:
+      message: "<red>[STAFF]</red><prefix> <name><pronouns><gray>:</gray> <yellow><message></yellow>"
+      pronouns: " <gray><pronouns><gray>"
+      prefix: "<gray>[</gray><prefix><gray>]</gray>"
+      suffix: "<suffix>"
+      discord:
+        message: "<red>[STAFF]</red><hover:show_text:'This message originated from Discord'><gray>[</gray><blue>D</blue><gray>]</gray></hover> <prefix> <name><pronouns><gray>:</gray> <reply><white><message></white>"
+        reply-indicator: "↩ "
+        reply-hover: "Replying to <name>: <message>"
 
 discord:
   format:

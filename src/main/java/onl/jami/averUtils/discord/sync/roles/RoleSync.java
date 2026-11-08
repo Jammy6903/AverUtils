@@ -1,14 +1,12 @@
-package onl.jami.averUtils.discord.sync;
+package onl.jami.averUtils.discord.sync.roles;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.model.user.UserManager;
 import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.InheritanceNode;
 import onl.jami.averUtils.AverUtils;
-import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import onl.jami.averUtils.storage.cache.RoleLinkCache;
 import onl.jami.averUtils.storage.database.PlayerRepo;

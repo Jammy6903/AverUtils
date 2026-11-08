@@ -1,4 +1,4 @@
-package onl.jami.averUtils.admin;
+package onl.jami.averUtils.staff.admin;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;

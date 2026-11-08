@@ -7,7 +7,7 @@ import onl.jami.averUtils.storage.database.MotdRepo;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class Ping implements Listener {
+public class PingListener implements Listener {
 
     @EventHandler
     public void onPing(PaperServerListPingEvent e){
