@@ -21,7 +21,7 @@ public class Driver {
         return connection;
     }
 
-    private static final int SCHEMA_VERSION = 1;
+    private static final int SCHEMA_VERSION = 2;
 
     public static void initTables() throws SQLException {
         try (Statement st = connection.createStatement()) {
@@ -36,13 +36,15 @@ public class Driver {
                     nickname            TEXT,
                     pronouns            TEXT,
                     name_choice         TEXT NOT NULL DEFAULT 'PLAYER_NAME'
-                                        CHECK(name_choice IN ('PLAYER_NAME', 'DISCORD_GLOBAL', 'DISCORD_NICK', 'NICKNAME'))
+                                        CHECK(name_choice IN ('PLAYER_NAME', 'DISCORD_GLOBAL', 'DISCORD_NICK', 'NICKNAME')),
+                    name_style          TEXT,
+                    pvp_enabled         BOOLEAN NOT NULL DEFAULT TRUE
                 )
             """);
             st.executeUpdate("""
                 CREATE TABLE IF NOT EXISTS homes (
                     player_uuid TEXT NOT NULL,
-                    name        TEXT NOT NULL DEFAULT 'homeCommand',
+                    name        TEXT NOT NULL DEFAULT 'home',
                     world       TEXT NOT NULL,
                     x           INTEGER NOT NULL,
                     y           INTEGER NOT NULL,
@@ -59,7 +61,8 @@ public class Driver {
                     y           INTEGER NOT NULL,
                     z           INTEGER NOT NULL,
                     yaw         INTEGER NOT NULL,
-                    pitch       INTEGER NOT NULL)
+                    pitch       INTEGER NOT NULL
+                )
             """);
             st.executeUpdate("""
                 CREATE TABLE IF NOT EXISTS channel_links (
@@ -99,6 +102,7 @@ public class Driver {
     public static void migrate() throws SQLException {
         int current = getUserVersion();
         if (current < 1) { migrateToV1(); }
+        if (current < 2) { migrateToV2(); }
         setSchemaVersion(SCHEMA_VERSION);
     }
 
@@ -131,6 +135,21 @@ public class Driver {
         } catch (SQLException e) {
             connection.rollback();
             throw e;
+        } finally {
+            connection.setAutoCommit(oldAutoCommit);
+        }
+    }
+
+    private static void migrateToV2() throws SQLException {
+        boolean oldAutoCommit = connection.getAutoCommit();
+        connection.setAutoCommit(false);
+        try (Statement st = connection.createStatement()) {
+            st.executeUpdate("ALTER TABLE players ADD COLUMN name_style TEXT");
+            st.executeUpdate("ALTER TABLE players ADD COLUMN pvp_enabled BOOLEAN NOT NULL DEFAULT TRUE");
+            connection.commit();
+        } catch (SQLException exception) {
+            connection.rollback();
+            throw exception;
         } finally {
             connection.setAutoCommit(oldAutoCommit);
         }

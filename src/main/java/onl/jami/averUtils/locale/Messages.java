@@ -58,6 +58,15 @@ public class Messages {
         return MiniMessage.miniMessage().deserialize(raw.get(random), tagResolvers);
     }
 
+    public static String getAll(String key) {
+        List<String> raw = locale.getStringList(key);
+        StringBuilder sb = new StringBuilder();
+        for (String line : raw) {
+            sb.append(line).append("<newline>");
+        }
+        return sb.toString();
+    }
+
     public static List<String> getList(String key) {
         return locale.getStringList(key);
     }

@@ -60,6 +60,16 @@ player:
       - "she/her"
       - "they/them"
       - "ask"
+    name-hover:
+      - "<name><bold><underlined><aqua>'s Profile</aqua></underlined></bold>"
+      - ""
+      - "<gray>Minecraft Name:</gray>      <ign>"
+      - "<gray>Nickname:</gray>            <nick>"
+      - "<gray>Discord Username:</gray>    <discord-user>"
+      - "<gray>Discord Global Name:</gray> <discord-global>"
+      - "<gray>Discord Nickname:</gray>    <discord-nick>"
+      - ""
+      - "<yellow>Click to message!</yellow>"
   moderation:
     verification:
       dialog:
@@ -180,8 +190,10 @@ commands:
       no-messages: "<red>You haven't received any messages recently"
   namechoice:
     success: "<green>Successfully updated name choice to <selection></green>"
+  namestyle:
+    success: "<green>Looking good,</green> <name>"
   nickname:
-    success: "<green>Looking good, <name>"
+    success: "<green>Looking good,</green> <name>"
     failure:
       length: "<red>Nickname must be 3-16 characters!</red>"
   playerlistdecoration:

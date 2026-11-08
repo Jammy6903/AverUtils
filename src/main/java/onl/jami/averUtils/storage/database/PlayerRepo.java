@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 public class PlayerRepo {
-    public record PlayerData(UUID uuid, boolean isVerified, Long discordId, String discordUsername, String discordGlobalName, String discordNickname, String nickname, String pronouns, NameChoice nameChoice) {
+    public record PlayerData(UUID uuid, boolean isVerified, Long discordId, String discordUsername, String discordGlobalName, String discordNickname, String nickname, String pronouns, NameChoice nameChoice, String nameStyle, boolean pvpEnabled) {
         public enum NameChoice {
             PLAYER_NAME,
             NICKNAME,
@@ -39,7 +39,9 @@ public class PlayerRepo {
                         rs.getString("discord_nickname"),
                         rs.getString("nickname"),
                         rs.getString("pronouns"),
-                        PlayerData.NameChoice.valueOf(rs.getString("name_choice"))
+                        PlayerData.NameChoice.valueOf(rs.getString("name_choice")),
+                        rs.getString("name_style"),
+                        rs.getBoolean("pvp_enabled")
                 );
             }
         }
@@ -59,7 +61,9 @@ public class PlayerRepo {
                         rs.getString("discord_nickname"),
                         rs.getString("nickname"),
                         rs.getString("pronouns"),
-                        PlayerData.NameChoice.valueOf(rs.getString("name_choice"))
+                        PlayerData.NameChoice.valueOf(rs.getString("name_choice")),
+                        rs.getString("name_style"),
+                        rs.getBoolean("pvp_enabled")
                 );
             }
         }
@@ -142,6 +146,15 @@ public class PlayerRepo {
         String sql = "UPDATE players SET pronouns = ? WHERE uuid = ?";
         try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
             ps.setString(1, pronouns);
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
+        }
+    }
+
+    public static void updateNameStyle(UUID uuid, String nameStyle) throws SQLException {
+        String sql = "UPDATE players SET name_style = ? WHERE uuid = ?";
+        try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
+            ps.setString(1, nameStyle);
             ps.setString(2, uuid.toString());
             ps.executeUpdate();
         }

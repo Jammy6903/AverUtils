@@ -97,5 +97,11 @@ commands:
     permission: aveutils.motd
   playerlistdecoration:
     description: Create and edit player list decorations which will be randomly chosen from an active pool to display in the server list
+    aliases: [pld, listdecoration]
     usage: /playerlistdecoration [subcommand]
     permission: averutils.playerlistdecoration
+  namestyle:
+    description: Give your name some style
+    aliases: [style]
+    usage: /namestyle [RESET|#color|gradient(#color1:#color2)] [BOLD|UNDERLINE|ITALIC]
+    permission: averutils.namestyle

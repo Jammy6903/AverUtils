@@ -15,33 +15,59 @@ import onl.jami.averUtils.storage.cache.PlayerCache;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class PlayerName {
-    public static Component getComponent(Player player) {
+
+    public static Component getComponent(Player player, boolean styled) {
         PlayerRepo.PlayerData playerData = PlayerCache.getPlayer(player);
-        if (playerData == null) { return null; }
+        if (playerData == null) {
+            return Component.text(player.getName());
+        }
 
         String playerName = switch (playerData.nameChoice()) {
             case null -> player.getName();
             case PlayerRepo.PlayerData.NameChoice.PLAYER_NAME -> player.getName();
             case PlayerRepo.PlayerData.NameChoice.DISCORD_GLOBAL -> playerData.discordGlobalName() != null ? playerData.discordGlobalName() : player.getName();
-            case PlayerRepo.PlayerData.NameChoice.DISCORD_NICKNAME -> playerData.discordUsername() != null ? playerData.discordUsername() :  player.getName();
+            case PlayerRepo.PlayerData.NameChoice.DISCORD_NICKNAME -> playerData.discordUsername() != null ? playerData.discordUsername() : player.getName();
             case PlayerRepo.PlayerData.NameChoice.NICKNAME -> playerData.nickname() != null ? playerData.nickname() : player.getName();
         };
 
-        String discordUsername = playerData.discordUsername();
-        String discordGlobalName = playerData.discordGlobalName();
-        String discordNickname = playerData.nickname();
+        String nameStyle = playerData.nameStyle();
+        String styleString = playerName;
+        if (nameStyle != null && !nameStyle.isEmpty() && player.hasPermission("averutils.namestyle")) {
+            for (String style : playerData.nameStyle().split(" ")) {
+                NameStyle.Wrap tags = NameStyle.parse(player, style);
+                if (tags != null) {
+                    styleString = tags.open() + styleString + tags.close();
+                }
+            }
+        }
+        Component styledName = MiniMessage.miniMessage().deserialize(styleString);
 
-        Component nameHoverComponent = Component.text(playerName + "'s Profile", NamedTextColor.AQUA).decorate(TextDecoration.UNDERLINED);
-        nameHoverComponent = nameHoverComponent.append(Component.text("\nPlayer Name: " + player.getName()));
-        if (discordUsername != null) { nameHoverComponent = nameHoverComponent.append(Component.text("\nDiscord Username: " + playerData.discordUsername())); }
-        if (discordGlobalName != null) { nameHoverComponent = nameHoverComponent.append(Component.text("\nDiscord Global Name: " + playerData.discordGlobalName())); }
-        if (discordNickname != null) { nameHoverComponent = nameHoverComponent.append(Component.text("\nDiscord nickname: " + playerData.discordNickname())); }
-        nameHoverComponent = nameHoverComponent.append(Component.text("\n\nClick to private message!"));
+        String nick = playerData.nickname() == null ? "n/a" : playerData.nickname();
+        String discordUser = playerData.discordUsername() == null ? "n/a" : playerData.discordUsername();
+        String discordGlobal = playerData.discordGlobalName() == null ? "n/a" : playerData.discordGlobalName();
+        String discordNick = playerData.discordNickname() == null ? "n/a" : playerData.discordNickname();
 
-        return Component.text(playerName).color(NamedTextColor.WHITE)
-                .hoverEvent(HoverEvent.showText(nameHoverComponent))
+        String hoverFormat = Messages.getAll("player.profile.name-hover");
+
+        Component hover = MiniMessage.miniMessage().deserialize(hoverFormat,
+                Placeholder.component("name", styledName),
+                Placeholder.component("ign", Component.text(player.getName())),
+                Placeholder.component("nick", Component.text(nick)),
+                Placeholder.component("discord-user", Component.text(discordUser)),
+                Placeholder.component("discord-global", Component.text(discordGlobal)),
+                Placeholder.component("discord-nick", Component.text(discordNick))
+        );
+
+        if (!styled) {
+            return Component.text(playerName)
+                    .hoverEvent(HoverEvent.showText(hover));
+        }
+
+        return styledName
+                .hoverEvent(HoverEvent.showText(hover))
                 .clickEvent(ClickEvent.suggestCommand("/msg " + player.getName() + " "));
     }
 
@@ -69,7 +95,7 @@ public class PlayerName {
         Component component = MiniMessage.miniMessage().deserialize(formatString,
                 Placeholder.component("prefix", MiniMessage.miniMessage().deserialize(lpPrefixString)),
                 Placeholder.component("suffix", MiniMessage.miniMessage().deserialize(lpSuffixString)),
-                Placeholder.component("name", getComponent(player)),
+                Placeholder.component("name", getComponent(player, false)),
                 Placeholder.component("pronouns", pronouns)
         );
         player.playerListName(component);

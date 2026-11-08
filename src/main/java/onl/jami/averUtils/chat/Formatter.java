@@ -50,7 +50,7 @@ public class Formatter {
                         Placeholder.component("pronouns", Component.text(playerPronouns)));
             }
         }
-        return new MessageData(PlayerName.getComponent(player), prefix, suffix, pronouns);
+        return new MessageData(PlayerName.getComponent(player, true), prefix, suffix, pronouns);
     }
 
     public static Component formatChat(Player player, Component message) {
@@ -64,7 +64,7 @@ public class Formatter {
         return MiniMessage.miniMessage().deserialize(chatFormatString,
                 Placeholder.component("prefix", messageData.prefix),
                 Placeholder.component("suffix", messageData.suffix),
-                Placeholder.component("name", PlayerName.getComponent(player)),
+                Placeholder.component("name", PlayerName.getComponent(player, true)),
                 Placeholder.component("pronouns", messageData.pronouns),
                 Placeholder.component("message", message)
         );
