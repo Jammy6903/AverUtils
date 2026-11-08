@@ -159,4 +159,13 @@ public class PlayerRepo {
             ps.executeUpdate();
         }
     }
+
+    public static void updatePvp(UUID uuid, boolean pvpEnabled) throws SQLException {
+        String sql = "UPDATE players SET pvp = ? WHERE uuid = ?";
+        try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
+            ps.setBoolean(1, pvpEnabled);
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
+        }
+    }
 }

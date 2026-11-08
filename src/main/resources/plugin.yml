@@ -109,3 +109,7 @@ commands:
     description: Reload config and locale
     usage: /reload
     permission: op
+  pvp:
+    description: Enable and disable pvp for yourself
+    usage: /pvp
+    permission: averutils.pvp
