@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 public class PlayerRepo {
-    public record PlayerData(UUID uuid, boolean isVerified, Long discordId, String discordUsername, String discordGlobalName, String discordNickname, String nickname, String pronouns, NameChoice nameChoice, String nameStyle, boolean pvpEnabled) {
+    public record PlayerData(UUID uuid, boolean isVerified, Long discordId, String discordUsername, String discordGlobalName, String discordNickname, String nickname, String pronouns, NameChoice nameChoice, String nameStyle, boolean pvpEnabled, boolean tpEnabled) {
         public enum NameChoice {
             PLAYER_NAME,
             NICKNAME,
@@ -41,7 +41,8 @@ public class PlayerRepo {
                         rs.getString("pronouns"),
                         PlayerData.NameChoice.valueOf(rs.getString("name_choice")),
                         rs.getString("name_style"),
-                        rs.getBoolean("pvp_enabled")
+                        rs.getBoolean("pvp_enabled"),
+                        rs.getBoolean("tp_enabled")
                 );
             }
         }
@@ -63,7 +64,8 @@ public class PlayerRepo {
                         rs.getString("pronouns"),
                         PlayerData.NameChoice.valueOf(rs.getString("name_choice")),
                         rs.getString("name_style"),
-                        rs.getBoolean("pvp_enabled")
+                        rs.getBoolean("pvp_enabled"),
+                        rs.getBoolean("tp_enabled")
                 );
             }
         }
@@ -164,6 +166,15 @@ public class PlayerRepo {
         String sql = "UPDATE players SET pvp = ? WHERE uuid = ?";
         try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
             ps.setBoolean(1, pvpEnabled);
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
+        }
+    }
+
+    public static void updateTp(UUID uuid, boolean tpEnabled) throws SQLException {
+        String sql = "UPDATE players SET tp = ? WHERE uuid = ?";
+        try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
+            ps.setBoolean(1, tpEnabled);
             ps.setString(2, uuid.toString());
             ps.executeUpdate();
         }

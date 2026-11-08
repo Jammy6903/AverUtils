@@ -120,9 +120,10 @@ public final class AverUtils extends JavaPlugin {
         registerCommand("playerlistdecoration", new PlayerListDecoration());
         registerCommand("namestyle", new NameStyle());
         registerCommand("reload", new Reload());
-        registerCommand("pvp", new Pvp());
+        registerCommand("togglepvp", new TogglePvp());
         registerCommand("block", new Block());
         registerCommand("unblock", new Unblock());
+        registerCommand("toggletpa", new TogglePvp());
     }
 
     @Override

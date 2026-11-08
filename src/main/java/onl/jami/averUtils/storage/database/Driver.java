@@ -39,7 +39,8 @@ public class Driver {
                     name_choice         TEXT NOT NULL DEFAULT 'PLAYER_NAME'
                                         CHECK(name_choice IN ('PLAYER_NAME', 'DISCORD_GLOBAL', 'DISCORD_NICK', 'NICKNAME')),
                     name_style          TEXT,
-                    pvp_enabled         BOOLEAN NOT NULL DEFAULT TRUE
+                    pvp_enabled         BOOLEAN NOT NULL DEFAULT TRUE,
+                    tp_enabled          BOOLEAN NOT NULL DEFAULT TRUE
                 )
             """);
             st.executeUpdate("""
@@ -155,6 +156,7 @@ public class Driver {
         try (Statement st = connection.createStatement()) {
             st.executeUpdate("ALTER TABLE players ADD COLUMN name_style TEXT");
             st.executeUpdate("ALTER TABLE players ADD COLUMN pvp_enabled BOOLEAN NOT NULL DEFAULT TRUE");
+            st.executeUpdate("ALTER TABLE players ADD COLUMN tp_enabled BOOLEAN NOT NULL DEFAULT TRUE");
             connection.commit();
         } catch (SQLException exception) {
             connection.rollback();

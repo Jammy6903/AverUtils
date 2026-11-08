@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.SQLException;
 import java.util.List;
 
-public class Pvp implements TabExecutor {
+public class ToggleTpa implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player p)) {
@@ -26,12 +26,13 @@ public class Pvp implements TabExecutor {
 
         PlayerRepo.PlayerData playerData = PlayerCache.getPlayer(p);
         if (playerData == null) { return true; }
-        boolean pvp = !playerData.pvpEnabled();
+        boolean tp = !playerData.tpEnabled();
         try {
-            PlayerRepo.updatePvp(p.getUniqueId(), pvp);
-            Messages.send(p, "commands.pvp.success",
-                    Placeholder.component("state", Component.text(pvp))
+            PlayerRepo.updatePvp(p.getUniqueId(), tp);
+            Messages.send(p, "commands.toggletpa.success",
+                    Placeholder.component("state", Component.text(tp))
             );
+            PlayerCache.updatePlayer(p.getUniqueId());
         } catch (SQLException exception) {
             Messages.send(sender, "commands.generic.failure.unknown");
             AverUtils.logWarning(Messages.getString("errors.database.players"), exception);

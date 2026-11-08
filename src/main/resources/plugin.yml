@@ -109,10 +109,15 @@ commands:
     description: Reload config and locale
     usage: /reload
     permission: op
-  pvp:
-    description: Enable and disable pvp for yourself
-    usage: /pvp
+  togglepvp:
+    description: Toggle pvp for yourself
+    aliases: [pvp]
+    usage: /togglepvp
     permission: averutils.pvp
+  toggletpa:
+    description: Toggle teleport requests
+    usage: /toggletpa
+    permission: averutils.tpa
   block:
     description: Block a player in various social scenarios, CHAT, MESSAGE, TPA, PVP
     usage: /block [player] [CHAT|MESSAGE|TPA|PVP]

@@ -4,8 +4,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.cache.BlockCache;
+import onl.jami.averUtils.storage.cache.PlayerCache;
 import onl.jami.averUtils.storage.database.BlockCategory;
 import onl.jami.averUtils.storage.database.BlockRepo;
+import onl.jami.averUtils.storage.database.PlayerRepo;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -29,6 +31,12 @@ public class TpaHere implements TabExecutor {
         Player recipient = Bukkit.getPlayerExact(args[0]);
         if (recipient == null) {
             Messages.send(sender, "commands.tpahere.failure.player-not-found");
+            return true;
+        }
+
+        PlayerRepo.PlayerData recipientData = PlayerCache.getPlayer(recipient);
+        if (recipientData != null && !recipientData.tpEnabled()) {
+            Messages.send(sender, "commands.tpa.failure.disabled");
             return true;
         }
 

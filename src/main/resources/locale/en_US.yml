@@ -238,8 +238,6 @@ commands:
     success: "<green>Successfully updated your pronouns to <pronouns></green>"
     failure:
       length: "<red>Pronouns must be 1-10 characters!</red>"
-  pvp:
-    success: "<green>Successfully set PVP to <state></green>"
   reload:
     success: "<green>Successfully reloaded config and locale</green>"
   sethome:
@@ -252,11 +250,16 @@ commands:
       already-exists: "<red>Failed to create warp! Does it already exist?</red>"
   spawn:
     success: "<green>Successfully teleported you to spawn</green>"
+  toggletpa:
+    success: "<green>Successfully set Teleport Requests to <state></green>"
+  togglepvp:
+    success: "<green>Successfully set PVP to <state></green>"
   tpa:
     success:
       sending: "<yellow>Requesting to teleport to <player></yellow>"
       receiving: "<yellow><player> is requesting to teleport to you</yellow><newline><green>/tpaccept</green> <yellow>to accept,</yellow> <red>/tpdeny</red> <yellow>to deny</yellow>"
     failure:
+      disabled: "<red>You can't teleport request this player right now</red>"
       blocked: "<red>You can't teleport request this player right now</red>"
       player-not-found: "<red>That player is not online</red>"
   tpaccept:
@@ -275,6 +278,7 @@ commands:
       sending: "<yellow>Requesting <player> to teleport to you</yellow>"
       receiving: "<yellow><player> is requesting you to teleport to them</yellow><newline><green>/tpaccept</green> <yellow>to accept,</yellow> <red>/tpdeny</red> <yellow>to deny</yellow>"
     failure:
+      disabled: "<red>You can't teleport request this player right now</red>"
       blocked: "<red>You can't teleport request this player right now</red>"
       player-not-found: "<red>That player is not online</red>"
   tpdeny:
