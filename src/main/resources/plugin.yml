@@ -113,3 +113,11 @@ commands:
     description: Enable and disable pvp for yourself
     usage: /pvp
     permission: averutils.pvp
+  block:
+    description: Block a player in various social scenarios, CHAT, MESSAGE, TPA, PVP
+    usage: /block [player] [CHAT|MESSAGE|TPA|PVP]
+    permission: averutils.block
+  unblock:
+    descritpion: Unblock a player
+    usage: /unblock [player]
+    permission: averutils.block

@@ -2,6 +2,8 @@ package onl.jami.averUtils;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.luckperms.api.LuckPerms;
+import onl.jami.averUtils.social.blocks.Block;
+import onl.jami.averUtils.social.blocks.Unblock;
 import onl.jami.averUtils.staff.admin.DoAs;
 import onl.jami.averUtils.staff.admin.Motd;
 import onl.jami.averUtils.staff.admin.PlayerListDecoration;
@@ -119,6 +121,8 @@ public final class AverUtils extends JavaPlugin {
         registerCommand("namestyle", new NameStyle());
         registerCommand("reload", new Reload());
         registerCommand("pvp", new Pvp());
+        registerCommand("block", new Block());
+        registerCommand("unblock", new Unblock());
     }
 
     @Override

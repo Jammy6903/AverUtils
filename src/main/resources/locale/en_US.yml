@@ -151,6 +151,10 @@ commands:
       no-permission: "<red>You do not have permission to run that command.</red>"
       players-only: "<red>Only players can run that command</red>"
       unknown: "<red>An unknown error has occurred.</red>"
+  block:
+    success: "<green>Blocked <player> for the following categories: <categories></green>"
+    failure:
+      doesnt-exist: "<red><player> has never joined the server</red>"
   delhome:
     success: "<green>Successfully deleted <home></green>"
     failure:
@@ -279,6 +283,10 @@ commands:
     timeout:
       sending: "<red><player> did not accept your teleport request in time</red>"
       receiving: "<red><player>'s teleport request has timed out</red>"
+  unblock:
+    success: "<green><player> has been unblocked</green>"
+    failure:
+      doesnt-exist: "<red><player> is not blocked</red>"
   verify:
     success: "<green>You have been verified. Welcome, <discord></green>"
     failure:

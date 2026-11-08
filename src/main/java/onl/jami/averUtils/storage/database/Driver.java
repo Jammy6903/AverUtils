@@ -96,6 +96,13 @@ public class Driver {
                                 PRIMARY KEY (name, location)
                 )
             """);
+            st.executeUpdate("""
+                CREATE TABLE IF NOT EXISTS blocks (
+                    player_uuid     TEXT NOT NULL REFERENCES players(uuid) ON DELETE CASCADE,
+                    blocked_uuid    TEXT NOT NULL REFERENCES players(uuid) ON DELETE CASCADE,
+                    categories      INTEGER NOT NULL DEFAULT 0
+                )
+            """);
         }
     }
 
