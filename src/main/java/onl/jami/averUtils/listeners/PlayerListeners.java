@@ -6,8 +6,11 @@ import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.sync.chat.MinecraftToDiscord;
 import onl.jami.averUtils.discord.sync.roles.RoleSync;
 import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.storage.cache.BlockCache;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import onl.jami.averUtils.storage.cache.PlayerListDecorationCache;
+import onl.jami.averUtils.storage.database.BlockCategory;
+import onl.jami.averUtils.storage.database.BlockRepo;
 import onl.jami.averUtils.storage.database.PlayerListDecorationRepo;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.discord.verification.VerifyLock;
@@ -43,6 +46,7 @@ public class PlayerListeners implements Listener {
 
         // cache player
         PlayerCache.loadPlayer(player);
+        BlockCache.loadBlocksForPlayer(player.getUniqueId());
 
         // verify player if required, sync roles with discord and send join message to any linked channels
         VerifyLock.verifyOnLogin(player);
@@ -68,6 +72,7 @@ public class PlayerListeners implements Listener {
 
         // remove player from cache
         PlayerCache.removePlayer(e.getPlayer().getUniqueId());
+        BlockCache.removeBlocksForPlayer(e.getPlayer().getUniqueId());
     }
 
     @EventHandler
@@ -90,7 +95,13 @@ public class PlayerListeners implements Listener {
 
         PlayerRepo.PlayerData victimData = PlayerCache.getPlayer(victim);
         PlayerRepo.PlayerData attackerData = PlayerCache.getPlayer(attacker);
-        if (victimData == null || attackerData == null || victimData.pvpEnabled() || attackerData.pvpEnabled()) { return; }
+        BlockRepo.BlockData block = BlockCache.getBlockForPlayers(victim.getUniqueId(), attacker.getUniqueId());
+        if (victimData == null ||
+                attackerData == null ||
+                victimData.pvpEnabled() ||
+                attackerData.pvpEnabled() ||
+                !(block != null && block.categories().contains(BlockCategory.PVP))
+        ) { return; }
         e.setCancelled(true);
         Messages.send(attacker, "player.profile.pvp",
                 Placeholder.component("victim", PlayerName.getComponent(victim, false))

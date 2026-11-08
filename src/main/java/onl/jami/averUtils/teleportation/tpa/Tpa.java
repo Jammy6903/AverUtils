@@ -3,6 +3,9 @@ package onl.jami.averUtils.teleportation.tpa;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.storage.cache.BlockCache;
+import onl.jami.averUtils.storage.database.BlockCategory;
+import onl.jami.averUtils.storage.database.BlockRepo;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -18,7 +21,7 @@ public class Tpa implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player p)) {
             Messages.send(sender, "commands.generic.failure.player-only");
             return true;
         }
@@ -30,6 +33,13 @@ public class Tpa implements TabExecutor {
             Messages.send(sender, "commands.tpa.failure.player-not-found");
             return true;
         }
+
+        BlockRepo.BlockData block = BlockCache.getBlockForPlayers(recipient.getUniqueId(), p.getUniqueId());
+        if (block != null && block.categories().contains(BlockCategory.MESSAGES)) {
+            Messages.send(sender, "commands.tpa.failure.blocked");
+            return true;
+        }
+
         TpRequestCache.addRequest(recipient.getUniqueId(), new TpRequestCache.TpRequest(((Player) sender).getUniqueId(), TpRequestCache.TpRequest.Direction.TO_RECIPIENT));
         Messages.send(sender, "commands.tpa.success.sending",
                 Placeholder.component("player", Component.text(recipient.getName()))

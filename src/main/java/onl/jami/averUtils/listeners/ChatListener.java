@@ -4,6 +4,10 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import onl.jami.averUtils.social.chat.Formatter;
 import onl.jami.averUtils.discord.sync.chat.MinecraftToDiscord;
+import onl.jami.averUtils.storage.cache.BlockCache;
+import onl.jami.averUtils.storage.database.BlockCategory;
+import onl.jami.averUtils.storage.database.BlockRepo;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -17,6 +21,13 @@ public class ChatListener implements Listener {
         // format chat message
         Component formattedMessage = Formatter.formatChat(e.getPlayer(), e.message());
         e.message(formattedMessage);
+        e.viewers().removeIf(audience -> {
+            if (audience instanceof Player p) {
+                BlockRepo.BlockData block = BlockCache.getBlockForPlayers(p.getUniqueId(), e.getPlayer().getUniqueId());
+                return block != null && block.categories().contains(BlockCategory.CHAT);
+            }
+            return false;
+        });
         e.renderer(((_, _, message, _) -> message));
     }
 }

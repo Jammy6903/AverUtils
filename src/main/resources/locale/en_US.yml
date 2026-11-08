@@ -154,6 +154,7 @@ commands:
   block:
     success: "<green>Blocked <player> for the following categories: <categories></green>"
     failure:
+      self: "<red>You can't block yourself</red>"
       doesnt-exist: "<red><player> has never joined the server</red>"
   delhome:
     success: "<green>Successfully deleted <home></green>"
@@ -198,6 +199,7 @@ commands:
         wrong-args: "Usage: /motd set [name] [true/false]"
   msg:
     failure:
+      blocked: "<red>You can't message this player right now</red>"
       doesnt-exist: "<red>Player not found</red>"
   reply:
     failure:
@@ -255,6 +257,7 @@ commands:
       sending: "<yellow>Requesting to teleport to <player></yellow>"
       receiving: "<yellow><player> is requesting to teleport to you</yellow><newline><green>/tpaccept</green> <yellow>to accept,</yellow> <red>/tpdeny</red> <yellow>to deny</yellow>"
     failure:
+      blocked: "<red>You can't teleport request this player right now</red>"
       player-not-found: "<red>That player is not online</red>"
   tpaccept:
     success:
@@ -272,6 +275,7 @@ commands:
       sending: "<yellow>Requesting <player> to teleport to you</yellow>"
       receiving: "<yellow><player> is requesting you to teleport to them</yellow><newline><green>/tpaccept</green> <yellow>to accept,</yellow> <red>/tpdeny</red> <yellow>to deny</yellow>"
     failure:
+      blocked: "<red>You can't teleport request this player right now</red>"
       player-not-found: "<red>That player is not online</red>"
   tpdeny:
     success:
@@ -286,6 +290,7 @@ commands:
   unblock:
     success: "<green><player> has been unblocked</green>"
     failure:
+      self: "<red>You can't unblock yourself</red>"
       doesnt-exist: "<red><player> is not blocked</red>"
   verify:
     success: "<green>You have been verified. Welcome, <discord></green>"
@@ -311,6 +316,7 @@ errors:
     role_links: "Failed to access role_links table in database"
     motds: "Failed to access motds table in database"
     player_list_decorations: "Failed to access player_list_decorations table in database"
+    blocks: "Failed to access blocks table in database"
   discord:
     setup: "Failed to initialize the Discord bot"
   generic: "An unknown error has occurred."

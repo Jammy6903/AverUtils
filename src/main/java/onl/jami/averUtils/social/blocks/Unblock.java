@@ -4,7 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;
-import onl.jami.averUtils.social.chat.messaging.Message;
+import onl.jami.averUtils.storage.cache.BlockCache;
 import onl.jami.averUtils.storage.database.BlockRepo;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -27,8 +27,14 @@ public class Unblock implements TabExecutor {
 
         if (args.length == 0) { return false; }
 
+        OfflinePlayer blocked = Bukkit.getOfflinePlayer(args[0]);
+
+        if (blocked.getUniqueId().equals(p.getUniqueId())) {
+            Messages.send(p, "commands.unblock.failure.self");
+            return true;
+        }
+
         try {
-            OfflinePlayer blocked = Bukkit.getOfflinePlayer(args[0]);
             if (!BlockRepo.deleteBlock(p.getUniqueId(), blocked.getUniqueId())) {
                 Messages.send(sender, "commands.unblock.failure.doesnt-exist",
                         Placeholder.component("player", Component.text(args[0]))
@@ -38,9 +44,10 @@ public class Unblock implements TabExecutor {
             Messages.send(sender, "commands.unblock.success",
                     Placeholder.component("player", Component.text(args[0]))
             );
+            BlockCache.loadBlocksForPlayer(p.getUniqueId());
         } catch (Exception exception) {
             Messages.send(sender, "commands.generic.failure.unknown");
-            AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
+            AverUtils.logWarning(Messages.getString("errors.database.blocks"), exception);
         }
 
         return true;

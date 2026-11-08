@@ -1,6 +1,6 @@
-package onl.jami.averUtils.social.chat.messaging.commands;
+package onl.jami.averUtils.social.messaging.commands;
 
-import onl.jami.averUtils.social.chat.messaging.Message;
+import onl.jami.averUtils.social.messaging.Message;
 import onl.jami.averUtils.locale.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

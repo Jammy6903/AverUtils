@@ -4,6 +4,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.social.messaging.Message;
+import onl.jami.averUtils.storage.cache.BlockCache;
 import onl.jami.averUtils.storage.database.BlockCategory;
 import onl.jami.averUtils.storage.database.BlockRepo;
 import onl.jami.averUtils.storage.database.PlayerRepo;
@@ -37,32 +39,44 @@ public class Block implements TabExecutor {
 
         if (args.length > 1) {
             categories = EnumSet.noneOf(BlockCategory.class);
-            for (int i = 1; i < args.length - 1; i++) {
+            for (int i = 1; i < args.length; i++) {
                 try {
-                    categories.add(BlockCategory.valueOf(args[i]));
+                    categories.add(BlockCategory.valueOf(args[i].toUpperCase()));
                 } catch (IllegalArgumentException e) {
                     return false;
                 }
             }
         }
 
+        OfflinePlayer blocked = Bukkit.getOfflinePlayer(args[0]);
+
+        if (blocked.getUniqueId().equals(p.getUniqueId())) {
+            Messages.send(p, "commands.block.failure.self");
+            return true;
+        }
+
         try {
-            OfflinePlayer blocked = Bukkit.getOfflinePlayer(args[0]);
-            if (PlayerRepo.getPlayer(blocked.getUniqueId()) == null) {
-                Messages.send(sender, "commands.block.failure.doesnt-exist",
-                        Placeholder.component("player", Component.text(args[0]))
-                );
+            try {
+                if (PlayerRepo.getPlayer(blocked.getUniqueId()) == null) {
+                    Messages.send(sender, "commands.block.failure.doesnt-exist",
+                            Placeholder.component("player", Component.text(args[0]))
+                    );
+                    return true;
+                }
+            } catch (SQLException exception) {
+                Messages.send(sender, "commands.generic.failure.unknown");
+                AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
                 return true;
             }
             BlockRepo.createBlock(p.getUniqueId(), blocked.getUniqueId(), categories);
             Messages.send(sender, "commands.block.success",
                     Placeholder.component("player", Component.text(args[0]))
             );
+            BlockCache.loadBlocksForPlayer(p.getUniqueId());
         } catch (SQLException exception) {
             Messages.send(sender, "commands.generic.failure.unknown");
-            AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
+            AverUtils.logWarning(Messages.getString("errors.database.blocks"), exception);
         }
-
         return true;
     }
 

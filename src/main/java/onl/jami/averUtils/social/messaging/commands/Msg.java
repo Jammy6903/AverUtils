@@ -1,7 +1,10 @@
-package onl.jami.averUtils.social.chat.messaging.commands;
+package onl.jami.averUtils.social.messaging.commands;
 
-import onl.jami.averUtils.social.chat.messaging.Message;
+import onl.jami.averUtils.social.messaging.Message;
 import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.storage.cache.BlockCache;
+import onl.jami.averUtils.storage.database.BlockCategory;
+import onl.jami.averUtils.storage.database.BlockRepo;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -25,6 +28,13 @@ public class Msg implements TabExecutor {
         if (target == null) {
             Messages.send(sender, "commands.msg.failure.doesnt-exist");
             return true;
+        }
+        if (sender instanceof Player p) {
+            BlockRepo.BlockData block = BlockCache.getBlockForPlayers(target.getUniqueId(), p.getUniqueId());
+            if (block != null && block.categories().contains(BlockCategory.MESSAGES)) {
+                Messages.send(sender, "commands.msg.failure.blocked");
+                return true;
+            }
         }
 
         Message m = new Message();

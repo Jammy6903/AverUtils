@@ -25,6 +25,7 @@ public class Driver {
 
     public static void initTables() throws SQLException {
         try (Statement st = connection.createStatement()) {
+            st.execute("PRAGMA foreign_keys= ON;");
             st.executeUpdate("""
                 CREATE TABLE IF NOT EXISTS players (
                     uuid                TEXT PRIMARY KEY NOT NULL,
@@ -100,7 +101,8 @@ public class Driver {
                 CREATE TABLE IF NOT EXISTS blocks (
                     player_uuid     TEXT NOT NULL REFERENCES players(uuid) ON DELETE CASCADE,
                     blocked_uuid    TEXT NOT NULL REFERENCES players(uuid) ON DELETE CASCADE,
-                    categories      INTEGER NOT NULL DEFAULT 0
+                    categories      INTEGER NOT NULL DEFAULT 0,
+                                    PRIMARY KEY (player_uuid, blocked_uuid)
                 )
             """);
         }

@@ -1,4 +1,4 @@
-package onl.jami.averUtils.social.chat.messaging;
+package onl.jami.averUtils.social.messaging;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;

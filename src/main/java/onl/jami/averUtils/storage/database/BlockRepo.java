@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class BlockRepo {
-    public record BlockData(UUID playerUuid, UUID blockedUuid, EnumSet<ChannelLinkCategory> categories) {}
+    public record BlockData(UUID playerUuid, UUID blockedUuid, EnumSet<BlockCategory> categories) {}
 
     public static List<BlockData> getBlocksForPlayer(UUID uuid) throws SQLException {
         String sql = "SELECT * FROM blocks WHERE player_uuid = ?";
@@ -21,7 +21,7 @@ public class BlockRepo {
                     blocks.add(new BlockData(
                             uuid,
                             UUID.fromString(rs.getString("blocked_uuid")),
-                            ChannelLinkCategory.fromMask(rs.getInt("categories"))
+                            BlockCategory.fromMask(rs.getInt("categories"))
                     ));
                 }
                 return blocks;
