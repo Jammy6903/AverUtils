@@ -6,6 +6,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.sync.roles.RoleSync;
 import onl.jami.averUtils.discord.verification.VerificationCodes;
+import onl.jami.averUtils.discord.verification.jail.JailWorld;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.cache.PlayerCache;
@@ -21,7 +22,7 @@ import java.sql.SQLException;
 public class VerifyMinecraft implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player p)) {
             Messages.send(sender, "commands.generic.failure.players-only");
             return true;
         }
@@ -39,12 +40,13 @@ public class VerifyMinecraft implements CommandExecutor {
         g.retrieveMemberById(id).queue(
                 m -> {
                     try {
-                        PlayerRepo.verifyPlayer(((Player)sender).getUniqueId(), id, m.getUser().getName(), m.getUser().getGlobalName(), m.getNickname());
-                        PlayerCache.updatePlayer(((Player)sender).getUniqueId());
+                        PlayerRepo.verifyPlayer(p.getUniqueId(), id, m.getUser().getName(), m.getUser().getGlobalName(), m.getNickname());
+                        PlayerCache.updatePlayer(p.getUniqueId());
                         Messages.send(sender, "commands.verify.success",
                                 Placeholder.component("discord", Component.text(m.getEffectiveName()))
                         );
-                        RoleSync.sync((Player)sender);
+                        JailWorld.release(p);
+                        RoleSync.sync(p);
                     } catch (SQLException exception) {
                         AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
                         Bukkit.getScheduler().runTask(AverUtils.getPlugin(), () -> Messages.send(sender, "commands.generic.failure.unknown"));

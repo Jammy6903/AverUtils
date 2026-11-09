@@ -71,6 +71,7 @@ public class JailWorld {
     }
 
     public static void release(Player player) {
+        if (player.getLocation().getWorld() != AverUtils.getJailWorld()) { return; }
         Bukkit.getScheduler().runTask(AverUtils.getPlugin(), () -> player.teleport(Bukkit.getWorlds().getFirst().getSpawnLocation()));
     }
 
