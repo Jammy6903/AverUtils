@@ -27,6 +27,7 @@ public class TpAccept implements CommandExecutor {
         Player requester = Bukkit.getPlayer(latestRequest.requester());
         if (requester == null) {
             Messages.send(sender, "commands.tpaccept.failure.player-not-found");
+            return true;
         }
 
         if (latestRequest.direction().equals(TpRequestCache.TpRequest.Direction.TO_RECIPIENT)) {

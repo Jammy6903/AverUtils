@@ -48,7 +48,7 @@ public class Tpa implements TabExecutor {
             return true;
         }
 
-        TpRequestCache.addRequest(recipient.getUniqueId(), new TpRequestCache.TpRequest(((Player) sender).getUniqueId(), TpRequestCache.TpRequest.Direction.TO_RECIPIENT));
+        TpRequestCache.addRequest(recipient.getUniqueId(), new TpRequestCache.TpRequest(p.getUniqueId(), TpRequestCache.TpRequest.Direction.TO_RECIPIENT));
         Messages.send(sender, "commands.tpa.success.sending",
                 Placeholder.component("player", Component.text(recipient.getName()))
         );
