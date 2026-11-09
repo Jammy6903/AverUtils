@@ -133,6 +133,7 @@ public final class AverUtils extends JavaPlugin {
         registerCommand("block", new Block());
         registerCommand("unblock", new Unblock());
         registerCommand("toggletpa", new ToggleTpa());
+        registerCommand("toggleping", new TogglePing());
     }
 
     @Override

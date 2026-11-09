@@ -21,7 +21,7 @@ public class Driver {
         return connection;
     }
 
-    private static final int SCHEMA_VERSION = 2;
+    private static final int SCHEMA_VERSION = 3;
 
     public static void initTables() throws SQLException {
         try (Statement st = connection.createStatement()) {
@@ -40,7 +40,8 @@ public class Driver {
                                         CHECK(name_choice IN ('PLAYER_NAME', 'DISCORD_GLOBAL', 'DISCORD_NICK', 'NICKNAME')),
                     name_style          TEXT,
                     pvp_enabled         BOOLEAN NOT NULL DEFAULT TRUE,
-                    tp_enabled          BOOLEAN NOT NULL DEFAULT TRUE
+                    tp_enabled          BOOLEAN NOT NULL DEFAULT TRUE,
+                    ping_enabled        BOOLEAN NOT NULL DEFAULT TRUE,
                 )
             """);
             st.executeUpdate("""
@@ -113,6 +114,7 @@ public class Driver {
         int current = getUserVersion();
         if (current < 1) { migrateToV1(); }
         if (current < 2) { migrateToV2(); }
+        if (current < 3) { migrateToV3(); }
         setSchemaVersion(SCHEMA_VERSION);
     }
 
@@ -157,6 +159,20 @@ public class Driver {
             st.executeUpdate("ALTER TABLE players ADD COLUMN name_style TEXT");
             st.executeUpdate("ALTER TABLE players ADD COLUMN pvp_enabled BOOLEAN NOT NULL DEFAULT TRUE");
             st.executeUpdate("ALTER TABLE players ADD COLUMN tp_enabled BOOLEAN NOT NULL DEFAULT TRUE");
+            connection.commit();
+        } catch (SQLException exception) {
+            connection.rollback();
+            throw exception;
+        } finally {
+            connection.setAutoCommit(oldAutoCommit);
+        }
+    }
+
+    private static void migrateToV3() throws SQLException {
+        boolean oldAutoCommit = connection.getAutoCommit();
+        connection.setAutoCommit(false);
+        try (Statement st = connection.createStatement()) {
+            st.executeUpdate("ALTER TABLE players ADD COLUMN ping_enabled BOOLEAN NOT NULL DEFAULT TRUE");
             connection.commit();
         } catch (SQLException exception) {
             connection.rollback();

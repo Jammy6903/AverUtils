@@ -256,6 +256,8 @@ commands:
     success: "<green>Successfully teleported you to spawn</green>"
   toggletpa:
     success: "<green>Successfully set Teleport Requests to <state></green>"
+  toggleping:
+    success: "<green>Successfully set Pings to <state></green>"
   togglepvp:
     success: "<green>Successfully set PVP to <state></green>"
   tpa:

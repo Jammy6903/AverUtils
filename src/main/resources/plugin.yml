@@ -118,6 +118,10 @@ commands:
     description: Toggle teleport requests
     usage: /toggletpa
     permission: averutils.tpa
+  toggleping:
+    description: Toggle chat pings
+    usage: /toggleping
+    permission: averutils.ping
   block:
     description: Block a player in various social scenarios, CHAT, MESSAGE, TPA, PVP
     usage: /block [player] [CHAT|MESSAGE|TPA|PVP]
