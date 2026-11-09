@@ -107,6 +107,16 @@ public class Driver {
                                     PRIMARY KEY (player_uuid, blocked_uuid)
                 )
             """);
+            st.executeUpdate("""
+                CREATE TABLE IF NOT EXISTS reports (
+                    report_id       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    reported_uuid   TEXT REFERENCES players(uuid),
+                    reporter_uuid   TEXT NOT NULL REFERENCES players(uuid),
+                    reason          TEXT NOT NULL,
+                    details         TEXT NOT NULL,
+                    is_active       BOOLEAN NOT NULL DEFAULT TRUE
+                )
+            """);
         }
     }
 

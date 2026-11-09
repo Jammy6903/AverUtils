@@ -9,10 +9,7 @@ import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.cache.BlockCache;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import onl.jami.averUtils.storage.cache.PlayerListDecorationCache;
-import onl.jami.averUtils.storage.database.BlockCategory;
-import onl.jami.averUtils.storage.database.BlockRepo;
-import onl.jami.averUtils.storage.database.PlayerListDecorationRepo;
-import onl.jami.averUtils.storage.database.PlayerRepo;
+import onl.jami.averUtils.storage.database.*;
 import onl.jami.averUtils.discord.verification.VerifyLock;
 import onl.jami.averUtils.userconfig.PlayerName;
 import org.bukkit.Bukkit;
@@ -86,6 +83,19 @@ public class PlayerListeners implements Listener {
         for (Player other : Bukkit.getOnlinePlayers()) {
             if (!other.equals(player) && other.hasPermission("averutils.ping")) {
                 other.addCustomChatCompletions(List.of(tag));
+            }
+        }
+
+        if (player.hasPermission("averutils.moderation.reports")) {
+            try {
+                List<ReportRepo.ReportData> reports = ReportRepo.getByActive(true);
+                if (!reports.isEmpty()) {
+                    Messages.send(player, "moderation.reports-pending",
+                            Placeholder.component("count", Component.text(reports.size()))
+                    );
+                }
+            } catch (SQLException exception) {
+                AverUtils.logWarning(Messages.getString("errors.database.reports"), exception);
             }
         }
     }

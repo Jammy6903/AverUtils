@@ -50,6 +50,15 @@ discord:
 moderation:
   punishment-ui:
     title: "Punishment Menu"
+  reports-ui:
+    title: "Reports Menu"
+    closed-title: " > Closed Reports"
+    teleport:
+      success: "<green>You have been teleported</green>"
+      failure:
+        player-offline: "<red>That player is offline</red>"
+  reports-pending: "<bold><dark_red>[!]</dark_red></bold> <red>There are <count> active reports waiting</red>"
+  new-report: "<bold><dark_red>[!]</dark_red></bold> <yellow>There is a new report waiting to be looked at</yellow>"
 
 player:
   profile:
@@ -99,6 +108,7 @@ player:
       suffix: "<suffix>"
   join:
     format:
+      first-time: "<gray>[</gray><green>+</green><gray>]</gray> <aqua>Welcome <name> to Monkey Paw SMP!</aqua>"
       message: "<gray>[</gray><green>+</green><gray>]</gray> <aqua><message></aqua>"
     messages:
       - "Look out! it's <name>"
@@ -110,6 +120,7 @@ player:
       - "<name> monkeys your paw"
       - "<name>'s never gonna give you up"
       - "<name> rolled a NAT20"
+      - "<name>'s OC could beat up your OC"
   quit:
     format:
       message: "<gray>[</gray><red>-</red><gray>]</gray> <aqua><message></aqua>"
@@ -232,6 +243,10 @@ commands:
       length: "<red>Pronouns must be 1-10 characters!</red>"
   reload:
     success: "<green>Successfully reloaded config and locale</green>"
+  report:
+    success: "<green>Successfully reported <player> for <reason>:</green> <details><newline><yellow>Note: You can block any player with /block</yellow>"
+    failure:
+      invalid-reason: "<red>You must select a provided reason for the report</red"
   sethome:
     success: "<green>Successfully set your new home, <home></green>"
     failure:
@@ -315,6 +330,7 @@ errors:
     motds: "Failed to access motds table in database"
     player_list_decorations: "Failed to access player_list_decorations table in database"
     blocks: "Failed to access blocks table in database"
+    reports: "Failed to access reports table in database"
   discord:
     setup: "Failed to initialize the Discord bot"
   generic: "An unknown error has occurred."

@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.luckperms.api.LuckPerms;
 import onl.jami.averUtils.discord.verification.jail.JailWorld;
 import onl.jami.averUtils.listeners.CommandListener;
+import onl.jami.averUtils.social.Report;
 import onl.jami.averUtils.social.blocks.Block;
 import onl.jami.averUtils.social.blocks.Unblock;
 import onl.jami.averUtils.staff.admin.DoAs;
@@ -13,6 +14,8 @@ import onl.jami.averUtils.listeners.ChatListener;
 import onl.jami.averUtils.listeners.PingListener;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.locale.Reload;
+import onl.jami.averUtils.staff.moderation.Reports;
+import onl.jami.averUtils.staff.moderation.reportmenu.ReportMenuListener;
 import onl.jami.averUtils.storage.cache.ChannelLinkCache;
 import onl.jami.averUtils.storage.cache.MotdCache;
 import onl.jami.averUtils.storage.cache.PlayerListDecorationCache;
@@ -105,6 +108,7 @@ public final class AverUtils extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerListeners(), this);
         getServer().getPluginManager().registerEvents(new PingListener(), this);
         getServer().getPluginManager().registerEvents(new CommandListener(), this);
+        getServer().getPluginManager().registerEvents(new ReportMenuListener(), this);
         registerCommand("msg", new Msg());
         registerCommand("reply", new Reply());
         registerCommand("tpa", new Tpa());
@@ -134,6 +138,8 @@ public final class AverUtils extends JavaPlugin {
         registerCommand("unblock", new Unblock());
         registerCommand("toggletpa", new ToggleTpa());
         registerCommand("toggleping", new TogglePing());
+        registerCommand("report", new Report());
+        registerCommand("reports", new Reports());
     }
 
     @Override

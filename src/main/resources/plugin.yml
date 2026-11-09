@@ -25,7 +25,7 @@ commands:
     permission: averutils.homes
   warp:
     description: Teleport to a warp point
-    usage: /warp [name]
+    usage: /warp <name>
     permission: averutils.warp
   warps:
     description: Lists warp points
@@ -33,19 +33,19 @@ commands:
     permission: averutils.warp
   setwarp:
     description: Set a warp point
-    usage: /setwarp [name]
+    usage: /setwarp <name>
     permission: averutils.editwarps
   delwarp:
     description: Delete a warp point
-    usage: /delwarp [name]
+    usage: /delwarp <name?
     permission: averutils.editwarps
   tpa:
     description: Request to teleport to a player
-    usage: /tpa [username]
+    usage: /tpa <username>
     permission: averutils.tpa
   tpahere:
     description: Request to teleport a player to your position
-    usage: /tpahere [username]
+    usage: /tpahere <username>
     permission: averutils.tpa
   tpaccept:
     description: Accept a tpa request
@@ -62,48 +62,48 @@ commands:
   msg:
     description: Message a player privately
     aliases: [tell, w, whisper, message]
-    usage: /msg [player] [message]
+    usage: /msg <player> <message...>
     permission: averutils.msg
   reply:
     description: Reply to the last player who messaged you
     aliases: [r]
-    usage: /reply [message]
+    usage: /reply <message>
     permission: averutils.msg
   verify:
     description: Verify your Minecraft account with the Discord Bot
-    usage: /verify [code] - use /verify in Discord to get your code
+    usage: /verify <code> - use /verify in Discord to get your code
     permission: averutils.verify
   doas:
     description: Make a player perform a command
-    usage: /doas [player] [command]
+    usage: /doas <player> <command...>
     permission: averutils.doas
   nickname:
     description: Set your nickname
     aliases: [nick]
-    usage: /nickname [name]
+    usage: /nickname <name>
     permission: averutils.nickname
   namechoice:
     description: Choose which name to use
     aliases: [name]
-    usage: /namechoice [PLAYER_NAME/NICKNAME/DISCORD_GLOBAL/DISCORD_NICKNAME]
+    usage: /namechoice <PLAYER_NAME/NICKNAME/DISCORD_GLOBAL/DISCORD_NICKNAME>
     permission: averutils.namechoice
   pronouns:
     description: Choose your pronouns
-    usage: /pronouns [pronouns]
+    usage: /pronouns <pronouns>
     permission: averutils.pronouns
   motd:
     description: Create and edit MOTDs which will be randomly chosen from an active pool when a player pings the server
-    usage: /motd [subcommand]
+    usage: /motd <subcommand>
     permission: aveutils.motd
   playerlistdecoration:
     description: Create and edit player list decorations which will be randomly chosen from an active pool to display in the server list
     aliases: [pld, listdecoration]
-    usage: /playerlistdecoration [subcommand]
+    usage: /playerlistdecoration <subcommand>
     permission: averutils.playerlistdecoration
   namestyle:
     description: Give your name some style
     aliases: [style]
-    usage: /namestyle [RESET|#color|gradient(#color1:#color2)] [BOLD|UNDERLINE|ITALIC]
+    usage: /namestyle <RESET|#color|gradient(#color1:#color2)> [BOLD|UNDERLINE|ITALIC...]
     permission: averutils.namestyle
   reload:
     description: Reload config and locale
@@ -124,9 +124,17 @@ commands:
     permission: averutils.ping
   block:
     description: Block a player in various social scenarios, CHAT, MESSAGE, TPA, PVP
-    usage: /block [player] [CHAT|MESSAGE|TPA|PVP]
+    usage: /block <player> [CHAT|MESSAGE|TPA|PVP...]
     permission: averutils.block
   unblock:
     descritpion: Unblock a player
-    usage: /unblock [player]
+    usage: /unblock <player>
     permission: averutils.block
+  report:
+    description: Report a player
+    usage: /report <player> <reason> [details...]
+    permission: avertuils.report
+  reports:
+    description: Browse reports
+    usage: /reports
+    permission: averutils.moderation.reports
