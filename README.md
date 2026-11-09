@@ -52,7 +52,7 @@ A utility plugin for Spigot/Paper Minecraft servers adding various chat commands
 | /togglepvp            | averutils.pvp                                                                                                  | /pvp                          |
 | /toggletpa            | averutils.tpa                                                                                                  |                               |
 | /block                | averutils.block                                                                                                |                               |
-| /unblock              | averutils.unblock                                                                                              |                               |
+| /unblock              | averutils.block                                                                                              |                               |
 | /verify               | averutils.verify                                                                                               |                               |
 | /motd                 | averutils.motd                                                                                                 |                               |
 | /playerlistdecoration | averutils.playerlistdecoration                                                                                 | /pld, /listdecoration         |
