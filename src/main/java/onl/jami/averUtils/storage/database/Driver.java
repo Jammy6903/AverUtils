@@ -41,7 +41,7 @@ public class Driver {
                     name_style          TEXT,
                     pvp_enabled         BOOLEAN NOT NULL DEFAULT TRUE,
                     tp_enabled          BOOLEAN NOT NULL DEFAULT TRUE,
-                    ping_enabled        BOOLEAN NOT NULL DEFAULT TRUE,
+                    ping_enabled        BOOLEAN NOT NULL DEFAULT TRUE
                 )
             """);
             st.executeUpdate("""

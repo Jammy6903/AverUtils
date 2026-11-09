@@ -54,8 +54,9 @@ public class MinecraftToDiscord {
         }
     }
 
-    public static void sendJoinMessage(PlayerJoinEvent event) {
+    public static void sendJoinMessage(Component joinMessage) {
         if (!AverUtils.getCfg().getBoolean("discord.enabled")) { return; }
+        if (joinMessage == null) { return; }
 
         List<ChannelLinkRepo.ChannelData> channelData = ChannelLinkCache.getChannels(ChannelLinkCategory.JOIN);
         for (ChannelLinkRepo.ChannelData channel : channelData) {
@@ -63,12 +64,13 @@ public class MinecraftToDiscord {
             if (g == null) { return; }
             TextChannel c = g.getChannelById(TextChannel.class, channel.channelId());
             if  (c == null) { return; }
-            c.sendMessage(event.getPlayer().getName() + " joined the game").queue();
+            c.sendMessage(PlainTextComponentSerializer.plainText().serialize(joinMessage)).queue();
         }
     }
 
-    public static void sendPlayerLeaveMessage(PlayerQuitEvent event) {
+    public static void sendPlayerLeaveMessage(Component quitMessage) {
         if (!AverUtils.getCfg().getBoolean("discord.enabled")) { return; }
+        if (quitMessage == null) { return; }
 
         List<ChannelLinkRepo.ChannelData> channelData = ChannelLinkCache.getChannels(ChannelLinkCategory.QUIT);
         for (ChannelLinkRepo.ChannelData channel : channelData) {
@@ -76,12 +78,13 @@ public class MinecraftToDiscord {
             if (g == null) { return; }
             TextChannel c = g.getChannelById(TextChannel.class, channel.channelId());
             if  (c == null) { return; }
-            c.sendMessage(event.getPlayer().getName() + " left the game").queue();
+            c.sendMessage(PlainTextComponentSerializer.plainText().serialize(quitMessage)).queue();
         }
     }
 
-    public static void sendPlayerDeathMessage(PlayerDeathEvent event) {
+    public static void sendPlayerDeathMessage(Component deathMessage) {
         if (!AverUtils.getCfg().getBoolean("discord.enabled")) { return; }
+        if (deathMessage == null) { return; }
 
         List<ChannelLinkRepo.ChannelData> channelData = ChannelLinkCache.getChannels(ChannelLinkCategory.DEATH);
         for (ChannelLinkRepo.ChannelData channel : channelData) {
@@ -89,9 +92,7 @@ public class MinecraftToDiscord {
             if (g == null) { return; }
             TextChannel c = g.getChannelById(TextChannel.class, channel.channelId());
             if  (c == null) { return; }
-            Component m = event.deathMessage();
-            if (m == null) { return; }
-            c.sendMessage(PlainTextComponentSerializer.plainText().serialize(m)).queue();
+            c.sendMessage(PlainTextComponentSerializer.plainText().serialize(deathMessage)).queue();
         }
     }
 

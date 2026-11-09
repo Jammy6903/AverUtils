@@ -30,7 +30,7 @@ public class DelHome implements TabExecutor {
         }
         try {
             if (HomeRepo.deleteHome(((Player) sender).getUniqueId(), args[0])) {
-                Messages.send(sender, "commands.delwhome.success",
+                Messages.send(sender, "commands.delhome.success",
                         Placeholder.component("home", Component.text(args[0]))
                 );
                 return true;

@@ -114,31 +114,21 @@ player:
       suffix: "<suffix>"
   join:
     format:
-      message: "<gray>[</gray><green>+</green><gray>]</gray> <message>"
-      name: "<name>"
-      pronouns: "<gray><pronouns><gray>"
-      prefix: "<gray>[</gray><prefix><gray>]</gray>"
-      suffix: "<suffix>"
+      message: "<gray>[</gray><green>+</green><gray>]</gray> <aqua><message></aqua>"
     messages:
       - "Look out! it's <name>"
       - "<name> is getting fluffy!"
+      - "<name> is ready to go!"
   quit:
     format:
-      message: "<gray>[</gray><red>-</red><gray>]</gray> <message>"
-      name: "<name>"
-      pronouns: "<gray><pronouns><gray>"
-      prefix: "<gray>[</gray><prefix><gray>]</gray>"
-      suffix: "<suffix>"
+      message: "<gray>[</gray><red>-</red><gray>]</gray> <aqua><message></aqua>"
     messages:
-      - "<name> doesn't want to play with us any more"
-      - "<name> is getting sleepy"
+      - "<name> doesn't want to play with us any more :("
+      - "<name> is getting sleepy - zzz"
+      - "Where did <name> go?"
   death:
     format:
       message: "<dark_aqua>Has died</dark_aqua>"
-      name: "<name>"
-      pronouns: "<gray><pronouns><gray>"
-      prefix: "<gray>[</gray><prefix><gray>]</gray>"
-      suffix: "<suffix>"
     messages:
       random:
         - "<dark_red><name></dark_red> fell into a pool of sharks"

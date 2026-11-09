@@ -54,12 +54,16 @@ public class Messages {
 
     public static Component getRandom(String key, TagResolver... tagResolvers) {
         List<String> raw = locale.getStringList(key);
+        if (raw.isEmpty()) { raw = fallbackLocale.getStringList(key); }
+        if (raw.isEmpty()) { return Component.empty(); }
         int random = ThreadLocalRandom.current().nextInt(0, raw.size());
         return MiniMessage.miniMessage().deserialize(raw.get(random), tagResolvers);
     }
 
     public static String getAll(String key) {
         List<String> raw = locale.getStringList(key);
+        if (raw.isEmpty()) { raw = fallbackLocale.getStringList(key); }
+        if (raw.isEmpty()) { raw.add(key); }
         StringBuilder sb = new StringBuilder();
         for (String line : raw) {
             sb.append(line).append("<newline>");

@@ -1,10 +1,12 @@
 package onl.jami.averUtils.listeners;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.sync.chat.MinecraftToDiscord;
 import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.social.messaging.Message;
 import onl.jami.averUtils.storage.cache.BlockCache;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import onl.jami.averUtils.storage.cache.PlayerListDecorationCache;
@@ -46,12 +48,22 @@ public class PlayerListeners implements Listener {
         }
 
         // cache player
-        PlayerCache.loadPlayer(player);
+        PlayerRepo.PlayerData playerData = PlayerCache.loadPlayer(player);
         BlockCache.loadBlocksForPlayer(player.getUniqueId());
+
+        e.joinMessage(null);
+
+        if (playerData != null && playerData.isVerified()) {
+            Component joinMessage = Messages.getRandom("player.join.messages",
+                    Placeholder.component("name", PlayerName.getComponent(e.getPlayer(), false)));
+
+            e.joinMessage(Messages.getComponent("player.join.format.message",
+                    Placeholder.component("message", joinMessage)));
+        }
 
         // verify player if required, sync roles with discord and send join message to any linked channels
         VerifyLock.verifyOnLogin(player);
-        MinecraftToDiscord.sendJoinMessage(e);
+        MinecraftToDiscord.sendJoinMessage(e.joinMessage());
 
         PlayerName.updatePlayerList(player);
 
@@ -81,8 +93,20 @@ public class PlayerListeners implements Listener {
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
+        e.quitMessage(null);
+
+        PlayerRepo.PlayerData playerData = PlayerCache.loadPlayer(e.getPlayer());
+
+        if (playerData != null && playerData.isVerified()) {
+            Component joinMessage = Messages.getRandom("player.quit.messages",
+                    Placeholder.component("name", PlayerName.getComponent(e.getPlayer(), false)));
+
+            e.quitMessage(Messages.getComponent("player.quit.format.message",
+                    Placeholder.component("message", joinMessage)));
+        }
+
         // send leave message to any linked discord channels
-        MinecraftToDiscord.sendPlayerLeaveMessage(e);
+        MinecraftToDiscord.sendPlayerLeaveMessage(e.quitMessage());
 
         Player player = e.getPlayer();
         String tag = "@" + player.getName();
@@ -99,8 +123,16 @@ public class PlayerListeners implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
+        /*
+        Component joinMessage = Messages.getRandom("player.death.messages",
+                Placeholder.component("name", PlayerName.getComponent(e.getPlayer(), false)));
+
+        e.deathMessage(Messages.getComponent("player.death.format.message",
+                Placeholder.component("message", joinMessage)));
+         */
+
         // send death message to any linked discord channels
-        MinecraftToDiscord.sendPlayerDeathMessage(e);
+        MinecraftToDiscord.sendPlayerDeathMessage(e.deathMessage());
     }
 
     @EventHandler

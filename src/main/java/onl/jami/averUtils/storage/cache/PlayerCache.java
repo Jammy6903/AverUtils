@@ -41,13 +41,15 @@ public class PlayerCache {
         }
     }
 
-    public static void loadPlayer(Player player) {
+    public static PlayerRepo.PlayerData loadPlayer(Player player) {
         try {
             PlayerRepo.PlayerData playerData = PlayerRepo.getPlayer(player.getUniqueId());
             players.put(player.getUniqueId(), playerData);
+            return playerData;
         } catch (SQLException exception) {
             AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
             player.kick(Messages.getComponent("player.moderation.kick.unknown"));
+            return null;
         }
     }
 

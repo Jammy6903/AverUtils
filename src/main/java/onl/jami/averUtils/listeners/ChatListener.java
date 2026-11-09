@@ -71,7 +71,7 @@ public class ChatListener implements Listener {
                 if (p.equals(e.getPlayer())) { continue; }
                 p.playSound(PING);
             }
-
+            // TODO: make this show players namechoice rather than ign
             e.message(e.message().replaceText(config -> config.match(MENTION)
                     .replacement((result, builder) -> {
                         String name = result.group(1).toLowerCase(Locale.ROOT);

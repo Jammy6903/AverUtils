@@ -125,7 +125,7 @@ public class PlayerListDecoration implements TabExecutor {
         }
         try {
             if (!PlayerListDecorationRepo.delete(args[2], location)) {
-                Messages.send(sender, "commands.playerlistdecoration.delete.failure.already-exists",
+                Messages.send(sender, "commands.playerlistdecoration.delete.failure.doesnt-exist",
                         Placeholder.component("location", Component.text(args[1])),
                         Placeholder.component("name", Component.text(args[2]))
                 );
@@ -166,7 +166,7 @@ public class PlayerListDecoration implements TabExecutor {
             }
             PlayerListDecorationRepo.PlayerListDecorationData decoration = PlayerListDecorationRepo.get(args[2], location);
             if (decoration == null) {
-                Messages.send(sender, "commands.playerlistdecoration.delete.failure.doesnt-exist",
+                Messages.send(sender, "commands.playerlistdecoration.set.failure.doesnt-exist",
                         Placeholder.component("location", Component.text(args[1])),
                         Placeholder.component("name", Component.text(args[2]))
                 );
