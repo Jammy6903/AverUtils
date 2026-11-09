@@ -7,6 +7,7 @@ import onl.jami.averUtils.storage.database.RoleLinkRepo;
 import java.sql.SQLException;
 import java.util.List;
 
+@Deprecated // TEMPORARILY DEPRECATED
 public class RoleLinkCache {
     private static volatile List<RoleLinkRepo.RoleData> roles = List.of();
 

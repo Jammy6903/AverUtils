@@ -15,13 +15,11 @@ import net.kyori.adventure.text.event.ClickCallback;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
-import onl.jami.averUtils.discord.sync.roles.RoleSync;
 import onl.jami.averUtils.discord.verification.jail.JailWorld;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
@@ -104,7 +102,6 @@ public class VerifyLock {
                                                     audience.closeDialog();
                                                     p.setInvulnerable(false);
                                                     PlayerCache.updatePlayer(p.getUniqueId());
-                                                    RoleSync.sync(p);
                                                 } catch (SQLException exception) {
                                                     AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
                                                     Bukkit.getScheduler().runTask(AverUtils.getPlugin(), () -> p.kick(Component.text(Messages.getString("player.moderation.kick.unknown"))));

@@ -1,18 +1,13 @@
 package onl.jami.averUtils.discord.sync;
 
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
-import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
-import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateTimeOutEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateGlobalNameEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.node.NodeType;
 import onl.jami.averUtils.AverUtils;
-import onl.jami.averUtils.discord.sync.roles.RoleSync;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import onl.jami.averUtils.storage.database.PlayerRepo;
@@ -24,6 +19,7 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 public class SyncOnChange extends ListenerAdapter {
+    /* TEMPORARILY DEPRECATED
     @Override
     public void onGuildMemberRoleAdd(GuildMemberRoleAddEvent e) {
         if (!AverUtils.getGuild().getId().equals(e.getGuild().getId())) { return; }
@@ -53,6 +49,7 @@ public class SyncOnChange extends ListenerAdapter {
             AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
         }
     }
+     */
 
     @Override
     public void onGuildMemberRemove(GuildMemberRemoveEvent e) {
@@ -70,14 +67,6 @@ public class SyncOnChange extends ListenerAdapter {
                 }
             });
 
-            LuckPerms lp = AverUtils.getLuckPermsApi();
-            if (lp != null) {
-                lp.getUserManager().modifyUser(player.uuid(), user ->
-                        user.data().clear(NodeType.INHERITANCE.predicate(
-                                node -> !node.getGroupName().equalsIgnoreCase("default")
-                        ))
-                );
-            }
             PlayerRepo.unVerify(player.uuid());
             PlayerCache.removePlayer(player.uuid());
         } catch (SQLException exception) {

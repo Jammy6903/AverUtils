@@ -4,7 +4,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.sync.chat.MinecraftToDiscord;
-import onl.jami.averUtils.discord.sync.roles.RoleSync;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.cache.BlockCache;
 import onl.jami.averUtils.storage.cache.PlayerCache;
@@ -22,7 +21,6 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -51,7 +49,6 @@ public class PlayerListeners implements Listener {
 
         // verify player if required, sync roles with discord and send join message to any linked channels
         VerifyLock.verifyOnLogin(player);
-        RoleSync.sync(player);
         MinecraftToDiscord.sendJoinMessage(e);
 
         PlayerName.updatePlayerList(player);

@@ -4,7 +4,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
-import onl.jami.averUtils.discord.sync.roles.RoleSync;
 import onl.jami.averUtils.discord.verification.VerificationCodes;
 import onl.jami.averUtils.discord.verification.jail.JailWorld;
 import onl.jami.averUtils.locale.Messages;
@@ -46,7 +45,6 @@ public class VerifyMinecraft implements CommandExecutor {
                                 Placeholder.component("discord", Component.text(m.getEffectiveName()))
                         );
                         JailWorld.release(p);
-                        RoleSync.sync(p);
                     } catch (SQLException exception) {
                         AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
                         Bukkit.getScheduler().runTask(AverUtils.getPlugin(), () -> Messages.send(sender, "commands.generic.failure.unknown"));

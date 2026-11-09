@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated // TEMPORARILY DEPRECATED
 public class RoleLinkRepo {
     public record RoleData(long roleId, String lpGroup) {}
 

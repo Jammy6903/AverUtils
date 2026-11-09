@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.UUID;
 
+@Deprecated // TEMPORARILY DEPRECATED
 public class RoleSync {
 
     public static void sync(Player p) {

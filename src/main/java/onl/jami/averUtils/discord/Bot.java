@@ -15,7 +15,6 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.sync.chat.DiscordToMinecraft;
 import onl.jami.averUtils.discord.chatlink.EditChannels;
-import onl.jami.averUtils.discord.rolelink.EditRoles;
 import onl.jami.averUtils.discord.sync.SyncOnChange;
 import onl.jami.averUtils.discord.verification.commands.VerifyDiscord;
 import onl.jami.averUtils.locale.Messages;
@@ -26,11 +25,11 @@ public class Bot {
     public static boolean jdaInit(String token) {
         try {
             jda = JDABuilder.createLight(token, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_WEBHOOKS, GatewayIntent.MESSAGE_CONTENT)
-                    .addEventListeners(new DiscordToMinecraft(), new SyncOnChange(), new VerifyDiscord(), new EditChannels(), new EditRoles())
+                    .addEventListeners(new DiscordToMinecraft(), new SyncOnChange(), new VerifyDiscord(), new EditChannels())
                     .setMemberCachePolicy(MemberCachePolicy.ALL)
                     .setChunkingFilter(ChunkingFilter.ALL)
                     .build();
-            jda.updateCommands().addCommands(verifyCommand(), channelCommand(), roleCommand()).queue();
+            jda.updateCommands().addCommands(verifyCommand(), channelCommand()).queue();
             return true;
         } catch (Exception e) {
             AverUtils.logWarning(Messages.getString("errors.discord.setup"), e);
@@ -58,6 +57,7 @@ public class Bot {
         return Commands.slash("channel", "Commands to edit channel links").setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).setContexts(InteractionContextType.GUILD).addSubcommands(add, remove, list);
     }
 
+    /* TEMPORARILY DEPRECATED
     public static SlashCommandData roleCommand() {
         SubcommandData add = new SubcommandData("add", "Add or edit a role link")
                 .addOption(OptionType.ROLE, "role", "The role to add or edit a link", true)
@@ -67,6 +67,7 @@ public class Bot {
         SubcommandData list = new SubcommandData("list", "List linked roles");
         return Commands.slash("role", "Commands to edit role links").setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)).setContexts(InteractionContextType.GUILD).addSubcommands(add, remove, list);
     }
+     */
 
     public static JDA getJDA() {
         return jda;

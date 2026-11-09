@@ -12,6 +12,7 @@ import onl.jami.averUtils.storage.database.RoleLinkRepo;
 
 import java.sql.SQLException;
 
+@Deprecated // TEMPORARILY DEPRECATED
 public class EditRoles extends ListenerAdapter {
 
     @Override

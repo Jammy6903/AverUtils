@@ -16,7 +16,6 @@ import onl.jami.averUtils.locale.Reload;
 import onl.jami.averUtils.storage.cache.ChannelLinkCache;
 import onl.jami.averUtils.storage.cache.MotdCache;
 import onl.jami.averUtils.storage.cache.PlayerListDecorationCache;
-import onl.jami.averUtils.storage.cache.RoleLinkCache;
 import onl.jami.averUtils.userconfig.profile.*;
 import onl.jami.averUtils.social.messaging.commands.Msg;
 import onl.jami.averUtils.social.messaging.commands.Reply;
@@ -67,7 +66,6 @@ public final class AverUtils extends JavaPlugin {
             Driver.migrate();
 
             MotdCache.updateMotds();
-            RoleLinkCache.updateRoles();
             ChannelLinkCache.updateChannels();
             PlayerListDecorationCache.updateDecorations();
         } catch (ClassNotFoundException | SQLException e) {
