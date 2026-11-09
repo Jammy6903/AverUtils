@@ -13,10 +13,7 @@ import onl.jami.averUtils.storage.cache.ChannelLinkCache;
 import onl.jami.averUtils.storage.database.ChannelLinkCategory;
 import onl.jami.averUtils.storage.database.ChannelLinkRepo;
 import onl.jami.averUtils.discord.Bot;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.net.URI;
 import java.net.http.HttpClient;

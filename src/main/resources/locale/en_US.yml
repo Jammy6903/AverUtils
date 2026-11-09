@@ -31,16 +31,6 @@ chat:
         reply-hover: "Replying to <name>: <message>"
 
 discord:
-  format:
-    chat:
-      name: "{name}"
-      message: "{message}"
-    join:
-      message: "{message} ({players} online)"
-    leave:
-      message: "{message} ({players} online)"
-    advancement:
-      message: "{message}"
   commands:
     generic:
       failure:
@@ -56,11 +46,6 @@ discord:
         success: "Channel link has been removed."
       list:
         success: ""
-    role:
-      add: ""
-      remove: ""
-      list: ""
-    verify: ""
 
 moderation:
   punishment-ui:
@@ -119,6 +104,12 @@ player:
       - "Look out! it's <name>"
       - "<name> is getting fluffy!"
       - "<name> is ready to go!"
+      - "<name> is here! Hide your melons!"
+      - "<name> OWO"
+      - "<name> got isekaid and is here again"
+      - "<name> monkeys your paw"
+      - "<name>'s never gonna give you up"
+      - "<name> rolled a NAT20"
   quit:
     format:
       message: "<gray>[</gray><red>-</red><gray>]</gray> <aqua><message></aqua>"
@@ -126,6 +117,13 @@ player:
       - "<name> doesn't want to play with us any more :("
       - "<name> is getting sleepy - zzz"
       - "Where did <name> go?"
+      - "<name> walks away with sass"
+      - "<name> UWU"
+      - "The bees got <name>, but they may yet return"
+      - "<name> paws your monkey"
+      - "<name> let you down"
+      - "<name> went to walk their fish"
+      - "<name> rolled a NAT1"
   death:
     format:
       message: "<dark_aqua>Has died</dark_aqua>"
