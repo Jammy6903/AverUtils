@@ -25,7 +25,7 @@ public class TpDeny implements CommandExecutor {
         }
         Player requester = Bukkit.getPlayer(latestRequest.requester());
         if (requester == null) {
-            Messages.send(sender, "commands.tpdenny.success.not-online");
+            Messages.send(sender, "commands.tpdeny.success.not-online");
             return true;
         }
         Messages.send(sender, "commands.tpdeny.success.receiving",
