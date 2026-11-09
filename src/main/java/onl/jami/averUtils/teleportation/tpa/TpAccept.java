@@ -14,7 +14,12 @@ public class TpAccept implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-        TpRequestCache.TpRequest latestRequest = TpRequestCache.getLatestRequest(((Player) sender).getUniqueId());
+        if (!(sender instanceof Player p)) {
+            Messages.send(sender, "commands.generic.failure.players-only");
+            return true;
+        }
+
+        TpRequestCache.TpRequest latestRequest = TpRequestCache.getLatestRequest(p.getUniqueId());
         if (latestRequest == null) {
             Messages.send(sender, "commands.tpaccept.failure.no-request");
             return true;
@@ -25,7 +30,7 @@ public class TpAccept implements CommandExecutor {
         }
 
         if (latestRequest.direction().equals(TpRequestCache.TpRequest.Direction.TO_RECIPIENT)) {
-            requester.teleport(((Player) sender).getLocation());
+            requester.teleport(p.getLocation());
             Messages.send(requester, "commands.tpaccept.success.tpa.sending",
                     Placeholder.component("player", Component.text(requester.getName()))
             );
@@ -33,7 +38,7 @@ public class TpAccept implements CommandExecutor {
                     Placeholder.component("player", Component.text(sender.getName()))
             );
         } else {
-            ((Player) sender).teleport(requester.getLocation());
+            p.teleport(requester.getLocation());
             Messages.send(requester, "commands.tpaccept.success.tpahere.sending",
                     Placeholder.component("player", Component.text(requester.getName()))
             );
@@ -41,7 +46,7 @@ public class TpAccept implements CommandExecutor {
                     Placeholder.component("player", Component.text(sender.getName()))
             );
         }
-        TpRequestCache.removeLatestRequest(((Player) sender).getUniqueId());
+        TpRequestCache.removeLatestRequest(p.getUniqueId());
 
         return true;
     }

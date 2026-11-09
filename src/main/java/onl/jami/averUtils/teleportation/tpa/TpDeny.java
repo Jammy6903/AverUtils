@@ -13,7 +13,12 @@ import org.jetbrains.annotations.NotNull;
 public class TpDeny implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-        TpRequestCache.TpRequest latestRequest = TpRequestCache.getLatestRequest(((Player) sender).getUniqueId());
+        if (!(sender instanceof Player p)) {
+            Messages.send(sender, "commands.generic.failure.players-only");
+            return true;
+        }
+
+        TpRequestCache.TpRequest latestRequest = TpRequestCache.getLatestRequest(p.getUniqueId());
         if (latestRequest == null) {
             Messages.send(sender, "commands.tpdeny.failure.no-request");
             return true;
@@ -29,7 +34,7 @@ public class TpDeny implements CommandExecutor {
         Messages.send(requester, "commands.tpdeny.success.sending",
                 Placeholder.component("player", Component.text(sender.getName()))
         );
-        TpRequestCache.removeLatestRequest(((Player) sender).getUniqueId());
+        TpRequestCache.removeLatestRequest(p.getUniqueId());
         return true;
     }
 }

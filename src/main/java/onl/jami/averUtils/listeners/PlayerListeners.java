@@ -14,6 +14,7 @@ import onl.jami.averUtils.storage.database.PlayerListDecorationRepo;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.discord.verification.VerifyLock;
 import onl.jami.averUtils.userconfig.PlayerName;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -27,6 +28,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class PlayerListeners implements Listener {
 
@@ -61,12 +63,34 @@ public class PlayerListeners implements Listener {
         if (playerListFooter != null) {
             player.sendPlayerListFooter(MiniMessage.miniMessage().deserialize(playerListFooter));
         }
+
+        String tag = "@" + player.getName();
+        List<String> everyone = Bukkit.getOnlinePlayers().stream()
+                .map(p -> "@" + p.getName()).toList();
+
+        if (player.hasPermission("averutils.ping")) {
+            player.setCustomChatCompletions(everyone);
+        }
+
+        for (Player other : Bukkit.getOnlinePlayers()) {
+            if (!other.equals(player) && other.hasPermission("averutils.ping")) {
+                other.addCustomChatCompletions(List.of(tag));
+            }
+        }
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
         // send leave message to any linked discord channels
         MinecraftToDiscord.sendPlayerLeaveMessage(e);
+
+        Player player = e.getPlayer();
+        String tag = "@" + player.getName();
+        for (Player other : Bukkit.getOnlinePlayers()) {
+            if (!other.equals(player) && other.hasPermission("averutils.ping")) {
+                other.removeCustomChatCompletions(List.of(tag));
+            }
+        }
 
         // remove player from cache
         PlayerCache.removePlayer(e.getPlayer().getUniqueId());

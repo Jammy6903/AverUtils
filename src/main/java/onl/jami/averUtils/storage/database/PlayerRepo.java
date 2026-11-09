@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 public class PlayerRepo {
-    public record PlayerData(UUID uuid, boolean isVerified, Long discordId, String discordUsername, String discordGlobalName, String discordNickname, String nickname, String pronouns, NameChoice nameChoice, String nameStyle, boolean pvpEnabled, boolean tpEnabled) {
+    public record PlayerData(UUID uuid, boolean isVerified, Long discordId, String discordUsername, String discordGlobalName, String discordNickname, String nickname, String pronouns, NameChoice nameChoice, String nameStyle, boolean pvpEnabled, boolean tpEnabled, boolean pingEnabled) {
         public enum NameChoice {
             PLAYER_NAME,
             NICKNAME,
@@ -42,7 +42,8 @@ public class PlayerRepo {
                         PlayerData.NameChoice.valueOf(rs.getString("name_choice")),
                         rs.getString("name_style"),
                         rs.getBoolean("pvp_enabled"),
-                        rs.getBoolean("tp_enabled")
+                        rs.getBoolean("tp_enabled"),
+                        rs.getBoolean("ping_enabled")
                 );
             }
         }
@@ -65,7 +66,8 @@ public class PlayerRepo {
                         PlayerData.NameChoice.valueOf(rs.getString("name_choice")),
                         rs.getString("name_style"),
                         rs.getBoolean("pvp_enabled"),
-                        rs.getBoolean("tp_enabled")
+                        rs.getBoolean("tp_enabled"),
+                        rs.getBoolean("ping_enabled")
                 );
             }
         }
@@ -175,6 +177,15 @@ public class PlayerRepo {
         String sql = "UPDATE players SET tp_enabled = ? WHERE uuid = ?";
         try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
             ps.setBoolean(1, tpEnabled);
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
+        }
+    }
+
+    public static void updatePing(UUID uuid, boolean pingEnabled) throws SQLException {
+        String sql = "UPDATE players SET ping_enabled = ? WHERE uuid = ?";
+        try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
+            ps.setBoolean(1, pingEnabled);
             ps.setString(2, uuid.toString());
             ps.executeUpdate();
         }

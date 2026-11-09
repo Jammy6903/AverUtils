@@ -20,7 +20,7 @@ public class ToggleTpa implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player p)) {
-            Messages.send(sender, "commands.generic.failure.player-only");
+            Messages.send(sender, "commands.generic.failure.players-only");
             return true;
         }
 
