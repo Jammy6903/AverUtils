@@ -16,10 +16,12 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.sync.roles.RoleSync;
+import onl.jami.averUtils.discord.verification.jail.JailWorld;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
@@ -27,7 +29,7 @@ import java.util.List;
 
 public class VerifyLock {
     public static void verifyOnLogin(Player p) {
-        if (!AverUtils.getCfg().getBoolean("discord.enabled")) {
+        if (!AverUtils.getCfg().getBoolean("discord.enabled") || !AverUtils.getCfg().getBoolean("discord.require-verification")) {
             return;
         }
         PlayerRepo.PlayerData playerData = PlayerCache.getPlayer(p);
@@ -38,6 +40,8 @@ public class VerifyLock {
             checkDiscordStatus(p, playerData.discordId());
             return;
         }
+        p.teleport(AverUtils.getJailWorld().getSpawnLocation());
+        p.setInvulnerable(true);
         VerifyLock.showVerifyDialog(p);
         Bukkit.getScheduler().runTaskLater(AverUtils.getPlugin(), () -> {
             PlayerRepo.PlayerData pd = PlayerCache.getPlayer(p);
@@ -64,6 +68,8 @@ public class VerifyLock {
         Dialog dialog = Dialog.create(builder -> builder.empty()
                 .base(DialogBase.builder(Messages.getComponent("player.moderation.verification.dialog.title"))
                         .canCloseWithEscape(false)
+                        .afterAction(DialogBase.DialogAfterAction.NONE)
+                        .pause(false)
                         .body(List.of(
                                 DialogBody.plainMessage(Messages.getComponent("player.moderation.verification.dialog.body",
                                         Placeholder.parsed("invite-link", AverUtils.getCfg().getString("discord.invite-link")))
@@ -80,7 +86,7 @@ public class VerifyLock {
                                 MiniMessage.miniMessage().deserialize(Messages.getString("player.moderation.verification.dialog.confirm")),
                                 MiniMessage.miniMessage().deserialize(Messages.getString("player.moderation.verification.dialog.confirm-hover")),
                                 100,
-                                DialogAction.customClick((view, _) -> {
+                                DialogAction.customClick((view, audience) -> {
                                     Long id = VerificationCodes.checkCode(view.getText("code"));
                                     if (id == null) {
                                         p.kick(MiniMessage.miniMessage().deserialize(Messages.getString("player.moderation.verification.wrong-code")));
@@ -94,6 +100,9 @@ public class VerifyLock {
                                                     Messages.send(p, Messages.getString("commands.verify.success"),
                                                             Placeholder.component("discord", Component.text(m.getEffectiveName()))
                                                     );
+                                                    JailWorld.release(p);
+                                                    audience.closeDialog();
+                                                    p.setInvulnerable(false);
                                                     PlayerCache.updatePlayer(p.getUniqueId());
                                                     RoleSync.sync(p);
                                                 } catch (SQLException exception) {

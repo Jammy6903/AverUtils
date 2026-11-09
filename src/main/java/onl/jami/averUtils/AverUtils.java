@@ -2,6 +2,8 @@ package onl.jami.averUtils;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.luckperms.api.LuckPerms;
+import onl.jami.averUtils.discord.verification.jail.JailWorld;
+import onl.jami.averUtils.listeners.CommandListener;
 import onl.jami.averUtils.social.blocks.Block;
 import onl.jami.averUtils.social.blocks.Unblock;
 import onl.jami.averUtils.staff.admin.DoAs;
@@ -32,7 +34,7 @@ import onl.jami.averUtils.teleportation.warp.DelWarp;
 import onl.jami.averUtils.teleportation.warp.SetWarp;
 import onl.jami.averUtils.teleportation.warp.Warp;
 import onl.jami.averUtils.teleportation.warp.Warps;
-import org.bukkit.Bukkit;
+import org.bukkit.*;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
@@ -49,6 +51,7 @@ public final class AverUtils extends JavaPlugin {
     private static Configuration cfg;
     private static Plugin instance;
     private static LuckPerms luckPermsApi;
+    private static World jailWorld;
 
     @Override
     public void onEnable() {
@@ -80,9 +83,16 @@ public final class AverUtils extends JavaPlugin {
             if (token != null && !token.isEmpty() && id != 0 ) {
                 if (!Bot.jdaInit(cfg.getString("discord.token"))) {
                     cfg.set("discord.enabled", false);
+                    cfg.set("discord.require-verification", false);
+                } else if (cfg.getBoolean("discord.require-verification")) {
+                    jailWorld = JailWorld.getOrCreateJailWorld();
+                    JailWorld.buildInnerBox(jailWorld);
+                    JailWorld.buildOuterBox(jailWorld);
+                    JailWorld.configureWorld(jailWorld);
                 }
             } else {
                 cfg.set("discord.enabled", false);
+                cfg.set("discord.require-verification", false);
                 this.getLogger().log(Level.WARNING, "Discord token or guild id is not set in config.yml");
             }
         }
@@ -96,6 +106,7 @@ public final class AverUtils extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerListeners(), this);
         getServer().getPluginManager().registerEvents(new PingListener(), this);
+        getServer().getPluginManager().registerEvents(new CommandListener(), this);
         registerCommand("msg", new Msg());
         registerCommand("reply", new Reply());
         registerCommand("tpa", new Tpa());
@@ -165,7 +176,7 @@ public final class AverUtils extends JavaPlugin {
 
     public static Guild getGuild() { return Bot.getJDA().getGuildById(getCfg().getLong("discord.verification-guild-id")); }
 
-    public static LuckPerms getLuckPermsApi() {
-        return luckPermsApi;
-    }
+    public static LuckPerms getLuckPermsApi() { return luckPermsApi; }
+
+    public static World getJailWorld() { return jailWorld; }
 }

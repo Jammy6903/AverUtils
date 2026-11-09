@@ -3,6 +3,7 @@ package onl.jami.averUtils.storage.cache;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.PlayerRepo;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
@@ -20,7 +21,7 @@ public class PlayerCache {
             playerData = updatePlayer(player.getUniqueId());
         }
         if (playerData == null) {
-            player.kick(Messages.getComponent("player.moderation.kick.unknown"));
+            Bukkit.getScheduler().runTask(AverUtils.getPlugin(), () -> player.kick(Messages.getComponent("player.moderation.kick.unknown")));
             return null;
         }
         return playerData;
