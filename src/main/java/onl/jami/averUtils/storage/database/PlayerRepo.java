@@ -73,14 +73,6 @@ public class PlayerRepo {
         }
     }
 
-    public static void deletePlayer(UUID uuid) throws SQLException {
-        String sql = "DELETE FROM players WHERE uuid = ?";
-        try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
-            ps.setString(1, uuid.toString());
-            ps.executeUpdate();
-        }
-    }
-
     public static void verifyPlayer(UUID uuid, Long discordId, String discordName, String discordNameGlobal, String discordNick) throws SQLException {
         String sql = """
                         UPDATE players
