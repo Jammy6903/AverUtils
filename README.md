@@ -23,7 +23,6 @@ A utility plugin for Spigot/Paper Minecraft servers adding various chat commands
 - Doas command (like sudo)
 ### Discord:
 - Chat links
-- Role links (with LuckPerms groups)
 - Discord account verification (can be set to required)
 
 ## Permissions
