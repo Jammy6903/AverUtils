@@ -23,6 +23,7 @@ import onl.jami.averUtils.staff.moderation.reportmenu.ReportMenuListener;
 import onl.jami.averUtils.storage.cache.ChannelLinkCache;
 import onl.jami.averUtils.storage.cache.MotdCache;
 import onl.jami.averUtils.storage.cache.PlayerListDecorationCache;
+import onl.jami.averUtils.teleportation.tpa.*;
 import onl.jami.averUtils.userconfig.profile.*;
 import onl.jami.averUtils.social.messaging.commands.Msg;
 import onl.jami.averUtils.social.messaging.commands.Reply;
@@ -32,10 +33,6 @@ import onl.jami.averUtils.discord.verification.commands.VerifyMinecraft;
 import onl.jami.averUtils.listeners.PlayerListeners;
 import onl.jami.averUtils.teleportation.Spawn;
 import onl.jami.averUtils.teleportation.home.*;
-import onl.jami.averUtils.teleportation.tpa.TpAccept;
-import onl.jami.averUtils.teleportation.tpa.TpDeny;
-import onl.jami.averUtils.teleportation.tpa.Tpa;
-import onl.jami.averUtils.teleportation.tpa.TpaHere;
 import onl.jami.averUtils.teleportation.warp.DelWarp;
 import onl.jami.averUtils.teleportation.warp.SetWarp;
 import onl.jami.averUtils.teleportation.warp.Warp;
@@ -148,6 +145,7 @@ public final class AverUtils extends JavaPlugin {
         registerCommand("schedule", new Schedule());
         registerCommand("punish", new Punish());
         registerCommand("tpo", new Tpo());
+        registerCommand("tpr", new Tpr());
     }
 
     @Override

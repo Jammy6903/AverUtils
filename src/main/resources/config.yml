@@ -7,6 +7,9 @@ discord:
 
 locale: "en_US"
 
+teleportation:
+  tpr-distance: 15000
+
 reporting:
   reasons:
     - "Stealing"

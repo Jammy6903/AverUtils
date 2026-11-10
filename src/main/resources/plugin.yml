@@ -151,3 +151,8 @@ commands:
     aliases: [tpoffline]
     usage: /tpo <player>
     permission: averutils.tpo
+  tpr:
+    description: Teleport to a random location
+    aliases: [tprandom]
+    usage: /tpr
+    permission: averutils.tpr
