@@ -1,6 +1,7 @@
 package onl.jami.averUtils.staff.admin;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;
@@ -68,7 +69,7 @@ public class Schedule implements TabExecutor {
             Messages.send(sender, "commands.schedule.create.success",
                     Placeholder.component("type", Component.text(type.name())),
                     Placeholder.component("name", Component.text(name)),
-                    Placeholder.component("message", Component.text(message))
+                    Placeholder.component("message", MiniMessage.miniMessage().deserialize(message))
             );
         } catch (SQLException e) {
             Messages.send(sender, "commands.schedule.create.failure.already-exists");
@@ -85,7 +86,7 @@ public class Schedule implements TabExecutor {
             Messages.send(sender, "commands.schedule.edit.success",
                     Placeholder.component("type", Component.text(type.name())),
                     Placeholder.component("name", Component.text(name)),
-                    Placeholder.component("message", Component.text(message))
+                    Placeholder.component("message", MiniMessage.miniMessage().deserialize(message))
             );
         } catch (SQLException e) {
             Messages.send(sender, "commands.generic.failure.unknown");
