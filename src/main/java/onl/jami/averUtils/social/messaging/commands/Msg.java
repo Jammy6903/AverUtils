@@ -1,10 +1,17 @@
 package onl.jami.averUtils.social.messaging.commands;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.social.messaging.Message;
 import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.staff.moderation.Punish;
 import onl.jami.averUtils.storage.cache.BlockCache;
+import onl.jami.averUtils.storage.cache.PunishmentCache;
 import onl.jami.averUtils.storage.database.BlockCategory;
 import onl.jami.averUtils.storage.database.BlockRepo;
+import onl.jami.averUtils.storage.database.PunishmentRepo;
+import onl.jami.averUtils.storage.database.PunishmentType;
+import onl.jami.averUtils.util.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -30,6 +37,16 @@ public class Msg implements TabExecutor {
             return true;
         }
         if (sender instanceof Player p) {
+            for (PunishmentRepo.PunishmentData punishment : PunishmentCache.getCachedPunishmentsWithActiveCheck(p.getUniqueId())) {
+                if (punishment.type().equals(PunishmentType.TIMEOUT)) {
+                    sender.sendMessage(Punish.getComponent("moderation.punishments.strings.timeout.on-action",
+                            Placeholder.component("reason", Component.text(punishment.reason())),
+                            Placeholder.component("remaining", Component.text(TimeUtils.formatRemainingTimeUntil(punishment.durationEnd())))
+                    ));
+                    return true;
+                }
+            }
+
             BlockRepo.BlockData block = BlockCache.getBlockForPlayers(target.getUniqueId(), p.getUniqueId());
             if (block != null && block.categories().contains(BlockCategory.MESSAGES) && !p.hasPermission("averutils.bypass-block")) {
                 Messages.send(sender, "commands.msg.failure.blocked");

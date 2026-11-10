@@ -10,6 +10,7 @@ import onl.jami.averUtils.staff.moderation.Punish;
 import onl.jami.averUtils.storage.cache.BlockCache;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import onl.jami.averUtils.storage.cache.PlayerListDecorationCache;
+import onl.jami.averUtils.storage.cache.PunishmentCache;
 import onl.jami.averUtils.storage.database.*;
 import onl.jami.averUtils.discord.verification.VerifyLock;
 import onl.jami.averUtils.userconfig.PlayerName;
@@ -126,25 +127,12 @@ public class PlayerListeners implements Listener {
             }
         }
 
-        try {
-            long now = System.currentTimeMillis();
-            PunishmentRepo.PunishmentData warning = null;
-
-            for (PunishmentRepo.PunishmentData p : PunishmentRepo.getByUUID(player.getUniqueId())) {
-                boolean isWarning = p.type() == PunishmentType.WARN;
-                boolean isActive = !p.isExpired() && (p.durationEnd() == null || p.durationEnd() > now);
-                if (isWarning && isActive) {
-                    warning = p;
-                }
-            }
-
-            if (warning != null) {
+        for (PunishmentRepo.PunishmentData p : PunishmentCache.loadActivePunishmentsForPlayer(player.getUniqueId())) {
+            if (p.type().equals(PunishmentType.WARN)) {
                 player.sendMessage(Punish.getComponent("moderation.punishments.strings.warn.on-join",
-                                Placeholder.component("reason", Component.text(warning.reason()))
+                        Placeholder.component("reason", Component.text(p.reason()))
                 ));
             }
-        } catch (SQLException exception) {
-            AverUtils.logWarning(Messages.getString("errors.database.punishments"), exception);
         }
 
         if (player.hasPermission("averutils.moderation.reports")) {
@@ -189,6 +177,7 @@ public class PlayerListeners implements Listener {
         // remove player from cache
         PlayerCache.removePlayer(e.getPlayer().getUniqueId());
         BlockCache.removeBlocksForPlayer(e.getPlayer().getUniqueId());
+        PunishmentCache.removePlayer(e.getPlayer().getUniqueId());
     }
 
     @EventHandler

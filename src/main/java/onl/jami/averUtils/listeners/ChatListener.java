@@ -15,6 +15,7 @@ import onl.jami.averUtils.discord.sync.chat.MinecraftToDiscord;
 import onl.jami.averUtils.staff.moderation.Punish;
 import onl.jami.averUtils.storage.cache.BlockCache;
 import onl.jami.averUtils.storage.cache.PlayerCache;
+import onl.jami.averUtils.storage.cache.PunishmentCache;
 import onl.jami.averUtils.storage.database.*;
 import onl.jami.averUtils.util.TimeUtils;
 import org.bukkit.entity.Player;
@@ -40,28 +41,15 @@ public class ChatListener implements Listener {
 
     @EventHandler
     public void onChat(AsyncChatEvent e) {
-        try {
-            long now = System.currentTimeMillis();
-            PunishmentRepo.PunishmentData timeout = null;
-
-            for (PunishmentRepo.PunishmentData p : PunishmentRepo.getByUUID(e.getPlayer().getUniqueId())) {
-                boolean isWarning = p.type() == PunishmentType.TIMEOUT;
-                boolean isActive = !p.isExpired() && (p.durationEnd() == null || p.durationEnd() > now);
-                if (isWarning && isActive) {
-                    timeout = p;
-                }
-            }
-
-            if (timeout != null) {
+        for (PunishmentRepo.PunishmentData p : PunishmentCache.getCachedPunishmentsWithActiveCheck(e.getPlayer().getUniqueId())) {
+            if (p.type().equals(PunishmentType.TIMEOUT)) {
                 e.setCancelled(true);
                 e.getPlayer().sendMessage(Punish.getComponent("moderation.punishments.strings.timeout.on-action",
-                        Placeholder.component("reason", Component.text(timeout.reason())),
-                        Placeholder.component("remaining", Component.text(TimeUtils.formatRemainingTimeUntil(timeout.durationEnd())))
+                        Placeholder.component("reason", Component.text(p.reason())),
+                        Placeholder.component("remaining", Component.text(TimeUtils.formatRemainingTimeUntil(p.durationEnd())))
                 ));
                 return;
             }
-        } catch (SQLException exception) {
-            AverUtils.logWarning(Messages.getString("errors.database.punishments"), exception);
         }
 
         if (AverUtils.getCfg().getBoolean("discord.enabled") && AverUtils.getCfg().getBoolean("discord.require-verification")) {

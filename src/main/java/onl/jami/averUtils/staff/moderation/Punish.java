@@ -6,6 +6,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.storage.cache.PunishmentCache;
 import onl.jami.averUtils.storage.database.PunishmentRepo;
 import onl.jami.averUtils.storage.database.PunishmentType;
 import onl.jami.averUtils.util.StringUtils;
@@ -66,6 +67,7 @@ public class Punish implements TabExecutor {
                     target.sendMessage(getComponent("moderation.punishments.strings.warn.on-warn",
                             Placeholder.component("reason", Component.text(arguments.getFirst()))
                     ));
+                    PunishmentCache.loadActivePunishmentsForPlayer(target.getUniqueId());
                 }
                 break;
             case "KICK":
@@ -100,6 +102,7 @@ public class Punish implements TabExecutor {
                             Placeholder.component("reason", Component.text(arguments.getFirst())),
                             Placeholder.component("duration", Component.text(duration))
                     ));
+                    PunishmentCache.loadActivePunishmentsForPlayer(target.getUniqueId());
                 }
                 break;
             case "TEMP_BAN":
@@ -135,11 +138,15 @@ public class Punish implements TabExecutor {
                 break;
             case "REMOVE":
                 try {
+                    if (args.length > 3) { return false; }
                     if (PunishmentRepo.setExpired(Integer.parseInt(args[2]), true)) {
                         Messages.send(sender, "commands.punish.remove.success",
                                 Placeholder.component("id", Component.text(args[2])),
                                 Placeholder.component("player", Component.text(args[0])) // TODO: validate this
                         );
+                        if (offlinePlayer.isOnline()) {
+                            PunishmentCache.loadActivePunishmentsForPlayer(offlinePlayer.getUniqueId());
+                        }
                     } else {
                         Messages.send(sender, "commands.punish.remove.failure.doesnt-exist");
                     }
@@ -149,6 +156,7 @@ public class Punish implements TabExecutor {
                 }
                 return true;
             case "EDIT_DETAILS":
+                // TODO
                 return true;
             default:
                 return false;
@@ -195,14 +203,6 @@ public class Punish implements TabExecutor {
         String duration = AverUtils.getCfg().getString("moderation.punishments.warn-kick-duration");
         Long secs = duration == null ? null : TimeUtils.parseTime(duration);
         return secs == null ? null : System.currentTimeMillis() + secs * 1000L;
-    }
-
-    private static void remove(CommandSender sender, OfflinePlayer offlinePlayer, int punishmentId) {
-
-    }
-
-    private static void editDetails(CommandSender sender, OfflinePlayer offlinePlayer, int punishmentId, String details) {
-
     }
 
     @Override
