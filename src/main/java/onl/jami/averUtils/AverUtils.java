@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.luckperms.api.LuckPerms;
 import onl.jami.averUtils.discord.verification.jail.JailWorld;
 import onl.jami.averUtils.listeners.CommandListener;
+import onl.jami.averUtils.schedules.Scheduled;
 import onl.jami.averUtils.social.Report;
 import onl.jami.averUtils.social.blocks.Block;
 import onl.jami.averUtils.social.blocks.Unblock;
@@ -14,6 +15,7 @@ import onl.jami.averUtils.listeners.ChatListener;
 import onl.jami.averUtils.listeners.PingListener;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.locale.Reload;
+import onl.jami.averUtils.staff.admin.Schedule;
 import onl.jami.averUtils.staff.moderation.Reports;
 import onl.jami.averUtils.staff.moderation.reportmenu.ReportMenuListener;
 import onl.jami.averUtils.storage.cache.ChannelLinkCache;
@@ -71,6 +73,7 @@ public final class AverUtils extends JavaPlugin {
             MotdCache.updateMotds();
             ChannelLinkCache.updateChannels();
             PlayerListDecorationCache.updateDecorations();
+            Scheduled.update();
         } catch (ClassNotFoundException | SQLException e) {
             this.getLogger().log(Level.SEVERE, "Could not initialize or migrate the database!", e);
             getServer().getPluginManager().disablePlugin(this);
@@ -140,6 +143,7 @@ public final class AverUtils extends JavaPlugin {
         registerCommand("toggleping", new TogglePing());
         registerCommand("report", new Report());
         registerCommand("reports", new Reports());
+        registerCommand("schedule", new Schedule());
     }
 
     @Override

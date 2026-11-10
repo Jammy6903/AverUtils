@@ -138,3 +138,7 @@ commands:
     description: Browse reports
     usage: /reports
     permission: averutils.moderation.reports
+  schedule:
+    description: Create or edit a command or message schedule
+    usage: /schedule <subcommand>
+    permission: averutils.schedule

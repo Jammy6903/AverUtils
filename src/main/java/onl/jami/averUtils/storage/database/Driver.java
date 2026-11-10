@@ -117,6 +117,17 @@ public class Driver {
                     is_active       BOOLEAN NOT NULL DEFAULT TRUE
                 )
             """);
+            st.executeUpdate("""
+                CREATE TABLE IF NOT EXISTS schedules (
+                    name                 TEXT NOT NULL,
+                    type                 TEXT NOT NULL
+                                         CHECK(type IN ('COMMAND', 'MESSAGE')),
+                    message              TEXT NOT NULL,
+                    interval_seconds     INTEGER NOT NULL,
+                    is_active            BOOLEAN NOT NULL DEFAULT FALSE,
+                                         PRIMARY KEY (name, type)
+                )
+            """);
         }
     }
 

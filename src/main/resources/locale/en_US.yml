@@ -247,6 +247,25 @@ commands:
     success: "<green>Successfully reported <player> for <reason>:</green> <details><newline><yellow>Note: You can block any player with /block</yellow>"
     failure:
       invalid-reason: "<red>You must select a provided reason for the report</red"
+  schedule:
+    create:
+      success: "<green>Successfully created <type> schedule <name>:</green><newline><message>"
+      failure:
+        already-exists: "<red>Failed to cred schedule, does it already exist?</red>"
+    delete:
+      success: "<green>Successfully deleted <type> schedule <name></green>"
+      failure:
+        doesnt-exist: "<red>Failed to delete schedule, does it exist?</red>"
+    edit:
+      success: "<green>Successfully edited <type> schedule <name>:</green><newline><message>"
+      failure:
+        doesnt-exist: "<red>Failed to edit schedule, does it exist?</red>"
+    set:
+      success: "<green>Successfully set <type> schedule <name> to <state></green>"
+      failure:
+        doesnt-exist: "<red>Failed to set schedule, does it exist?</red>"
+    failure:
+      invalid-type: "<red>You must select a type of either command or message</red>"
   sethome:
     success: "<green>Successfully set your new home, <home></green>"
     failure:
@@ -331,6 +350,7 @@ errors:
     player_list_decorations: "Failed to access player_list_decorations table in database"
     blocks: "Failed to access blocks table in database"
     reports: "Failed to access reports table in database"
+    schedules: "Failed to access schedules table in database"
   discord:
     setup: "Failed to initialize the Discord bot"
   generic: "An unknown error has occurred."

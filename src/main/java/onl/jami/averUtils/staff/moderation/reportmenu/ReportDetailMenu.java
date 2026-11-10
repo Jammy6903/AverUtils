@@ -5,6 +5,7 @@ import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.ReportRepo;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
@@ -20,13 +21,22 @@ public class ReportDetailMenu implements InventoryHolder {
 
     public ReportDetailMenu(ReportRepo.ReportData reportData) throws SQLException {
         this.reportData = reportData;
+
+        String reportedName = "Unknown";
+        if (reportData.reportedUuid() != null) {
+            reportedName = Bukkit.getOfflinePlayer(reportData.reportedUuid()).getName();
+        }
+        OfflinePlayer reporter = Bukkit.getOfflinePlayer(reportData.reporterUuid());
+
         inventory = Bukkit.createInventory(this, 27,
                 Messages.getComponent("moderation.reports-ui.title")
                         .append(Component.text(" > Report #" + reportData.id())));
 
         inventory.setItem(DETAILS, MenuItems.button(Material.PAPER,
                 Component.text("Report #" + reportData.id()),
-                List.of(Component.text("Reason: " + reportData.reason()),
+                List.of(Component.text("Player: " + reportedName),
+                        Component.text("Reported by: " + reporter.getName()),
+                        Component.text("Reason: " + reportData.reason()),
                         Component.text("Details: " + reportData.details()))));
 
         inventory.setItem(TP_REPORTER, MenuItems.button(Material.ENDER_PEARL,
