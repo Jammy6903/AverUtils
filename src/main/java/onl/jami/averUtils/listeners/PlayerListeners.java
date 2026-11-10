@@ -128,7 +128,7 @@ public class PlayerListeners implements Listener {
         }
 
         for (PunishmentRepo.PunishmentData p : PunishmentCache.loadActivePunishmentsForPlayer(player.getUniqueId())) {
-            if (p.type().equals(PunishmentType.WARN)) {
+            if (p.type().equals(PunishmentType.WARN) || p.type().equals(PunishmentType.KICK)) {
                 player.sendMessage(Punish.getComponent("moderation.punishments.strings.warn.on-join",
                         Placeholder.component("reason", Component.text(p.reason()))
                 ));
