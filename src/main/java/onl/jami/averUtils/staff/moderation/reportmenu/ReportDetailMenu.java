@@ -15,7 +15,7 @@ import java.util.List;
 
 public class ReportDetailMenu implements InventoryHolder {
 
-    public static final int DETAILS = 4, TP_REPORTER = 11, TP_REPORTED = 13, CLOSE = 15, BACK = 22;
+    public static final int DETAILS = 4, TP_REPORTER = 11, TP_REPORTED = 13, CLOSE_OPEN = 15, BACK = 22;
     private final Inventory inventory;
     private final ReportRepo.ReportData reportData;
 
@@ -45,8 +45,14 @@ public class ReportDetailMenu implements InventoryHolder {
             inventory.setItem(TP_REPORTED, MenuItems.button(Material.ENDER_EYE,
                     Component.text("Teleport to reported"), List.of()));
         }
-        inventory.setItem(CLOSE, MenuItems.button(Material.RED_WOOL,
-                Component.text("Close report"), List.of()));
+        if (reportData.active()) {
+            inventory.setItem(CLOSE_OPEN, MenuItems.button(Material.GREEN_WOOL,
+                    Component.text("Close report"), List.of()));
+        }
+        if (!reportData.active()) {
+            inventory.setItem(CLOSE_OPEN, MenuItems.button(Material.RED_WOOL,
+                    Component.text("Open report"), List.of()));
+        }
         inventory.setItem(BACK, MenuItems.button(Material.ARROW,
                 Component.text("Back"), List.of()));
     }

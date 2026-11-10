@@ -60,8 +60,13 @@ public class ReportMenuListener implements Listener {
         switch (slot) {
             case ReportDetailMenu.TP_REPORTER -> teleportTo(p, report.reporterUuid());
             case ReportDetailMenu.TP_REPORTED -> { if (report.reportedUuid() != null) { teleportTo(p, report.reportedUuid()); } }
-            case ReportDetailMenu.CLOSE -> {
-                ReportRepo.updateActive(report.id(), false);
+            case ReportDetailMenu.CLOSE_OPEN -> {
+                if (report.active()) {
+                    ReportRepo.updateActive(report.id(), false);
+                }
+                if (!report.active()) {
+                    ReportRepo.updateActive(report.id(), true);
+                }
                 p.openInventory(new ReportMenu().getInventory());
             }
             case ReportDetailMenu.BACK -> p.openInventory(new ReportMenu().getInventory());
