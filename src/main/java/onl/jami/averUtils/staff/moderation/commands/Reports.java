@@ -1,4 +1,4 @@
-package onl.jami.averUtils.staff.moderation;
+package onl.jami.averUtils.staff.moderation.commands;
 
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;

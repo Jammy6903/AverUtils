@@ -6,7 +6,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.sync.chat.MinecraftToDiscord;
 import onl.jami.averUtils.locale.Messages;
-import onl.jami.averUtils.staff.moderation.Punish;
+import onl.jami.averUtils.staff.moderation.commands.Punish;
 import onl.jami.averUtils.storage.cache.BlockCache;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import onl.jami.averUtils.storage.cache.PlayerListDecorationCache;
@@ -16,6 +16,7 @@ import onl.jami.averUtils.discord.verification.VerifyLock;
 import onl.jami.averUtils.userconfig.PlayerName;
 import onl.jami.averUtils.util.TimeUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -172,6 +173,13 @@ public class PlayerListeners implements Listener {
             if (!other.equals(player) && other.hasPermission("averutils.ping")) {
                 other.removeCustomChatCompletions(List.of(tag));
             }
+        }
+
+        try {
+            Location l = e.getPlayer().getLocation();
+            PlayerRepo.updateLastLocation(player.getUniqueId(), player.getWorld().getUID(), l.getX(), l.getY(), l.getZ());
+        } catch (SQLException ex) {
+            AverUtils.logWarning(Messages.getString("errors.database.players"), ex);
         }
 
         // remove player from cache

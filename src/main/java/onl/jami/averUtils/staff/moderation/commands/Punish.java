@@ -1,4 +1,4 @@
-package onl.jami.averUtils.staff.moderation;
+package onl.jami.averUtils.staff.moderation.commands;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;

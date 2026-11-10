@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 public class PlayerRepo {
-    public record PlayerData(UUID uuid, boolean isVerified, Long discordId, String discordUsername, String discordGlobalName, String discordNickname, String nickname, String pronouns, NameChoice nameChoice, String nameStyle, boolean pvpEnabled, boolean tpEnabled, boolean pingEnabled) {
+    public record PlayerData(UUID uuid, boolean isVerified, Long discordId, String discordUsername, String discordGlobalName, String discordNickname, String nickname, String pronouns, NameChoice nameChoice, String nameStyle, boolean pvpEnabled, boolean tpEnabled, boolean pingEnabled, UUID last_world, Double last_x, Double last_y, Double last_z) {
         public enum NameChoice {
             PLAYER_NAME,
             NICKNAME,
@@ -43,7 +43,11 @@ public class PlayerRepo {
                         rs.getString("name_style"),
                         rs.getBoolean("pvp_enabled"),
                         rs.getBoolean("tp_enabled"),
-                        rs.getBoolean("ping_enabled")
+                        rs.getBoolean("ping_enabled"),
+                        uuidOrNull(rs.getString("last_world_uuid")),
+                        rs.getObject("last_x", Double.class),
+                        rs.getObject("last_y", Double.class),
+                        rs.getObject("last_z", Double.class)
                 );
             }
         }
@@ -67,7 +71,11 @@ public class PlayerRepo {
                         rs.getString("name_style"),
                         rs.getBoolean("pvp_enabled"),
                         rs.getBoolean("tp_enabled"),
-                        rs.getBoolean("ping_enabled")
+                        rs.getBoolean("ping_enabled"),
+                        uuidOrNull(rs.getString("last_world_uuid")),
+                        rs.getObject("last_x", Double.class),
+                        rs.getObject("last_y", Double.class),
+                        rs.getObject("last_z", Double.class)
                 );
             }
         }
@@ -189,5 +197,21 @@ public class PlayerRepo {
             ps.setString(1, uuid.toString());
             ps.executeUpdate();
         }
+    }
+
+    public static void updateLastLocation(UUID player, UUID world, Double x, Double y, Double z) throws SQLException {
+        String sql = "UPDATE players SET last_world_uuid = ?, last_x = ?, last_y = ?, last_z = ? WHERE uuid = ?";
+        try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
+            ps.setString(1, world.toString());
+            ps.setDouble(2, x);
+            ps.setDouble(3, y);
+            ps.setDouble(4, z);
+            ps.setString(5, player.toString());
+            ps.executeUpdate();
+        }
+    }
+
+    private static UUID uuidOrNull(String uuid) {
+        return uuid == null ? null : UUID.fromString(uuid);
     }
 }

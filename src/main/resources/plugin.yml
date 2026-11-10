@@ -146,3 +146,8 @@ commands:
     description: Punish a player
     usage: /punish [player]
     permission: averutils.punish
+  tpo:
+    description: Teleport to an offline player
+    aliases: [tpoffline]
+    usage: /tpo <player>
+    permission: averutils.tpo

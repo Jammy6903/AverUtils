@@ -340,6 +340,13 @@ commands:
     timeout:
       sending: "<red><player> did not accept your teleport request in time</red>"
       receiving: "<red><player>'s teleport request has timed out</red>"
+  tpo:
+    success:
+      online: "<green>Teleported you to <player></green>"
+      offline: "<green>Teleported you to <player>'s last location</green>"
+    failure:
+      doesnt-exist: "<red>That player hasn't joined the server before</red>"
+      no-location: "<red>Failed to retrieve that player's last location</red>"
   unblock:
     success: "<green><player> has been unblocked</green>"
     failure:

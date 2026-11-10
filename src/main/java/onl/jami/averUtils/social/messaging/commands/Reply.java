@@ -4,7 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.social.messaging.Message;
 import onl.jami.averUtils.locale.Messages;
-import onl.jami.averUtils.staff.moderation.Punish;
+import onl.jami.averUtils.staff.moderation.commands.Punish;
 import onl.jami.averUtils.storage.cache.PunishmentCache;
 import onl.jami.averUtils.storage.database.PunishmentRepo;
 import onl.jami.averUtils.storage.database.PunishmentType;
