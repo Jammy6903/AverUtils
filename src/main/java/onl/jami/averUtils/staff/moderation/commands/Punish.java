@@ -27,7 +27,6 @@ import java.util.List;
 public class Punish implements TabExecutor {
 
     private static final List<String> DURATION_PUNISHMENTS = List.of("TIMEOUT", "TEMP_BAN");
-    private static final List<String> NON_CREATE = List.of("REMOVE", "EDIT_DETAILS");
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
@@ -80,11 +79,10 @@ public class Punish implements TabExecutor {
                 punishmentType = PunishmentType.KICK;
                 arguments = parseReasonDetails(args, 2);
                 if (arguments.size() > 2) { return false; }
-                if (target != null) {
-                    target.kick(getComponent("moderation.punishments.strings.kick",
-                            Placeholder.component("reason", Component.text(arguments.getFirst()))
-                    ));
-                }
+
+                target.kick(getComponent("moderation.punishments.strings.kick",
+                        Placeholder.component("reason", Component.text(arguments.getFirst()))
+                ));
                 break;
             case "TIMEOUT":
                 if (args.length < 3) { return false;}

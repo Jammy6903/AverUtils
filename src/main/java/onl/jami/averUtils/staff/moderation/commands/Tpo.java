@@ -55,7 +55,6 @@ public class Tpo implements TabExecutor {
                         Placeholder.component("player", Component.text(args[0])));
                 return true;
             }
-            Location location = new Location(Bukkit.getWorld(playerData.last_world()), playerData.last_x(), playerData.last_y(), playerData.last_z());
             p.teleport(new Location(Bukkit.getWorld(playerData.last_world()), playerData.last_x(), playerData.last_y(), playerData.last_z()));
             Messages.send(sender, "commands.tpo.success.offline",
                     Placeholder.component("player", Component.text(args[0])));
