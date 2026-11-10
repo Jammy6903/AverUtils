@@ -6,7 +6,7 @@
 
     <groupId>onl.jami</groupId>
     <artifactId>averutils</artifactId>
-    <version>0.5 BETA</version>
+    <version>0.6 BETA</version>
     <packaging>jar</packaging>
 
     <name>averutils</name>

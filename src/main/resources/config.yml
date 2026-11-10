@@ -17,3 +17,124 @@ reporting:
     - "Hate-speech"
     - "Harassment"
     - "Other"
+
+moderation:
+  punishments:
+    strings:
+      warn:
+        on-join: "<newline><bold><dark_red>[!]</dark_red></bold> <red>You have an active warning for <yellow><reason></yellow></red><newline> "
+        on-warn: "<newline><bold><dark_red>[!]</dark_red></bold> <red>You have been warned for <yellow><reason></yellow></red><newline> "
+      kick: "<bold><dark_red>You have been kicked!</dark_red></bold><newline><newline><yellow>Reason:</yellow> <reason>"
+      timeout:
+        on-timeout: "<newline><bold><dark_red>[!]</dark_red></bold> <red>You have been timed out for <yellow><duration></yellow> for <yellow><reason></yellow></red><newline> "
+        on-action: "<bold><dark_red>[!]</dark_red></bold> <red>You can't interact with chat or message players while timed out, you have <yellow><remaining></yellow> remaining on your time out for <yellow><reason></yellow></red>"
+      temp-ban: "<bold><dark_red>You have been temporarily banned!</dark_red></bold><newline><newline><yellow>Reason:</yellow> <reason><newline><yellow>Duration:</yellow> <duration><newline><yellow>Remaining:</yellow> <remaining><newline><newline><italic><grey>punishment id: <id></grey>"
+      ban: "<bold><dark_red>You have been banned!</dark_red></bold><newline><newline><yellow>Reason:</yellow> <reason><newline><newline><italic><grey>punishment id: <id></grey>"
+    warn-kick-duration: 7d
+    no-reason: "Reason not provided"
+    no-details: "No details"
+    suggestions:
+      spam:
+        display-name: "Chat spam"
+        reasons:
+          - "Spamming chat repeatedly"
+          - "Repeated messages"
+        options:
+          - type: WARN
+          - type: KICK
+          - type: TIMEOUT
+            duration: 30m
+          - type: TIMEOUT
+            duration: 2h
+          - type: TIMEOUT
+            duration: 1d
+          - type: TIMEOUT
+            duration: 3d
+          - type: TEMP_BAN
+            duration: 7d
+          - type: BAN
+      harassment:
+        display-name: "Harassment"
+        reasons:
+          - "Harassing another player"
+          - "Causing another player's discomfort"
+        options:
+          - type: WARN
+          - type: KICK
+          - type: TIMEOUT
+            duration: 2h
+          - type: TIMEOUT
+            duration: 2d
+          - type: TEMP_BAN
+            duration: 7d
+          - type: TEMP_BAN
+            duration: 30d
+          - type: BAN
+      rdm:
+        display-name: "Random Death-match"
+        reasons:
+          - "Unprovoked PvP"
+          - "Intentionally causing another player's death"
+          - "Multiple instances of unprovoked PvP"
+        options:
+          - type: WARN
+          - type: KICK
+          - type: TEMP_BAN
+            duration: 1d
+          - type: TEMP_BAN
+            duration: 3d
+          - type: TEMP_BAN
+            duration: 7d
+          - type: TEMP_BAN
+            duration: 30d
+          - type: BAN
+      stealing:
+        display-name: "Stealing"
+        reasons:
+          - "Stealing from another player's chests"
+          - "Stealing another player's animals"
+          - "Stealing from another player"
+        options:
+          - type: WARN
+          - type: TEMP_BAN
+            duration: 3d
+          - type: TEMP_BAN
+            duration: 7d
+          - type: TEMP_BAN
+            duration: 30d
+          - type: BAN
+      griefing:
+        display-name: "Griefing"
+        reasons:
+          - "Griefing"
+          - "Intentionally griefing another player's build"
+        options:
+          - type: TEMP_BAN
+            duration: 3d
+          - type: TEMP_BAN
+            duration: 7d
+          - type: TEMP_BAN
+            duration: 30d
+          - type: BAN
+      hate-speech:
+        display-name: "Hate speech"
+        reasons:
+          - "Hate speech"
+        options:
+          - type: TEMP_BAN
+            duration: 30d
+          - type: BAN
+      hacking:
+        display-name: "Hacking / Cheating"
+        reasons:
+          - "Using x-ray"
+          - "Fly hacks"
+          - "PvP hacks"
+          - "Using exploits"
+        options:
+          - type: TEMP_BAN
+            duration: 7d
+          - type: TEMP_BAN
+            duration: 30d
+          - type: BAN
+

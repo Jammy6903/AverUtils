@@ -6,12 +6,14 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.sync.chat.MinecraftToDiscord;
 import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.staff.moderation.Punish;
 import onl.jami.averUtils.storage.cache.BlockCache;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import onl.jami.averUtils.storage.cache.PlayerListDecorationCache;
 import onl.jami.averUtils.storage.database.*;
 import onl.jami.averUtils.discord.verification.VerifyLock;
 import onl.jami.averUtils.userconfig.PlayerName;
+import onl.jami.averUtils.util.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -21,6 +23,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -29,6 +32,43 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class PlayerListeners implements Listener {
+
+    @EventHandler
+    public void onPreLogin(AsyncPlayerPreLoginEvent event) {
+        try {
+            long now = System.currentTimeMillis();
+            PunishmentRepo.PunishmentData ban = null;
+
+            for (PunishmentRepo.PunishmentData p : PunishmentRepo.getByUUID(event.getUniqueId())) {
+                boolean isBan = p.type() == PunishmentType.BAN || p.type() == PunishmentType.TEMP_BAN;
+                boolean isActive = !p.isExpired() && (p.durationEnd() == null || p.durationEnd() > now);
+                if (isBan && isActive) {
+                    ban = p;
+                }
+            }
+
+            if (ban != null) {
+                String key = ban.type() == PunishmentType.BAN ? "moderation.punishments.strings.ban" : "moderation.punishments.strings.temp-ban";
+                Component duration = Component.empty();
+                if (ban.duration() != null) {
+                    duration = Component.text(ban.duration());
+                }
+                Component remaining = Component.empty();
+                if (ban.durationEnd() != null) {
+                    remaining = Component.text(TimeUtils.formatRemainingTimeUntil(ban.durationEnd()));
+                }
+                event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED,
+                        Punish.getComponent(key,
+                                Placeholder.component("reason", Component.text(ban.reason())),
+                                Placeholder.component("duration", duration),
+                                Placeholder.component("remaining", remaining),
+                                Placeholder.component("id", Component.text(ban.id()))));
+            }
+        } catch (SQLException e) {
+            AverUtils.logWarning(Messages.getString("errors.database.punishments"), e);
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, Messages.getComponent("errors.generic"));
+        }
+    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
@@ -84,6 +124,27 @@ public class PlayerListeners implements Listener {
             if (!other.equals(player) && other.hasPermission("averutils.ping")) {
                 other.addCustomChatCompletions(List.of(tag));
             }
+        }
+
+        try {
+            long now = System.currentTimeMillis();
+            PunishmentRepo.PunishmentData warning = null;
+
+            for (PunishmentRepo.PunishmentData p : PunishmentRepo.getByUUID(player.getUniqueId())) {
+                boolean isWarning = p.type() == PunishmentType.WARN;
+                boolean isActive = !p.isExpired() && (p.durationEnd() == null || p.durationEnd() > now);
+                if (isWarning && isActive) {
+                    warning = p;
+                }
+            }
+
+            if (warning != null) {
+                player.sendMessage(Punish.getComponent("moderation.punishments.strings.warn.on-join",
+                                Placeholder.component("reason", Component.text(warning.reason()))
+                ));
+            }
+        } catch (SQLException exception) {
+            AverUtils.logWarning(Messages.getString("errors.database.punishments"), exception);
         }
 
         if (player.hasPermission("averutils.moderation.reports")) {

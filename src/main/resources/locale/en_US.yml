@@ -92,14 +92,8 @@ player:
       left-discord: "You have left the discord server"
       not-verified: "You must verify your account in the Discord server"
       wrong-code: "You must enter a valid verification code"
-    timeout:
-      on-start: "You have been timed out for <duration>"
-      chat-attempt: "You can't chat while timed out, <duration> remaining"
-      on-end: "You are no longer timed out"
     kick:
       unknown: "An unknown error has occurred."
-    ban: "You have been banned for <reason>"
-    tempban: "You have been banned for <duration> for <reason>"
   list:
     format:
       player: "<prefix> <name>"
@@ -241,6 +235,33 @@ commands:
     success: "<green>Successfully updated your pronouns to <pronouns></green>"
     failure:
       length: "<red>Pronouns must be 1-10 characters!</red>"
+  punish:
+    failure:
+      player-not-joined: "<red>That player has not joined the server</red>"
+    warn:
+      success: "<yellow>You have warned <red><player></red> for <red><reason></red>:</yellow> <details>"
+      failure:
+    kick:
+      success: "<yellow>You have kicked <red><player></red> for <red><reason>>:</yellow> <details>"
+      failure:
+        player-offline: "<red>You cannot kick a player who is offline</red>"
+    timeout:
+      success: "<yellow>You have timed out <red><player></red> for <red><duration></red> for <red><reason></red>:</yellow> <details>"
+      failure:
+    temp_ban:
+      success: "<yellow>You have temp-banned <red><player></red> for <red><duration></red> for <red><reason></red>:</yellow> <details>"
+      failure:
+    ban:
+      success: "<yellow>You have banned <red><player></red> for <red><reason>>:</yellow> <details>"
+      failure:
+    remove:
+      success: "<yellow>You have removed <red>punishment <id></red> from <red><player></red></yellow>"
+      failure:
+        doesnt-exist: "<red>That punishment does not exist</red>"
+    edit_details:
+      success:
+      failure:
+        doesnt-exist:
   reload:
     success: "<green>Successfully reloaded config and locale</green>"
   report:
@@ -351,6 +372,8 @@ errors:
     blocks: "Failed to access blocks table in database"
     reports: "Failed to access reports table in database"
     schedules: "Failed to access schedules table in database"
+    punishments: "Failed to access punishments table in database"
   discord:
     setup: "Failed to initialize the Discord bot"
   generic: "An unknown error has occurred."
+  config: "There is an error in the config. Please get an administrator to amend this."

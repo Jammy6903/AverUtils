@@ -128,6 +128,20 @@ public class Driver {
                                          PRIMARY KEY (name, type)
                 )
             """);
+            st.executeUpdate("""
+                CREATE TABLE IF NOT EXISTS punishments (
+                    punishment_id       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    player_uuid         TEXT REFERENCES players(uuid),
+                    punisher_uuid       TEXT,
+                    type                TEXT NOT NULL
+                                        CHECK(type IN ('WARN', 'KICK', 'TIMEOUT', 'TEMP_BAN', 'BAN')),
+                    duration            TEXT,
+                    duration_end        INTEGER,
+                    reason              TEXT NOT NULL,
+                    details             TEXT NOT NULL,
+                    is_expired          BOOLEAN NOT NULL DEFAULT FALSE
+                )
+            """);
         }
     }
 

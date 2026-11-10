@@ -6,19 +6,22 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.social.chat.Formatter;
 import onl.jami.averUtils.discord.sync.chat.MinecraftToDiscord;
+import onl.jami.averUtils.staff.moderation.Punish;
 import onl.jami.averUtils.storage.cache.BlockCache;
 import onl.jami.averUtils.storage.cache.PlayerCache;
-import onl.jami.averUtils.storage.database.BlockCategory;
-import onl.jami.averUtils.storage.database.BlockRepo;
-import onl.jami.averUtils.storage.database.PlayerRepo;
+import onl.jami.averUtils.storage.database.*;
+import onl.jami.averUtils.util.TimeUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
@@ -37,6 +40,30 @@ public class ChatListener implements Listener {
 
     @EventHandler
     public void onChat(AsyncChatEvent e) {
+        try {
+            long now = System.currentTimeMillis();
+            PunishmentRepo.PunishmentData timeout = null;
+
+            for (PunishmentRepo.PunishmentData p : PunishmentRepo.getByUUID(e.getPlayer().getUniqueId())) {
+                boolean isWarning = p.type() == PunishmentType.TIMEOUT;
+                boolean isActive = !p.isExpired() && (p.durationEnd() == null || p.durationEnd() > now);
+                if (isWarning && isActive) {
+                    timeout = p;
+                }
+            }
+
+            if (timeout != null) {
+                e.setCancelled(true);
+                e.getPlayer().sendMessage(Punish.getComponent("moderation.punishments.strings.timeout.on-action",
+                        Placeholder.component("reason", Component.text(timeout.reason())),
+                        Placeholder.component("remaining", Component.text(TimeUtils.formatRemainingTimeUntil(timeout.durationEnd())))
+                ));
+                return;
+            }
+        } catch (SQLException exception) {
+            AverUtils.logWarning(Messages.getString("errors.database.punishments"), exception);
+        }
+
         if (AverUtils.getCfg().getBoolean("discord.enabled") && AverUtils.getCfg().getBoolean("discord.require-verification")) {
             PlayerRepo.PlayerData playerData = PlayerCache.getPlayer(e.getPlayer());
             if (playerData == null || !playerData.isVerified()) {

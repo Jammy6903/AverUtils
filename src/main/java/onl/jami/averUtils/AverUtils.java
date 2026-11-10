@@ -16,6 +16,7 @@ import onl.jami.averUtils.listeners.PingListener;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.locale.Reload;
 import onl.jami.averUtils.staff.admin.Schedule;
+import onl.jami.averUtils.staff.moderation.Punish;
 import onl.jami.averUtils.staff.moderation.Reports;
 import onl.jami.averUtils.staff.moderation.reportmenu.ReportMenuListener;
 import onl.jami.averUtils.storage.cache.ChannelLinkCache;
@@ -144,6 +145,7 @@ public final class AverUtils extends JavaPlugin {
         registerCommand("report", new Report());
         registerCommand("reports", new Reports());
         registerCommand("schedule", new Schedule());
+        registerCommand("punish", new Punish());
     }
 
     @Override
