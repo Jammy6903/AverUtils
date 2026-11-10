@@ -9,6 +9,7 @@ import onl.jami.averUtils.schedules.Scheduled;
 import onl.jami.averUtils.social.messaging.Message;
 import onl.jami.averUtils.storage.database.ScheduleRepo;
 import onl.jami.averUtils.storage.database.ScheduleType;
+import onl.jami.averUtils.util.TimeUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -38,14 +39,14 @@ public class Schedule implements TabExecutor {
         switch (args[0].toLowerCase()) {
             case "create":
                 if (args.length < 5) { return false; }
-                interval = parseTime(args[3]);
+                interval = TimeUtils.parseTime(args[3]);
                 if (interval == null || interval == 0) { return false; }
                 message = String.join(" ", Arrays.copyOfRange(args, 4, args.length));
                 create(sender, args[2], type, interval, message);
                 break;
             case "edit":
                 if (args.length < 5) { return false; }
-                interval = parseTime(args[3]);
+                interval = TimeUtils.parseTime(args[3]);
                 if (interval == null || interval == 0) { return false; }
                 message = String.join(" ", Arrays.copyOfRange(args, 4, args.length));
                 edit(sender, args[2], type, interval, message);
@@ -153,33 +154,5 @@ public class Schedule implements TabExecutor {
             }
         }
         return List.of();
-    }
-
-    private static final Pattern TOKEN = Pattern.compile("(\\d+)([dhmsMwy])");
-
-    public static Long parseTime(String input) {
-        String s = input.replace(" ", "");
-        Matcher m = TOKEN.matcher(s);
-
-        Long total = 0L;
-        int matched = 0;
-        while (m.find()) {
-            long n = Long.parseLong(m.group(1));
-            total += switch (m.group(2)) {
-                case "y" -> n * 31_536_000; // 1y = 365d
-                case "M" -> n * 2_592_000; // 1M = 30d
-                case "w" -> n * 604_800;
-                case "d" -> n * 86_400;
-                case "h" -> n * 3_600;
-                case "m" -> n * 60;
-                case "s" -> n;
-                default -> throw new IllegalArgumentException();
-            };
-            matched += m.group().length();
-        }
-        if (matched != s.length()) {
-            return null;
-        }
-        return total;
     }
 }
