@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class Home implements TabExecutor {
 
@@ -28,7 +29,7 @@ public class Home implements TabExecutor {
         }
         String name = "home";
         if (args.length > 0) {
-            name = args[0];
+            name = args[0].toLowerCase(Locale.ROOT);
         }
         try {
             HomeRepo.HomeData homeData = HomeRepo.getHome(((Player) sender).getUniqueId(), name);

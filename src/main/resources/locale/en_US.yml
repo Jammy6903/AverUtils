@@ -300,7 +300,7 @@ commands:
   sethome:
     success: "<green>Successfully set your new home, <home></green>"
     failure:
-      not-enough-homes: "<red>You can not set any more homes</red>"
+      not-enough-homes: "<red>You can not set any more homes, limit: <limit></red>"
   setwarp:
     success: "<green>Successfully set warp point, <warp>"
     failure:

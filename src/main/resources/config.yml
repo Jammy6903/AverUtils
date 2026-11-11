@@ -10,6 +10,40 @@ locale: "en_US"
 teleportation:
   tpr-distance: 15000
 
+homes:
+  default-limit: 1
+
+cooldowns:
+  chat:
+    standard: 2s
+    repeat-messages: 5s
+  commands:
+    tpa: 5s
+    tpahere: 5s
+    tpr: 30s
+    report: 60s
+    home: 5s
+    sethome: 30s
+    warp: 5s
+    nickname: 30s
+    pronouns: 30s
+    namestyle: 5s
+    verify: 10s
+  combat:
+    cooldown-both-attacker-and-victim: false
+    cooldown: 10s
+    commands:
+      - togglepvp
+      - spawn
+      - home
+      - warp
+      - tpr
+      - tpaccept
+      - block
+    log-out: true
+
+
+
 reporting:
   reasons:
     - "Stealing"

@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class DelHome implements TabExecutor {
 
@@ -27,15 +28,18 @@ public class DelHome implements TabExecutor {
         if (args.length == 0) {
             return false;
         }
+
+        String name = args[0].toLowerCase(Locale.ROOT);
+
         try {
-            if (HomeRepo.deleteHome(((Player) sender).getUniqueId(), args[0])) {
+            if (HomeRepo.deleteHome(((Player) sender).getUniqueId(), name)) {
                 Messages.send(sender, "commands.delhome.success",
-                        Placeholder.component("home", Component.text(args[0]))
+                        Placeholder.component("home", Component.text(name))
                 );
                 return true;
             }
             Messages.send(sender, "commands.delhome.failure.doesnt-exist",
-                    Placeholder.component("home", Component.text(args[0]))
+                    Placeholder.component("home", Component.text(name))
             );
         } catch (SQLException exception) {
             AverUtils.logWarning(Messages.getString("errors.database.homes"), exception);

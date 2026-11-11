@@ -11,7 +11,7 @@ public class HomeRepo {
     public record HomeData(UUID playerUUID, String name, String world, double x, double y, double z, float pitch, float yaw) {}
 
     public static boolean createHome(UUID uuid, String name, String world, double x, double y, double z, float pitch, float yaw) throws SQLException {
-        String sql = "INSERT OR IGNORE INTO homes (player_uuid, name, world, x, y, z, pitch, yaw) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO homes (player_uuid, name, world, x, y, z, pitch, yaw) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(player_uuid, name) DO UPDATE SET world = excluded.world, x = excluded.x, y = excluded.y, z = excluded.z, pitch = excluded.pitch, yaw = excluded.yaw";
         try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
             ps.setString(1, uuid.toString());
             ps.setString(2, name);

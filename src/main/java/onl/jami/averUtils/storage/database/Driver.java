@@ -21,7 +21,7 @@ public class Driver {
         return connection;
     }
 
-    private static final int SCHEMA_VERSION = 3;
+    private static final int SCHEMA_VERSION = 4;
 
     public static void initTables() throws SQLException {
         try (Statement st = connection.createStatement()) {
@@ -154,6 +154,7 @@ public class Driver {
         if (current < 1) { migrateToV1(); }
         if (current < 2) { migrateToV2(); }
         if (current < 3) { migrateToV3(); }
+        if (current < 4) { migrateToV4(); }
         setSchemaVersion(SCHEMA_VERSION);
     }
 
@@ -212,6 +213,20 @@ public class Driver {
         connection.setAutoCommit(false);
         try (Statement st = connection.createStatement()) {
             st.executeUpdate("ALTER TABLE players ADD COLUMN ping_enabled BOOLEAN NOT NULL DEFAULT TRUE");
+            connection.commit();
+        } catch (SQLException exception) {
+            connection.rollback();
+            throw exception;
+        } finally {
+            connection.setAutoCommit(oldAutoCommit);
+        }
+    }
+
+    private static void migrateToV4() throws SQLException {
+        boolean oldAutoCommit = connection.getAutoCommit();
+        connection.setAutoCommit(false);
+        try (Statement st = connection.createStatement()) {
+            st.executeUpdate("UPDATE homes SET name = lower(name)");
             connection.commit();
         } catch (SQLException exception) {
             connection.rollback();
