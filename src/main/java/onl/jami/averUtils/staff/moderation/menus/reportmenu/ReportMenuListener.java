@@ -1,4 +1,4 @@
-package onl.jami.averUtils.staff.moderation.reportmenu;
+package onl.jami.averUtils.staff.moderation.menus.reportmenu;
 
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;

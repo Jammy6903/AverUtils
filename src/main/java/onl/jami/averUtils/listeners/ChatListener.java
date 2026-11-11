@@ -37,7 +37,7 @@ public class ChatListener implements Listener {
             1.0f, 1.5f
     );
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onChat(AsyncChatEvent e) {
         for (PunishmentRepo.PunishmentData p : PunishmentCache.getCachedPunishmentsWithActiveCheck(e.getPlayer().getUniqueId())) {
             if (p.type().equals(PunishmentType.TIMEOUT)) {

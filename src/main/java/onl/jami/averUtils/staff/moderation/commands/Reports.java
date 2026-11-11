@@ -2,7 +2,7 @@ package onl.jami.averUtils.staff.moderation.commands;
 
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;
-import onl.jami.averUtils.staff.moderation.reportmenu.ReportMenu;
+import onl.jami.averUtils.staff.moderation.menus.reportmenu.ReportMenu;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;

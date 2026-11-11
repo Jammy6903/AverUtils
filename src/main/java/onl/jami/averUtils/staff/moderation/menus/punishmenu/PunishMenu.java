@@ -1,4 +1,4 @@
-package onl.jami.averUtils.staff.moderation.punishmenu;
+package onl.jami.averUtils.staff.moderation.menus.punishmenu;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;

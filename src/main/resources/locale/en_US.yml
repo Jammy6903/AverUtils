@@ -47,6 +47,16 @@ discord:
       list:
         success: ""
 
+cooldowns:
+  chat:
+    standard: "<grey>You're chatting too fast, please wait <remaining></grey>"
+    repeat-messages: "<grey>You're spamming the same message, give it a rest for <remaining></grey>"
+  commands: "<bold><dark_red>[!]</dark_red> <red>You can't use that command again for another <remaining></red>"
+  combat:
+    commands: "<bold><dark_red>[!]</dark_red> <red>You are in combat! You can't use that command while in combat!</red>"
+    on-combat: "<bold><dark_red>[!]</dark_red> <red>You are now in combat, you can't use certain commands or log out.</red>"
+    on-expire: "<green>You are no longer in combat</green>"
+
 moderation:
   punishment-ui:
     title: "Punishment Menu"

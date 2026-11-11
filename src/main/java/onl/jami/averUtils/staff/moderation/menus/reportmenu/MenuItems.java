@@ -1,4 +1,4 @@
-package onl.jami.averUtils.staff.moderation.reportmenu;
+package onl.jami.averUtils.staff.moderation.menus.reportmenu;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
