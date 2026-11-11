@@ -8,6 +8,7 @@ import onl.jami.averUtils.storage.database.PlayerRepo;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -55,7 +56,11 @@ public class Tpo implements TabExecutor {
                         Placeholder.component("player", Component.text(args[0])));
                 return true;
             }
-            p.teleport(new Location(Bukkit.getWorld(playerData.last_world()), playerData.last_x(), playerData.last_y(), playerData.last_z()));
+            World world = Bukkit.getWorld(playerData.last_world());
+            if (world == null) {
+                Messages.send(sender, "commands.tpo.failure.world-missing");
+            }
+            p.teleport(new Location(world, playerData.last_x(), playerData.last_y(), playerData.last_z()));
             Messages.send(sender, "commands.tpo.success.offline",
                     Placeholder.component("player", Component.text(args[0])));
         } catch (SQLException e) {

@@ -357,6 +357,7 @@ commands:
     failure:
       doesnt-exist: "<red>That player hasn't joined the server before</red>"
       no-location: "<red>Failed to retrieve that player's last location</red>"
+      world-missing: "<red>That player was in a world which no longer exists</red>"
   tpr:
     success: "<green>Teleported you to a random location</green>"
     failure:
