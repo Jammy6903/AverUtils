@@ -12,11 +12,11 @@ public class Spawn implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player p)) {
             Messages.send(sender, "commands.generic.failure.players-only");
             return true;
         }
-        ((Player) sender).teleport(Bukkit.getWorlds().getFirst().getSpawnLocation());
+        p.teleport(Bukkit.getWorlds().getFirst().getSpawnLocation());
         Messages.send(sender, "commands.spawn.success");
         return true;
     }
