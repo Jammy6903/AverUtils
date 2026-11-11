@@ -3,6 +3,7 @@ package onl.jami.averUtils.staff.moderation.menus.reportmenu;
 import net.kyori.adventure.text.Component;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.ReportRepo;
+import onl.jami.averUtils.util.MenuUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -32,28 +33,28 @@ public class ReportDetailMenu implements InventoryHolder {
                 Messages.getComponent("moderation.reports-ui.title")
                         .append(Component.text(" > Report #" + reportData.id())));
 
-        inventory.setItem(DETAILS, MenuItems.button(Material.PAPER,
+        inventory.setItem(DETAILS, MenuUtils.button(Material.PAPER,
                 Component.text("Report #" + reportData.id()),
                 List.of(Component.text("Player: " + reportedName),
                         Component.text("Reported by: " + reporter.getName()),
                         Component.text("Reason: " + reportData.reason()),
                         Component.text("Details: " + reportData.details()))));
 
-        inventory.setItem(TP_REPORTER, MenuItems.button(Material.ENDER_PEARL,
+        inventory.setItem(TP_REPORTER, MenuUtils.button(Material.ENDER_PEARL,
                 Component.text("Teleport to reporter"), List.of()));
         if (reportData.reportedUuid() != null) {
-            inventory.setItem(TP_REPORTED, MenuItems.button(Material.ENDER_EYE,
+            inventory.setItem(TP_REPORTED, MenuUtils.button(Material.ENDER_EYE,
                     Component.text("Teleport to reported"), List.of()));
         }
         if (reportData.active()) {
-            inventory.setItem(CLOSE_OPEN, MenuItems.button(Material.GREEN_WOOL,
+            inventory.setItem(CLOSE_OPEN, MenuUtils.button(Material.GREEN_WOOL,
                     Component.text("Close report"), List.of()));
         }
         if (!reportData.active()) {
-            inventory.setItem(CLOSE_OPEN, MenuItems.button(Material.RED_WOOL,
+            inventory.setItem(CLOSE_OPEN, MenuUtils.button(Material.RED_WOOL,
                     Component.text("Open report"), List.of()));
         }
-        inventory.setItem(BACK, MenuItems.button(Material.ARROW,
+        inventory.setItem(BACK, MenuUtils.button(Material.ARROW,
                 Component.text("Back"), List.of()));
     }
 

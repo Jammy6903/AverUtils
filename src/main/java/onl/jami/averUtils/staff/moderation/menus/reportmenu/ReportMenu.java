@@ -3,6 +3,7 @@ package onl.jami.averUtils.staff.moderation.menus.reportmenu;
 import net.kyori.adventure.text.Component;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.ReportRepo;
+import onl.jami.averUtils.util.MenuUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -22,9 +23,9 @@ public class ReportMenu implements InventoryHolder {
 
         List<ReportRepo.ReportData> reports = ReportRepo.getByActive(true);
         for (int i = 0; i < Math.min(reports.size(), 45); i++) {
-            inventory.setItem(i, MenuItems.reportItem(reports.get(i)));
+            inventory.setItem(i, MenuUtils.reportItem(reports.get(i)));
         }
-        inventory.setItem(CLOSED_BUTTON_SLOT, MenuItems.button(Material.CHEST, Component.text("Closed reports"), List.of()));
+        inventory.setItem(CLOSED_BUTTON_SLOT, MenuUtils.button(Material.CHEST, Component.text("Closed reports"), List.of()));
     }
 
     @Override

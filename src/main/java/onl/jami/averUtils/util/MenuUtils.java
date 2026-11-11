@@ -1,4 +1,4 @@
-package onl.jami.averUtils.staff.moderation.menus.reportmenu;
+package onl.jami.averUtils.util;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -14,7 +14,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
 
-public class MenuItems {
+public class MenuUtils {
 
     public static final NamespacedKey REPORT_ID = new NamespacedKey(AverUtils.getPlugin(), "report_id");
 

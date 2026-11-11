@@ -3,6 +3,7 @@ package onl.jami.averUtils.staff.moderation.menus.reportmenu;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.ReportRepo;
+import onl.jami.averUtils.util.MenuUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -48,7 +49,7 @@ public class ReportMenuListener implements Listener {
             p.openInventory(new ReportMenu().getInventory());
             return;
         }
-        Integer id = clicked.getItemMeta().getPersistentDataContainer().get(MenuItems.REPORT_ID, PersistentDataType.INTEGER);
+        Integer id = clicked.getItemMeta().getPersistentDataContainer().get(MenuUtils.REPORT_ID, PersistentDataType.INTEGER);
         if (id == null) { return; }
         ReportRepo.ReportData report = ReportRepo.getById(id);
         if (report == null) { return; }
