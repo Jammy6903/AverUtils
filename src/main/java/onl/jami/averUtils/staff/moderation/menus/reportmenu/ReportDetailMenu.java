@@ -11,7 +11,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class ReportDetailMenu implements InventoryHolder {
@@ -20,7 +19,7 @@ public class ReportDetailMenu implements InventoryHolder {
     private final Inventory inventory;
     private final ReportRepo.ReportData reportData;
 
-    public ReportDetailMenu(ReportRepo.ReportData reportData) throws SQLException {
+    public ReportDetailMenu(ReportRepo.ReportData reportData) {
         this.reportData = reportData;
 
         String reportedName = "Unknown";
