@@ -5,6 +5,7 @@ import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.storage.database.ReportRepo;
 import onl.jami.averUtils.util.MenuUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -75,14 +76,9 @@ public class ReportMenuListener implements Listener {
     }
 
     private void teleportTo(Player staff, UUID target) {
-        Player t = Bukkit.getPlayer(target);
-        if (t == null) {
-            Messages.send(staff, "moderation.reports-ui.teleport.failure.player-offline");
-            return;
-        }
+        OfflinePlayer t = Bukkit.getOfflinePlayer(target);
+        staff.performCommand("tpo " + t.getName());
         staff.closeInventory();
-        staff.teleport(t);
-        Messages.send(staff, "moderation.reports-ui.teleport.success");
     }
 
 }
