@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Msg implements TabExecutor {
 
-    private static final Map<UUID, UUID> lastMessagedBy = new ConcurrentHashMap<>();
+    private static final Map<UUID, UUID> LAST_MESSAGED_BY = new ConcurrentHashMap<>();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
@@ -54,13 +54,11 @@ public class Msg implements TabExecutor {
             }
         }
 
-        Message m = new Message();
-        m.formatMessage(target, sender, String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
-        m.sendToRecipients();
+        Message.sendMessage(sender, target, String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
 
         if (sender instanceof Player) {
-            lastMessagedBy.put(target.getUniqueId(), ((Player) sender).getUniqueId());
-            lastMessagedBy.put(((Player) sender).getUniqueId(), target.getUniqueId());
+            LAST_MESSAGED_BY.put(target.getUniqueId(), ((Player) sender).getUniqueId());
+            LAST_MESSAGED_BY.put(((Player) sender).getUniqueId(), target.getUniqueId());
         }
 
         return true;
@@ -73,6 +71,6 @@ public class Msg implements TabExecutor {
     }
 
     public static UUID getLastMessagedBy(UUID uuid) {
-        return lastMessagedBy.get(uuid);
+        return LAST_MESSAGED_BY.get(uuid);
     }
 }

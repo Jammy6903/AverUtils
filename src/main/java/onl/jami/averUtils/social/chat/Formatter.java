@@ -84,7 +84,7 @@ public class Formatter {
             "averutils.chat.style.gradient", StandardTags.gradient()
     );
 
-    private static Component parseChat(Player player, Component message) {
+    public static Component parseChat(Player player, Component message) {
         String raw = PlainTextComponentSerializer.plainText().serialize(message);
         TagResolver.Builder allowed = TagResolver.builder();
         TAGS.forEach((permission, resolver) -> {

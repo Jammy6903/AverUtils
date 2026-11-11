@@ -50,9 +50,8 @@ public class Reply implements TabExecutor {
             return true;
         }
 
-        Message m = new Message();
-        m.formatMessage(target, sender, String.join(" ", Arrays.copyOfRange(args, 0, args.length)));
-        m.sendToRecipients();
+        Message.sendMessage(sender, target, String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
+
         return true;
     }
 
