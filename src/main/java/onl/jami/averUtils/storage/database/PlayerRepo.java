@@ -31,6 +31,9 @@ public class PlayerRepo {
                 if (!rs.next()) return null;
                 long id = rs.getLong("discord_id");
                 Long discordId = rs.wasNull() ? null : id;
+                Double lastX = doubleOrNull(rs, "last_x");
+                Double lastY = doubleOrNull(rs, "last_y");
+                Double lastZ = doubleOrNull(rs, "last_z");
                 return new PlayerData(
                         uuid,
                         rs.getBoolean("is_verified"), discordId,
@@ -45,9 +48,9 @@ public class PlayerRepo {
                         rs.getBoolean("tp_enabled"),
                         rs.getBoolean("ping_enabled"),
                         uuidOrNull(rs.getString("last_world_uuid")),
-                        rs.getObject("last_x", Double.class),
-                        rs.getObject("last_y", Double.class),
-                        rs.getObject("last_z", Double.class)
+                        lastX,
+                        lastY,
+                        lastZ
                 );
             }
         }
@@ -213,5 +216,10 @@ public class PlayerRepo {
 
     private static UUID uuidOrNull(String uuid) {
         return uuid == null ? null : UUID.fromString(uuid);
+    }
+
+    private static Double doubleOrNull(ResultSet rs, String column) throws SQLException {
+        double d = rs.getDouble(column);
+        return rs.wasNull() ? null : d;
     }
 }

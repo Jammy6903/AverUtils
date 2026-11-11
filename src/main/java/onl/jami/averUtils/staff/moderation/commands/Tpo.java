@@ -40,7 +40,8 @@ public class Tpo implements TabExecutor {
             Player targetPlayer = target.getPlayer();
             if (targetPlayer != null) {
                 p.teleport(target.getPlayer().getLocation());
-                Messages.send(sender, "commands.tpo.success.online");
+                Messages.send(sender, "commands.tpo.success.online",
+                        Placeholder.component("player", Component.text(args[0])));
                 return true;
             }
         }

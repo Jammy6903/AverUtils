@@ -227,6 +227,10 @@ public class Driver {
         connection.setAutoCommit(false);
         try (Statement st = connection.createStatement()) {
             st.executeUpdate("UPDATE homes SET name = lower(name)");
+            st.executeUpdate("ALTER TABLE players ADD COLUMN last_world_uuid TEXT");
+            st.executeUpdate("ALTER TABLE players ADD COLUMN last_x REAL");
+            st.executeUpdate("ALTER TABLE players ADD COLUMN last_y REAL");
+            st.executeUpdate("ALTER TABLE players ADD COLUMN last_z REAL");
             connection.commit();
         } catch (SQLException exception) {
             connection.rollback();
