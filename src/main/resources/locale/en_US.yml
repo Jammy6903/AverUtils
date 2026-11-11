@@ -14,11 +14,8 @@ chat:
       reply-hover: "Replying to <name>: <message>"
   message:
     format:
-      sending: "<yellow>[✉]</yellow> <prefix> <name><pronouns> ⬅ <message>"
-      receiving: "<yellow>[✉]</yellow> <prefix> <name><pronouns> ➡ <message>"
-      pronouns: " <gray><pronouns></gray>"
-      prefix: "<gray>[</gray><prefix><gray>]</gray>"
-      suffix: "<suffix>"
+      sender: "<yellow>[✉]</yellow> <prefix> <name><pronouns> ⬅ <message>"
+      recipient: "<yellow>[✉]</yellow> <prefix> <name><pronouns> ➡ <message>"
   staff:
     format:
       message: "<red>[STAFF]</red><prefix> <name><pronouns><gray>:</gray> <yellow><message></yellow>"
@@ -67,6 +64,8 @@ moderation:
       success: "<green>You have been teleported</green>"
       failure:
         player-offline: "<red>That player is offline</red>"
+  social-spy:
+    format: "<yellow>[SPY]</yellow> <grey><sender> ➡ <recipient>: <message></grey>"
   reports-pending: "<bold><dark_red>[!]</dark_red></bold> <red>There are <count> active reports waiting</red>"
   new-report: "<bold><dark_red>[!]</dark_red></bold> <yellow>There is a new report waiting to be looked at</yellow>"
 
@@ -301,10 +300,16 @@ commands:
     success: "<green>Successfully set your new home, <home></green>"
     failure:
       not-enough-homes: "<red>You can not set any more homes, limit: <limit></red>"
+  setspawn:
+    success: "<green>Successfully set server spawn point</green>"
   setwarp:
     success: "<green>Successfully set warp point, <warp>"
     failure:
       already-exists: "<red>Failed to create warp! Does it already exist?</red>"
+  socialspy:
+    success:
+      enabled: "<green>SocialSpy enabled</green>"
+      disabled: "<green>SocialSpy <yellow>disabled</yellow></green>"
   spawn:
     success: "<green>Successfully teleported you to spawn</green>"
   toggletpa:
