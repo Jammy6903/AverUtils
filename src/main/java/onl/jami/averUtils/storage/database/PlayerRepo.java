@@ -11,7 +11,7 @@ public class PlayerRepo {
             PLAYER_NAME,
             NICKNAME,
             DISCORD_GLOBAL,
-            DISCORD_NICKNAME
+            DISCORD_NICK
         }
     }
 
