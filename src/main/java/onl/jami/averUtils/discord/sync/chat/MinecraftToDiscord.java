@@ -5,6 +5,9 @@ import com.google.gson.JsonObject;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.exceptions.ErrorHandler;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
+import net.dv8tion.jda.api.requests.ErrorResponse;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import onl.jami.averUtils.AverUtils;
@@ -51,45 +54,33 @@ public class MinecraftToDiscord {
         }
     }
 
-    public static void sendJoinMessage(Component joinMessage) {
+    public static void sendJoinMessage(Component message) {
         if (!AverUtils.getCfg().getBoolean("discord.enabled")) { return; }
-        if (joinMessage == null) { return; }
+        if (message == null) { return; }
 
         List<ChannelLinkRepo.ChannelData> channelData = ChannelLinkCache.getChannels(ChannelLinkCategory.JOIN);
         for (ChannelLinkRepo.ChannelData channel : channelData) {
-            Guild g = Bot.getJDA().getGuildById(channel.guildId());
-            if (g == null) { return; }
-            TextChannel c = g.getChannelById(TextChannel.class, channel.channelId());
-            if  (c == null) { return; }
-            c.sendMessage(PlainTextComponentSerializer.plainText().serialize(joinMessage)).queue();
+            sendMessage(channel, PlainTextComponentSerializer.plainText().serialize(message));
         }
     }
 
-    public static void sendPlayerLeaveMessage(Component quitMessage) {
+    public static void sendPlayerLeaveMessage(Component message) {
         if (!AverUtils.getCfg().getBoolean("discord.enabled")) { return; }
-        if (quitMessage == null) { return; }
+        if (message == null) { return; }
 
         List<ChannelLinkRepo.ChannelData> channelData = ChannelLinkCache.getChannels(ChannelLinkCategory.QUIT);
         for (ChannelLinkRepo.ChannelData channel : channelData) {
-            Guild g = Bot.getJDA().getGuildById(channel.guildId());
-            if (g == null) { return; }
-            TextChannel c = g.getChannelById(TextChannel.class, channel.channelId());
-            if  (c == null) { return; }
-            c.sendMessage(PlainTextComponentSerializer.plainText().serialize(quitMessage)).queue();
+            sendMessage(channel, PlainTextComponentSerializer.plainText().serialize(message));
         }
     }
 
-    public static void sendPlayerDeathMessage(Component deathMessage) {
+    public static void sendPlayerDeathMessage(Component message) {
         if (!AverUtils.getCfg().getBoolean("discord.enabled")) { return; }
-        if (deathMessage == null) { return; }
+        if (message == null) { return; }
 
         List<ChannelLinkRepo.ChannelData> channelData = ChannelLinkCache.getChannels(ChannelLinkCategory.DEATH);
         for (ChannelLinkRepo.ChannelData channel : channelData) {
-            Guild g = Bot.getJDA().getGuildById(channel.guildId());
-            if (g == null) { return; }
-            TextChannel c = g.getChannelById(TextChannel.class, channel.channelId());
-            if  (c == null) { return; }
-            c.sendMessage(PlainTextComponentSerializer.plainText().serialize(deathMessage)).queue();
+            sendMessage(channel, PlainTextComponentSerializer.plainText().serialize(message));
         }
     }
 
@@ -100,11 +91,25 @@ public class MinecraftToDiscord {
         if (message == null) { return; }
         List<ChannelLinkRepo.ChannelData> channelData = ChannelLinkCache.getChannels(ChannelLinkCategory.ADVANCEMENT);
         for (ChannelLinkRepo.ChannelData channel : channelData) {
+            sendMessage(channel, PlainTextComponentSerializer.plainText().serialize(message));
+        }
+    }
+
+    private static void sendMessage(ChannelLinkRepo.ChannelData channel, String message) {
+        try {
             Guild g = Bot.getJDA().getGuildById(channel.guildId());
-            if (g == null) { return; }
+            if (g == null) {
+                return;
+            }
             TextChannel c = g.getChannelById(TextChannel.class, channel.channelId());
-            if  (c == null) { return; }
-            c.sendMessage(PlainTextComponentSerializer.plainText().serialize(message)).queue();
+            if (c == null) {
+                return;
+            }
+            c.sendMessage(message).queue(null, new ErrorHandler()
+                    .handle(ErrorResponse.MISSING_PERMISSIONS, e -> AverUtils.logWarning("Could not send a Discord message", e))
+            );
+        } catch (InsufficientPermissionException | IllegalArgumentException e) {
+            AverUtils.logWarning("Could not send a Discord message", e);
         }
     }
 }
