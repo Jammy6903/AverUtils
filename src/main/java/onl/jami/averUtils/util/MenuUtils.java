@@ -5,6 +5,7 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.storage.database.HomeRepo;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.database.PunishmentRepo;
 import onl.jami.averUtils.storage.database.ReportRepo;
@@ -26,6 +27,16 @@ public class MenuUtils {
     public static final NamespacedKey REPORT_ID = new NamespacedKey(AverUtils.getPlugin(), "report_id");
     public static final NamespacedKey PLAYER_ID = new NamespacedKey(AverUtils.getPlugin(), "player_id");
     public static final NamespacedKey PUNISHMENT_ID = new NamespacedKey(AverUtils.getPlugin(), "punishment_id");
+
+    public static final NamespacedKey HOME_WORLD = new NamespacedKey(AverUtils.getPlugin(), "home_world");
+    public static final NamespacedKey HOME_X = new NamespacedKey(AverUtils.getPlugin(), "home_x");
+    public static final NamespacedKey HOME_Y = new NamespacedKey(AverUtils.getPlugin(), "home_y");
+    public static final NamespacedKey HOME_Z = new NamespacedKey(AverUtils.getPlugin(), "home_Z");
+    public static final NamespacedKey HOME_PITCH = new NamespacedKey(AverUtils.getPlugin(), "home_pitch");
+    public static final NamespacedKey HOME_YAW = new NamespacedKey(AverUtils.getPlugin(), "home_yaw");
+
+
+
     public static final Sound ERROR_SOUND = Sound.sound(Key.key("entity.villager.no"), Sound.Source.PLAYER, 1.0f, 1.0f);
 
     public static ItemStack button(Material m, Component name, List<Component> lore) {
@@ -112,6 +123,28 @@ public class MenuUtils {
                         Component.text("Details: " + reportData.details())));
         ItemMeta meta = item.getItemMeta();
         meta.getPersistentDataContainer().set(REPORT_ID, PersistentDataType.INTEGER, reportData.id());
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    public static ItemStack homeItem(HomeRepo.HomeData homeData) {
+        Material m = switch (homeData.world()) {
+            case "world" -> Material.GRASS_BLOCK;
+            case "world_nether" -> Material.NETHERRACK;
+            case "world_the_end" -> Material.END_STONE;
+            default -> Material.BRICK;
+        };
+        ItemStack item = button(m, Component.text(homeData.name()),
+                List.of(Component.text("World: " + homeData.world()),
+                        Component.text("x/y/z: " + homeData.x() + "/" + homeData.y() + "/" + homeData.z()),
+                        Component.text("pitch/yaw: " + homeData.pitch() + "/" + homeData.yaw())));
+        ItemMeta meta = item.getItemMeta();
+        meta.getPersistentDataContainer().set(HOME_WORLD, PersistentDataType.STRING, homeData.world());
+        meta.getPersistentDataContainer().set(HOME_X, PersistentDataType.DOUBLE, homeData.x());
+        meta.getPersistentDataContainer().set(HOME_Y, PersistentDataType.DOUBLE, homeData.y());
+        meta.getPersistentDataContainer().set(HOME_Z, PersistentDataType.DOUBLE, homeData.z());
+        meta.getPersistentDataContainer().set(HOME_PITCH, PersistentDataType.FLOAT, homeData.pitch());
+        meta.getPersistentDataContainer().set(HOME_YAW, PersistentDataType.FLOAT, homeData.yaw());
         item.setItemMeta(meta);
         return item;
     }
