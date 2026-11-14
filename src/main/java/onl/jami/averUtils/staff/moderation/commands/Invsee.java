@@ -22,6 +22,10 @@ public class Invsee implements TabExecutor {
             return true;
         }
 
+        if (args.length < 1) {
+            return false;
+        }
+
         OfflinePlayer target = Bukkit.getOfflinePlayerIfCached(args[0]);
         if (target == null || !target.isOnline()) {
             Messages.send(sender, "commands.invsee.failure.not-online");
