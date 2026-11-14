@@ -14,7 +14,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,12 +27,12 @@ public class PunishmentSuggestMenu implements InventoryHolder {
     private final Inventory inventory;
 
     private final static int BACK_BUTTON_FOOTER_SLOT = 2;
-    public int backButtonSlot;
+    private final int BACK_BUTTON_SLOT;
     private final static int CUSTOM_BUTTON_FOOTER_SLOT = 6;
-    public int customButtonSlot;
+    private final int CUSTOM_PUNISH_BUTTON_SLOT;
 
     private final List<PunishmentSuggestion.Option> options;
-    public PunishmentSuggestion.ReasonEntry reason;
+    private final PunishmentSuggestion.ReasonEntry reason;
 
     private final InventoryHolder PARENT;
 
@@ -46,8 +45,8 @@ public class PunishmentSuggestMenu implements InventoryHolder {
         this.PARENT = parent;
 
         int size = Math.min(Math.ceilDiv(options.size() + 9, 9) * 9, 54);
-        backButtonSlot = size - 9 + BACK_BUTTON_FOOTER_SLOT;
-        customButtonSlot = size - 9 + CUSTOM_BUTTON_FOOTER_SLOT;
+        BACK_BUTTON_SLOT = size - 9 + BACK_BUTTON_FOOTER_SLOT;
+        CUSTOM_PUNISH_BUTTON_SLOT = size - 9 + CUSTOM_BUTTON_FOOTER_SLOT;
 
         OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(target);
 
@@ -80,8 +79,8 @@ public class PunishmentSuggestMenu implements InventoryHolder {
 
         MenuUtils.drawFooter(inventory, size - 9, size - 1, Material.YELLOW_STAINED_GLASS_PANE);
 
-        inventory.setItem(backButtonSlot, MenuUtils.button(Material.BARRIER, Component.text("BACK"), List.of()));
-        inventory.setItem(customButtonSlot, MenuUtils.button(Material.OAK_HANGING_SIGN, Component.text("Custom Punishment"), List.of()));
+        inventory.setItem(BACK_BUTTON_SLOT, MenuUtils.button(Material.BARRIER, Component.text("BACK"), List.of()));
+        inventory.setItem(CUSTOM_PUNISH_BUTTON_SLOT, MenuUtils.button(Material.OAK_HANGING_SIGN, Component.text("Custom Punishment"), List.of()));
     }
 
     public PunishmentSuggestion.Option getOption(int slot) {
@@ -93,15 +92,13 @@ public class PunishmentSuggestMenu implements InventoryHolder {
     }
 
     @Override
-    public @NotNull Inventory getInventory() {
-        return inventory;
-    }
+    public @NotNull Inventory getInventory() { return inventory; }
 
-    public UUID getTarget() {
-        return target;
-    }
+    public UUID getTarget() { return target; }
 
-    public InventoryHolder getParent() {
-        return PARENT;
-    }
+    public InventoryHolder getParent() { return PARENT; }
+
+    public int getBackButtonSlot() { return BACK_BUTTON_SLOT; }
+
+    public int getCustomPunishButtonSlot() { return CUSTOM_PUNISH_BUTTON_SLOT; }
 }
