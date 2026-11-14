@@ -7,6 +7,7 @@ import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.sync.chat.MinecraftToDiscord;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.staff.moderation.commands.Punish;
+import onl.jami.averUtils.staff.moderation.commands.Vanish;
 import onl.jami.averUtils.storage.cache.BlockCache;
 import onl.jami.averUtils.storage.cache.PlayerCache;
 import onl.jami.averUtils.storage.cache.PlayerListDecorationCache;
@@ -148,6 +149,8 @@ public class PlayerListeners implements Listener {
                 AverUtils.logWarning(Messages.getString("errors.database.reports"), exception);
             }
         }
+
+        Vanish.showIndicator(player);
     }
 
     @EventHandler

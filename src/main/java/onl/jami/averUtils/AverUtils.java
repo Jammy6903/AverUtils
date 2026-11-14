@@ -13,10 +13,7 @@ import onl.jami.averUtils.listeners.ChatListener;
 import onl.jami.averUtils.listeners.PingListener;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.locale.Reload;
-import onl.jami.averUtils.staff.moderation.Cooldowns;
-import onl.jami.averUtils.staff.moderation.commands.Punish;
-import onl.jami.averUtils.staff.moderation.commands.Reports;
-import onl.jami.averUtils.staff.moderation.commands.Tpo;
+import onl.jami.averUtils.staff.moderation.commands.*;
 import onl.jami.averUtils.staff.moderation.menus.punishmenu.PunishMenuListener;
 import onl.jami.averUtils.staff.moderation.menus.reportmenu.ReportMenuListener;
 import onl.jami.averUtils.storage.cache.ChannelLinkCache;
@@ -147,6 +144,9 @@ public final class AverUtils extends JavaPlugin {
         registerCommand("tpr", new Tpr());
         registerCommand("setSpawn", new SetSpawn());
         registerCommand("socialspy", new SocialSpy());
+        registerCommand("invsee", new Invsee());
+        registerCommand("vanish", new Vanish());
+        registerCommand("fly", new Fly());
     }
 
     @Override

@@ -142,6 +142,19 @@ commands:
     aliases: [ tpoffline ]
     usage: /tpo <player>
     permission: averutils.moderation.tpo
+  invsee:
+    description: See into and manipulate a player inventory
+    usage: /invsee <player>
+    permission: averutils.moderation.invsee
+  vanish:
+    description: Make yourself invisible to other players
+    aliases: [ v ]
+    usage: /vanish
+    permission: averutils.moderation.vanish
+  fly:
+    description: Toggle flying mode
+    usage: /fly
+    permission: averutils.moderation.fly
 
   # ADMIN
   setwarp:
