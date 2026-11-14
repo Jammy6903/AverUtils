@@ -288,7 +288,8 @@ commands:
   report:
     success: "<green>Successfully reported <player> for <reason>:</green> <details><newline><yellow>Note: You can block any player with /block</yellow>"
     failure:
-      invalid-reason: "<red>You must select a provided reason for the report</red"
+      invalid-player: "<red>That player hasn't played before</red>"
+      invalid-reason: "<red>You must select a provided reason for the report</red>"
   schedule:
     create:
       success: "<green>Successfully created <type> schedule <name>:</green><newline><message>"

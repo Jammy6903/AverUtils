@@ -7,6 +7,7 @@ import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.social.messaging.Message;
 import onl.jami.averUtils.storage.database.ReportRepo;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -32,7 +33,12 @@ public class Report implements TabExecutor {
 
         UUID target = null;
         if (!args[0].equalsIgnoreCase("unknown")) {
-            target = Bukkit.getOfflinePlayer(args[0]).getUniqueId();
+            OfflinePlayer player = Bukkit.getOfflinePlayerIfCached(args[0]);
+            if  (player == null) {
+                Messages.send(sender, "commands.report.failure.invalid-player");
+                return true;
+            }
+            target = player.getUniqueId();
         }
 
         if (!AverUtils.getCfg().getStringList("reporting.reasons").contains(args[1])) {
