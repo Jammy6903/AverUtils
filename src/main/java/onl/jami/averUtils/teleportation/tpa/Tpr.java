@@ -42,16 +42,16 @@ public class Tpr implements TabExecutor {
         location = new Location(world, randomX, 64.0, randomZ).toHighestLocation(HeightMap.MOTION_BLOCKING_NO_LEAVES);
         int attempts = 0;
         WorldBorder border = world.getWorldBorder();
-        while (!isSafe(location) || !border.isInside(location)) {
+        while (!isSafe(location.toHighestLocation(HeightMap.MOTION_BLOCKING_NO_LEAVES)) || !border.isInside(location)) {
             if (attempts > 10) {
                 Messages.send(sender, "commands.tpr.failure.attempts");
                 return true;
             }
-            location.add(-10, 0, -10).toHighestLocation(HeightMap.MOTION_BLOCKING_NO_LEAVES);
+            location.add(-10, 0, -10);
             attempts++;
         }
 
-        player.teleport(location.add(0.5, 1, 0.5));
+        player.teleport(location.add(0.5, 1, 0.5).toHighestLocation(HeightMap.MOTION_BLOCKING_NO_LEAVES));
         Messages.send(sender, "commands.tpr.success");
 
         return true;
