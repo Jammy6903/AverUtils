@@ -1,5 +1,10 @@
 package onl.jami.averUtils.util;
 
+import onl.jami.averUtils.AverUtils;
+
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +36,16 @@ public class TimeUtils {
             return null;
         }
         return total;
+    }
+
+    private static final DateTimeFormatter DATE_TIME = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+
+    public static String formatDateTime(long millis) {
+        String tz = AverUtils.getCfg().getString("timezone");
+        if (tz == null) {
+            tz = "UTC";
+        }
+        return DATE_TIME.format(Instant.ofEpochMilli(millis).atZone(ZoneId.of(tz)));
     }
 
     public static String formatRemainingTimeUntil(Long time) {

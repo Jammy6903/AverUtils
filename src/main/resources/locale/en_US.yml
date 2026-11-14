@@ -55,8 +55,12 @@ cooldowns:
     on-expire: "<green>You are no longer in combat</green>"
 
 moderation:
-  punishment-ui:
+  punish-ui:
     title: "Punishment Menu"
+    player-info-title: "Punishment Menu > <player>"
+    player-punishment-log: "<player> > Punishment Log"
+    new-punishment-title: "<player> > New Punishment"
+    punishment-log-title: "Punishment Menu > Punishment Log"
   reports-ui:
     title: "Reports Menu"
     closed-title: " > Closed Reports"

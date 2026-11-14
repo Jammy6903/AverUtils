@@ -3,10 +3,12 @@ package onl.jami.averUtils.storage.database;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class PlayerRepo {
-    public record PlayerData(UUID uuid, boolean isVerified, Long discordId, String discordUsername, String discordGlobalName, String discordNickname, String nickname, String pronouns, NameChoice nameChoice, String nameStyle, boolean pvpEnabled, boolean tpEnabled, boolean pingEnabled, UUID last_world, Double last_x, Double last_y, Double last_z) {
+    public record PlayerData(UUID uuid, boolean isVerified, Long discordId, String discordUsername, String discordGlobalName, String discordNickname, String nickname, String pronouns, NameChoice nameChoice, String nameStyle, boolean pvpEnabled, boolean tpEnabled, boolean pingEnabled, UUID last_world, Double last_x, Double last_y, Double last_z, long last_seen) {
         public enum NameChoice {
             PLAYER_NAME,
             NICKNAME,
@@ -29,14 +31,10 @@ public class PlayerRepo {
             ps.setString(1, uuid.toString());
             try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()) return null;
-                long id = rs.getLong("discord_id");
-                Long discordId = rs.wasNull() ? null : id;
-                Double lastX = doubleOrNull(rs, "last_x");
-                Double lastY = doubleOrNull(rs, "last_y");
-                Double lastZ = doubleOrNull(rs, "last_z");
                 return new PlayerData(
                         uuid,
-                        rs.getBoolean("is_verified"), discordId,
+                        rs.getBoolean("is_verified"),
+                        longOrNull(rs, "discord_id"),
                         rs.getString("discord_username"),
                         rs.getString("discord_globalname"),
                         rs.getString("discord_nickname"),
@@ -48,9 +46,10 @@ public class PlayerRepo {
                         rs.getBoolean("tp_enabled"),
                         rs.getBoolean("ping_enabled"),
                         uuidOrNull(rs.getString("last_world_uuid")),
-                        lastX,
-                        lastY,
-                        lastZ
+                        doubleOrNull(rs, "last_x"),
+                        doubleOrNull(rs, "last_y"),
+                        doubleOrNull(rs, "last_z"),
+                        rs.getLong("last_seen")
                 );
             }
         }
@@ -76,10 +75,87 @@ public class PlayerRepo {
                         rs.getBoolean("tp_enabled"),
                         rs.getBoolean("ping_enabled"),
                         uuidOrNull(rs.getString("last_world_uuid")),
-                        rs.getObject("last_x", Double.class),
-                        rs.getObject("last_y", Double.class),
-                        rs.getObject("last_z", Double.class)
+                        doubleOrNull(rs, "last_x"),
+                        doubleOrNull(rs, "last_y"),
+                        doubleOrNull(rs, "last_z"),
+                        rs.getLong("last_seen")
                 );
+            }
+        }
+    }
+
+    public static int count() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM players";
+        try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) return 0;
+                return rs.getInt(1);
+            }
+        }
+    }
+
+    public static List<PlayerData> getPage(int page, int pageSize) throws SQLException {
+        String sql = "SELECT * FROM players ORDER BY last_seen DESC, uuid LIMIT ? OFFSET ?";
+        try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
+            ps.setInt(1, pageSize);
+            ps.setInt(2, page * pageSize);
+            try (ResultSet rs = ps.executeQuery()) {
+                List<PlayerData> players = new ArrayList<>();
+                while (rs.next()) {
+                    players.add(new PlayerData(
+                            UUID.fromString(rs.getString("uuid")),
+                            rs.getBoolean("is_verified"),
+                            longOrNull(rs, "discord_id"),
+                            rs.getString("discord_username"),
+                            rs.getString("discord_globalname"),
+                            rs.getString("discord_nickname"),
+                            rs.getString("nickname"),
+                            rs.getString("pronouns"),
+                            PlayerData.NameChoice.valueOf(rs.getString("name_choice")),
+                            rs.getString("name_style"),
+                            rs.getBoolean("pvp_enabled"),
+                            rs.getBoolean("tp_enabled"),
+                            rs.getBoolean("ping_enabled"),
+                            uuidOrNull(rs.getString("last_world_uuid")),
+                            doubleOrNull(rs, "last_x"),
+                            doubleOrNull(rs, "last_y"),
+                            doubleOrNull(rs, "last_z"),
+                            rs.getLong("last_seen")
+                    ));
+                }
+                return players;
+            }
+        }
+    }
+
+    public static List<PlayerData> getAll() throws SQLException {
+        String sql = "SELECT * FROM players";
+        try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                List<PlayerData> players = new ArrayList<>();
+                while (rs.next()) {
+                    players.add(new PlayerData(
+                            UUID.fromString(rs.getString("uuid")),
+                            rs.getBoolean("is_verified"),
+                            longOrNull(rs, "discord_id"),
+                            rs.getString("discord_username"),
+                            rs.getString("discord_globalname"),
+                            rs.getString("discord_nickname"),
+                            rs.getString("nickname"),
+                            rs.getString("pronouns"),
+                            PlayerData.NameChoice.valueOf(rs.getString("name_choice")),
+                            rs.getString("name_style"),
+                            rs.getBoolean("pvp_enabled"),
+                            rs.getBoolean("tp_enabled"),
+                            rs.getBoolean("ping_enabled"),
+                            uuidOrNull(rs.getString("last_world_uuid")),
+                            doubleOrNull(rs, "last_x"),
+                            doubleOrNull(rs, "last_y"),
+                            doubleOrNull(rs, "last_z"),
+                            rs.getLong("last_seen")
+                    ));
+                }
+                return players;
             }
         }
     }
@@ -214,6 +290,15 @@ public class PlayerRepo {
         }
     }
 
+    public static void updateLastSeen(UUID player, long lastSeen) throws SQLException {
+        String sql = "UPDATE players SET last_seen = ? WHERE uuid = ?";
+        try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
+            ps.setLong(1, lastSeen);
+            ps.setString(2, player.toString());
+            ps.executeUpdate();
+        }
+    }
+
     private static UUID uuidOrNull(String uuid) {
         return uuid == null ? null : UUID.fromString(uuid);
     }
@@ -221,5 +306,10 @@ public class PlayerRepo {
     private static Double doubleOrNull(ResultSet rs, String column) throws SQLException {
         double d = rs.getDouble(column);
         return rs.wasNull() ? null : d;
+    }
+
+    private static Long longOrNull(ResultSet rs, String column) throws SQLException {
+        long l = rs.getLong(column);
+        return rs.wasNull() ? null : l;
     }
 }

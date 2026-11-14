@@ -6,6 +6,7 @@ discord:
   invite-link: [insert discord invite link here]
 
 locale: "en_US"
+timezone: "UTC"
 
 teleportation:
   tpr-distance: 15000
@@ -42,8 +43,6 @@ cooldowns:
       - block
     log-out: true
 
-
-
 reporting:
   reasons:
     - "Stealing"
@@ -73,6 +72,7 @@ moderation:
     suggestions:
       spam:
         display-name: "Chat spam"
+        material: PORKCHOP
         reasons:
           - "Spamming chat repeatedly"
           - "Repeated messages"
@@ -92,6 +92,7 @@ moderation:
           - type: BAN
       harassment:
         display-name: "Harassment"
+        material: SPYGLASS
         reasons:
           - "Harassing another player"
           - "Causing another player's discomfort"
@@ -109,6 +110,7 @@ moderation:
           - type: BAN
       rdm:
         display-name: "Random Death-match"
+        material: DIAMOND_SWORD
         reasons:
           - "Unprovoked PvP"
           - "Intentionally causing another player's death"
@@ -127,6 +129,7 @@ moderation:
           - type: BAN
       stealing:
         display-name: "Stealing"
+        material: CHEST
         reasons:
           - "Stealing from another player's chests"
           - "Stealing another player's animals"
@@ -142,6 +145,7 @@ moderation:
           - type: BAN
       griefing:
         display-name: "Griefing"
+        material: TNT
         reasons:
           - "Griefing"
           - "Intentionally griefing another player's build"
@@ -155,6 +159,7 @@ moderation:
           - type: BAN
       hate-speech:
         display-name: "Hate speech"
+        material: MAGMA_BLOCK
         reasons:
           - "Hate speech"
         options:
@@ -163,6 +168,7 @@ moderation:
           - type: BAN
       hacking:
         display-name: "Hacking / Cheating"
+        material: COMMAND_BLOCK
         reasons:
           - "Using x-ray"
           - "Fly hacks"

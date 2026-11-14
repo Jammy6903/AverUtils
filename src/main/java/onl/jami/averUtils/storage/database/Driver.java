@@ -1,6 +1,10 @@
 package onl.jami.averUtils.storage.database;
 
+import org.bukkit.Bukkit;
+
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Driver {
 
@@ -42,10 +46,11 @@ public class Driver {
                     pvp_enabled         BOOLEAN NOT NULL DEFAULT TRUE,
                     tp_enabled          BOOLEAN NOT NULL DEFAULT TRUE,
                     ping_enabled        BOOLEAN NOT NULL DEFAULT TRUE,
-                    last_world_uuid     TEXT
-                    last_x              REAL
-                    last_y              REAL
-                    last_z              REAL
+                    last_world_uuid     TEXT,
+                    last_x              REAL,
+                    last_y              REAL,
+                    last_z              REAL,
+                    last_seen           INTEGER
                 )
             """);
             st.executeUpdate("""
@@ -231,6 +236,13 @@ public class Driver {
             st.executeUpdate("ALTER TABLE players ADD COLUMN last_x REAL");
             st.executeUpdate("ALTER TABLE players ADD COLUMN last_y REAL");
             st.executeUpdate("ALTER TABLE players ADD COLUMN last_z REAL");
+            st.executeUpdate("ALTER TABLE players ADD COLUMN last_seen INTEGER");
+
+            // Populate last_seen with OfflinePlayer.lastSeen();
+            List<PlayerRepo.PlayerData> players = PlayerRepo.getAll();
+            for (PlayerRepo.PlayerData playerData : players) {
+                PlayerRepo.updateLastSeen(playerData.uuid(), Bukkit.getOfflinePlayer(playerData.uuid()).getLastSeen());
+            }
             connection.commit();
         } catch (SQLException exception) {
             connection.rollback();

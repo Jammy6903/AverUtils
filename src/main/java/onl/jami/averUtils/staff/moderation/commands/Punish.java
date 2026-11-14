@@ -6,6 +6,9 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.social.messaging.Message;
+import onl.jami.averUtils.staff.moderation.menus.punishmenu.PunishMenu;
+import onl.jami.averUtils.staff.moderation.menus.punishmenu.newpunishment.NewPunishmentMenu;
 import onl.jami.averUtils.storage.cache.PunishmentCache;
 import onl.jami.averUtils.storage.database.PunishmentRepo;
 import onl.jami.averUtils.storage.database.PunishmentType;
@@ -31,7 +34,24 @@ public class Punish implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (sender instanceof Player p && args.length < 2) {
-            // show ui
+            try {
+                PunishMenu menu = new PunishMenu();
+                if (args.length == 0) {
+                    p.openInventory(menu.getInventory());
+                }
+                if (args.length == 1) {
+                    OfflinePlayer target = Bukkit.getOfflinePlayerIfCached(args[0]);
+                    if (target == null) {
+                        Messages.send(sender, "commands.punish.failure.player-not-joined");
+                        return true;
+                    }
+                    NewPunishmentMenu punishment = new NewPunishmentMenu(menu, target.getUniqueId());
+                    p.openInventory(punishment.getInventory());
+                }
+            } catch (SQLException e) {
+                Messages.send(sender, "commands.generic.failure.unknown");
+                AverUtils.logWarning(Messages.getString("errors.database.players"), e);
+            }
             return true;
         }
         if (args.length < 2) {
@@ -168,6 +188,7 @@ public class Punish implements TabExecutor {
         try {
             PunishmentRepo.create(offlinePlayer.getUniqueId(), punisherUuid, punishmentType, duration, durationEnd, arguments.getFirst(), arguments.getLast());
             Messages.send(sender, "commands.punish." + args[1].toLowerCase(Locale.ROOT) + ".success",
+                    Placeholder.component("player", Component.text(args[0])),
                     Placeholder.component("reason", Component.text(arguments.getFirst())),
                     Placeholder.component("duration", Component.text(TimeUtils.formatRemainingTimeUntil(durationEnd))),
                     Placeholder.component("details", Component.text(arguments.getLast()))

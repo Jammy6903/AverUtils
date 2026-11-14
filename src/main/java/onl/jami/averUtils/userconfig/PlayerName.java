@@ -25,7 +25,7 @@ public class PlayerName {
             case null -> player.getName();
             case PlayerRepo.PlayerData.NameChoice.PLAYER_NAME -> player.getName();
             case PlayerRepo.PlayerData.NameChoice.DISCORD_GLOBAL -> playerData.discordGlobalName() != null ? playerData.discordGlobalName() : player.getName();
-            case PlayerRepo.PlayerData.NameChoice.DISCORD_NICKNAME -> playerData.discordUsername() != null ? playerData.discordUsername() : player.getName();
+            case PlayerRepo.PlayerData.NameChoice.DISCORD_NICK -> playerData.discordUsername() != null ? playerData.discordUsername() : player.getName();
             case PlayerRepo.PlayerData.NameChoice.NICKNAME -> playerData.nickname() != null ? playerData.nickname() : player.getName();
         };
 

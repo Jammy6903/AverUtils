@@ -8,18 +8,16 @@ import onl.jami.averUtils.schedules.Scheduled;
 import onl.jami.averUtils.social.Report;
 import onl.jami.averUtils.social.blocks.Block;
 import onl.jami.averUtils.social.blocks.Unblock;
-import onl.jami.averUtils.staff.admin.DoAs;
-import onl.jami.averUtils.staff.admin.Motd;
-import onl.jami.averUtils.staff.admin.PlayerListDecoration;
+import onl.jami.averUtils.staff.admin.*;
 import onl.jami.averUtils.listeners.ChatListener;
 import onl.jami.averUtils.listeners.PingListener;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.locale.Reload;
-import onl.jami.averUtils.staff.admin.Schedule;
 import onl.jami.averUtils.staff.moderation.Cooldowns;
 import onl.jami.averUtils.staff.moderation.commands.Punish;
 import onl.jami.averUtils.staff.moderation.commands.Reports;
 import onl.jami.averUtils.staff.moderation.commands.Tpo;
+import onl.jami.averUtils.staff.moderation.menus.punishmenu.PunishMenuListener;
 import onl.jami.averUtils.staff.moderation.menus.reportmenu.ReportMenuListener;
 import onl.jami.averUtils.storage.cache.ChannelLinkCache;
 import onl.jami.averUtils.storage.cache.MotdCache;
@@ -34,8 +32,6 @@ import onl.jami.averUtils.discord.verification.commands.VerifyMinecraft;
 import onl.jami.averUtils.listeners.PlayerListeners;
 import onl.jami.averUtils.teleportation.Spawn;
 import onl.jami.averUtils.teleportation.home.*;
-import onl.jami.averUtils.teleportation.warp.DelWarp;
-import onl.jami.averUtils.teleportation.warp.SetWarp;
 import onl.jami.averUtils.teleportation.warp.Warp;
 import onl.jami.averUtils.teleportation.warp.Warps;
 import org.bukkit.*;
@@ -113,6 +109,7 @@ public final class AverUtils extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CommandListener(), this);
         getServer().getPluginManager().registerEvents(new ReportMenuListener(), this);
         getServer().getPluginManager().registerEvents(new Cooldowns(), this);
+        getServer().getPluginManager().registerEvents(new PunishMenuListener(), this);
         registerCommand("msg", new Msg());
         registerCommand("reply", new Reply());
         registerCommand("tpa", new Tpa());
@@ -148,6 +145,8 @@ public final class AverUtils extends JavaPlugin {
         registerCommand("punish", new Punish());
         registerCommand("tpo", new Tpo());
         registerCommand("tpr", new Tpr());
+        registerCommand("setSpawn", new SetSpawn());
+        registerCommand("socialspy", new SocialSpy());
     }
 
     @Override

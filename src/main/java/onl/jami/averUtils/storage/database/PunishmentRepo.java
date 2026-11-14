@@ -40,21 +40,91 @@ public class PunishmentRepo {
             try (ResultSet rs = ps.executeQuery()) {
                 List<PunishmentData> punishments = new ArrayList<>();
                 while (rs.next()) {
-                    long end = rs.getLong("duration_end");
-                    Long durationEnd = rs.wasNull() ? null : end;
                     punishments.add(new PunishmentData(
                             rs.getInt("punishment_id"),
                             playerUuid,
                             uuidOrNull(rs.getString("punisher_uuid")),
                             PunishmentType.valueOf(rs.getString("type")),
                             rs.getString("duration"),
-                            durationEnd,
+                            longOrNull(rs, "duration_end"),
                             rs.getString("reason"),
                             rs.getString("details"),
                             rs.getBoolean("is_expired")
                     ));
                 }
                 return punishments;
+            }
+        }
+    }
+
+    public static List<PunishmentData> getByUUID(UUID playerUuid, int page, int pageSize) throws SQLException {
+        String sql = "SELECT * FROM punishments WHERE player_uuid = ? ORDER BY is_expired ASC, punishment_id DESC LIMIT ? OFFSET ?";
+        try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
+            ps.setString(1, playerUuid.toString());
+            ps.setInt(2, pageSize);
+            ps.setInt(3, page * pageSize);
+            try (ResultSet rs = ps.executeQuery()) {
+                List<PunishmentData> punishments = new ArrayList<>();
+                while (rs.next()) {
+                    punishments.add(new PunishmentData(
+                            rs.getInt("punishment_id"),
+                            UUID.fromString(rs.getString("player_uuid")),
+                            uuidOrNull(rs.getString("punisher_uuid")),
+                            PunishmentType.valueOf(rs.getString("type")),
+                            rs.getString("duration"),
+                            longOrNull(rs, "duration_end"),
+                            rs.getString("reason"),
+                            rs.getString("details"),
+                            rs.getBoolean("is_expired")
+                    ));
+                }
+                return punishments;
+            }
+        }
+    }
+
+    public static List<PunishmentData> getAll(int page, int pageSize) throws SQLException {
+        String sql = "SELECT * FROM punishments ORDER BY is_expired ASC, punishment_id DESC LIMIT ? OFFSET ?";
+        try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
+            ps.setInt(1, pageSize);
+            ps.setInt(2, page * pageSize);
+            try (ResultSet rs = ps.executeQuery()) {
+                List<PunishmentData> punishments = new ArrayList<>();
+                while (rs.next()) {
+                    punishments.add(new PunishmentData(
+                            rs.getInt("punishment_id"),
+                            UUID.fromString(rs.getString("player_uuid")),
+                            uuidOrNull(rs.getString("punisher_uuid")),
+                            PunishmentType.valueOf(rs.getString("type")),
+                            rs.getString("duration"),
+                            longOrNull(rs, "duration_end"),
+                            rs.getString("reason"),
+                            rs.getString("details"),
+                            rs.getBoolean("is_expired")
+                    ));
+                }
+                return punishments;
+            }
+        }
+    }
+
+    public static int count(UUID playerUuid) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM punishments WHERE player_uuid = ?";
+        try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
+            ps.setString(1, playerUuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) return 0;
+                return rs.getInt(1);
+            }
+        }
+    }
+
+    public static int count() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM punishments";
+        try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) return 0;
+                return rs.getInt(1);
             }
         }
     }
@@ -79,5 +149,10 @@ public class PunishmentRepo {
 
     private static UUID uuidOrNull(String uuid) {
         return uuid == null ? null : UUID.fromString(uuid);
+    }
+
+    private static Long longOrNull(ResultSet rs, String column) throws SQLException {
+        long l = rs.getLong(column);
+        return rs.wasNull() ? null : l;
     }
 }
