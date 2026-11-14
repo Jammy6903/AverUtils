@@ -90,7 +90,7 @@ public class Punish implements TabExecutor {
                 break;
             case "KICK":
                 if (target == null) {
-                    Messages.send(sender, "commands.punish.kick.failure.");
+                    Messages.send(sender, "commands.punish.kick.failure.not-online");
                     return true;
                 }
                 durationEnd = warnKickDuration();
