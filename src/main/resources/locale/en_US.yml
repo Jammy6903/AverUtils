@@ -58,6 +58,7 @@ moderation:
   punish-ui:
     title: "Punishment Menu"
     player-info-title: "Punishment Menu > <player>"
+    homes-title: "<player> > Homes"
     player-punishment-log: "<player> > Punishment Log"
     new-punishment-title: "<player> > New Punishment"
     punishment-log-title: "Punishment Menu > Punishment Log"
@@ -68,7 +69,7 @@ moderation:
       success: "<green>You have been teleported</green>"
       failure:
         player-offline: "<red>That player is offline</red>"
-  social-spy:
+  socialspy:
     format: "<yellow>[SPY]</yellow> <grey><sender> ➡ <recipient>: <message></grey>"
   reports-pending: "<bold><dark_red>[!]</dark_red></bold> <red>There are <count> active reports waiting</red>"
   new-report: "<bold><dark_red>[!]</dark_red></bold> <yellow>There is a new report waiting to be looked at</yellow>"
@@ -178,6 +179,10 @@ commands:
     success: "<green>Ran command for <player>:</green> <yellow><command></yellow>"
     failure:
       player-not-found: "<red>That player is not online.</red>"
+  fly:
+    success:
+      enabled: "<green>Flight enabled</green>"
+      disabled: "<green>Flight <yellow>disabled</yellow></green>"
   home:
     success: "<green>Successfully teleported you to <home></green>"
     failure:
@@ -186,6 +191,9 @@ commands:
     success: "<green>Your homes:</green> <yellow><homes></yellow>"
     failure:
       doesnt-exist: "<red>You do not have any homes</red>"
+  invsee:
+    failure:
+      not-online: "<red>That player is not online</red>"
   motd:
     create:
       success: "<green>Successfully created <name></green><newline><motd>"
@@ -257,7 +265,7 @@ commands:
     kick:
       success: "<yellow>You have kicked <red><player></red> for <red><reason>>:</yellow> <details>"
       failure:
-        player-offline: "<red>You cannot kick a player who is offline</red>"
+        not-online: "<red>You cannot kick a player who is offline</red>"
     timeout:
       success: "<yellow>You have timed out <red><player></red> for <red><duration></red> for <red><reason></red>:</yellow> <details>"
       failure:
@@ -306,6 +314,8 @@ commands:
       not-enough-homes: "<red>You can not set any more homes, limit: <limit></red>"
   setspawn:
     success: "<green>Successfully set server spawn point</green>"
+    failure:
+      invalid-world: "<red>You can only set spawn in the overworld.</red>"
   setwarp:
     success: "<green>Successfully set warp point, <warp>"
     failure:
@@ -377,6 +387,10 @@ commands:
     failure:
       self: "<red>You can't unblock yourself</red>"
       doesnt-exist: "<red><player> is not blocked</red>"
+  vanish:
+    success:
+      visible: "<green>You are now visible</green>"
+      invisible: "<green>You are now <yellow>invisible</yellow></green>"
   verify:
     success: "<green>You have been verified. Welcome, <discord></green>"
     failure:
