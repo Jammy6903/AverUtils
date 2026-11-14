@@ -108,7 +108,7 @@ public final class AverUtils extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PingListener(), this);
         getServer().getPluginManager().registerEvents(new CommandListener(), this);
         getServer().getPluginManager().registerEvents(new ReportMenuListener(), this);
-        getServer().getPluginManager().registerEvents(new Cooldowns(), this);
+        // getServer().getPluginManager().registerEvents(new Cooldowns(), this);
         getServer().getPluginManager().registerEvents(new PunishMenuListener(), this);
         registerCommand("msg", new Msg());
         registerCommand("reply", new Reply());

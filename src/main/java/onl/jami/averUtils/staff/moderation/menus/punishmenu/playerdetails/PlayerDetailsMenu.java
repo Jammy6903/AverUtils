@@ -8,7 +8,6 @@ import onl.jami.averUtils.util.MenuUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +34,7 @@ public class PlayerDetailsMenu implements InventoryHolder {
 
     private final UUID target;
 
-    public PlayerDetailsMenu(InventoryHolder parent, PlayerRepo.PlayerData playerData) throws SQLException {
+    public PlayerDetailsMenu(InventoryHolder parent, PlayerRepo.PlayerData playerData) {
         target = playerData.uuid();
         PARENT = parent;
 

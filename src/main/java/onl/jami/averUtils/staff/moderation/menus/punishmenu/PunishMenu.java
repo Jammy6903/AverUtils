@@ -73,22 +73,4 @@ public class PunishMenu implements InventoryHolder {
         return inventory;
     }
 
-
-    public static List<ItemStack> getOnlineHeads() {
-        List<ItemStack> playerHeads = new ArrayList<>(Bukkit.getOnlinePlayers().size());
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            playerHeads.add(headOf(p));
-        }
-        return playerHeads;
-    }
-
-    public static ItemStack headOf(Player p) {
-        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta meta = (SkullMeta) head.getItemMeta();
-        meta.setPlayerProfile(p.getPlayerProfile());
-        meta.displayName(Component.text(p.getName())
-                .decoration(TextDecoration.ITALIC, false));
-        head.setItemMeta(meta);
-        return head;
-    }
 }

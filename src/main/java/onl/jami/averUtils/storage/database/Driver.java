@@ -3,7 +3,6 @@ package onl.jami.averUtils.storage.database;
 import org.bukkit.Bukkit;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Driver {

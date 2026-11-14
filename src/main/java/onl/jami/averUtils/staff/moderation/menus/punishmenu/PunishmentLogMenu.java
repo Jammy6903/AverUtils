@@ -34,10 +34,6 @@ public class PunishmentLogMenu implements InventoryHolder {
         this(parent, null, 0);
     }
 
-    public PunishmentLogMenu(InventoryHolder parent, int requestedPage) throws SQLException {
-        this(parent, null, requestedPage);
-    }
-
     public PunishmentLogMenu(InventoryHolder parent, UUID target) throws SQLException {
         this(parent, target, 0);
     }

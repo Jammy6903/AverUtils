@@ -39,7 +39,7 @@ public class PunishmentSuggestMenu implements InventoryHolder {
 
     public UUID target;
 
-    public PunishmentSuggestMenu(InventoryHolder parent, UUID target, PunishmentSuggestion.ReasonEntry reason) throws SQLException {
+    public PunishmentSuggestMenu(InventoryHolder parent, UUID target, PunishmentSuggestion.ReasonEntry reason) {
         this.target = target;
         this.options = reason.suggestion().options();
         this.reason = reason;
