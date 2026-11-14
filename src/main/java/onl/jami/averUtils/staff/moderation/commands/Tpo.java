@@ -60,6 +60,7 @@ public class Tpo implements TabExecutor {
             World world = Bukkit.getWorld(playerData.last_world());
             if (world == null) {
                 Messages.send(sender, "commands.tpo.failure.world-missing");
+                return true;
             }
             p.teleport(new Location(world, playerData.last_x(), playerData.last_y(), playerData.last_z()));
             Messages.send(sender, "commands.tpo.success.offline",

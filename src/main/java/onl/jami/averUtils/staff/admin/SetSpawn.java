@@ -20,7 +20,7 @@ public class SetSpawn implements TabExecutor {
         }
 
         if (p.getWorld() != Bukkit.getWorlds().getFirst()) {
-            Messages.send(sender, "commands.spawn.failure.invalid-world");
+            Messages.send(sender, "commands.setspawn.failure.invalid-world");
             return true;
         }
 
