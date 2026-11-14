@@ -2,9 +2,7 @@ package onl.jami.averUtils.teleportation.tpa;
 
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -20,7 +18,7 @@ public class Tpr implements TabExecutor {
 
     public static final Set<Material> UNSAFE = Set.of(Material.LAVA, Material.WATER, Material.FIRE,
             Material.SOUL_FIRE, Material.MAGMA_BLOCK, Material.CAMPFIRE, Material.SOUL_CAMPFIRE,
-            Material.CACTUS, Material.SWEET_BERRY_BUSH, Material.POWDER_SNOW);
+            Material.CACTUS, Material.SWEET_BERRY_BUSH, Material.POWDER_SNOW, Material.AIR);
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
@@ -41,18 +39,20 @@ public class Tpr implements TabExecutor {
             Messages.send(sender, "commands.tpr.failure.nether");
             return true;
         }
-        location = new Location(world, randomX, 64.0, randomZ).toHighestLocation().add(0, 1, 0);
+        location = new Location(world, randomX, 64.0, randomZ).toHighestLocation(HeightMap.MOTION_BLOCKING_NO_LEAVES);
         int attempts = 0;
-        while (isSafe(location)) {
+        WorldBorder border = world.getWorldBorder();
+        while (!isSafe(location) || !border.isInside(location)) {
             if (attempts > 10) {
                 Messages.send(sender, "commands.tpr.failure.attempts");
+                return true;
             }
-            location.add(10, 0, 10);
-            Messages.send(sender, "commands.tpr.success");
+            location.add(-10, 0, -10).toHighestLocation(HeightMap.MOTION_BLOCKING_NO_LEAVES);
             attempts++;
         }
 
-        player.teleport(location);
+        player.teleport(location.add(0.5, 1, 0.5));
+        Messages.send(sender, "commands.tpr.success");
 
         return true;
     }
