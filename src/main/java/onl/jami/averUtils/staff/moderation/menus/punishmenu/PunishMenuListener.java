@@ -10,12 +10,15 @@ import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.staff.moderation.menus.punishmenu.newpunishment.NewPunishmentMenu;
 import onl.jami.averUtils.staff.moderation.menus.punishmenu.newpunishment.PunishmentSuggestMenu;
 import onl.jami.averUtils.staff.moderation.menus.punishmenu.newpunishment.PunishmentSuggestion;
+import onl.jami.averUtils.staff.moderation.menus.punishmenu.playerdetails.HomesMenu;
 import onl.jami.averUtils.staff.moderation.menus.punishmenu.playerdetails.PlayerDetailsMenu;
 import onl.jami.averUtils.staff.moderation.menus.reportmenu.ReportMenu;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.util.MenuUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,9 +40,10 @@ public class PunishMenuListener implements Listener {
         boolean isPlayerList = holder instanceof PunishMenu;
         boolean isPunishmentList = holder instanceof PunishmentLogMenu;
         boolean isPlayerDetails = holder instanceof PlayerDetailsMenu;
+        boolean isHomeList = holder instanceof HomesMenu;
         boolean isNewPunishment = holder instanceof NewPunishmentMenu;
         boolean isPunishmentSuggest = holder instanceof PunishmentSuggestMenu;
-        if (!(isPlayerList || isPunishmentList || isPlayerDetails || isNewPunishment || isPunishmentSuggest)) { return; }
+        if (!(isPlayerList || isPunishmentList || isPlayerDetails || isHomeList || isNewPunishment || isPunishmentSuggest)) { return; }
 
         event.setCancelled(true);
 
@@ -52,6 +56,9 @@ public class PunishMenuListener implements Listener {
             }
             if (isPlayerDetails) {
                 handlePlayerDetailsInteraction(event, holder, p);
+            }
+            if (isHomeList) {
+                handleHomeListInteraction(event, holder, clicked, p);
             }
             if (isPunishmentList) {
                 handlePunishmentListInteraction(event, holder, p);
@@ -108,6 +115,7 @@ public class PunishMenuListener implements Listener {
     private void handlePlayerDetailsInteraction(InventoryClickEvent event, InventoryHolder holder, Player player) throws SQLException {
         int slot = event.getSlot();
         if (!(holder instanceof PlayerDetailsMenu menu)) { return; }
+        OfflinePlayer offlineTarget = Bukkit.getOfflinePlayer(menu.getTarget());
         switch (slot) {
             case PlayerDetailsMenu.BACK_BUTTON_SLOT:
                 player.openInventory(menu.getParent().getInventory());
@@ -115,7 +123,15 @@ public class PunishMenuListener implements Listener {
             case PlayerDetailsMenu.TELEPORT_BUTTON_SLOT:
                 teleportTo(player, menu.getTarget());
                 break;
+            case PlayerDetailsMenu.HOMES_BUTTON_SLOT:
+                HomesMenu homesMenu = new HomesMenu(menu, menu.getTarget());
+                player.openInventory(homesMenu.getInventory());
+                break;
             case PlayerDetailsMenu.INVSEE_BUTTON_SLOT:
+                player.performCommand("invsee " + offlineTarget.getName());
+                break;
+            case PlayerDetailsMenu.ENDER_CHEST_BUTTON_SLOT:
+                player.performCommand("invsee " + offlineTarget.getName() + " ENDER_CHEST");
                 break;
             case PlayerDetailsMenu.CORE_PROTECT_LOG_BUTTON_SLOT:
                 break;
@@ -130,6 +146,27 @@ public class PunishMenuListener implements Listener {
                 player.openInventory(newPunishmentMenu.getInventory());
                 break;
         }
+    }
+
+    private void handleHomeListInteraction(InventoryClickEvent event, InventoryHolder holder, ItemStack clicked, Player player) throws SQLException {
+        int slot = event.getSlot();
+        if (!(holder instanceof HomesMenu menu)) { return; }
+        if (slot == HomesMenu.BACK_BUTTON_SLOT) {
+            player.openInventory(menu.getParent().getInventory());
+            return;
+        }
+        String world = clicked.getPersistentDataContainer().get(MenuUtils.HOME_WORLD, PersistentDataType.STRING);
+        Double x = clicked.getPersistentDataContainer().get(MenuUtils.HOME_X, PersistentDataType.DOUBLE);
+        Double y = clicked.getPersistentDataContainer().get(MenuUtils.HOME_Y, PersistentDataType.DOUBLE);
+        Double z = clicked.getPersistentDataContainer().get(MenuUtils.HOME_Z, PersistentDataType.DOUBLE);
+        Float pitch = clicked.getPersistentDataContainer().get(MenuUtils.HOME_PITCH, PersistentDataType.FLOAT);
+        Float yaw = clicked.getPersistentDataContainer().get(MenuUtils.HOME_YAW, PersistentDataType.FLOAT);
+        if (world == null || x == null || y == null || z == null || pitch == null || yaw == null) { return; }
+        World w = Bukkit.getWorld(world);
+        if (w == null) { return; }
+        Location loc = new Location(w, x, y, z, yaw, pitch);
+        player.teleport(loc);
+        player.closeInventory();
     }
 
     private void handlePunishmentListInteraction(InventoryClickEvent event, InventoryHolder holder, Player player) throws SQLException {
@@ -155,11 +192,11 @@ public class PunishMenuListener implements Listener {
         int slot = event.getSlot();
         if (!(holder instanceof NewPunishmentMenu menu)) { return; }
         OfflinePlayer target = Bukkit.getOfflinePlayer(menu.getTarget());
-        if (slot == menu.backButtonSlot) {
+        if (slot == menu.getBackButtonSlot()) {
             player.openInventory(menu.getParent().getInventory());
             return;
         }
-        if (slot == menu.customButtonSlot) {
+        if (slot == menu.getCustomPunishButtonSlot()) {
             player.closeInventory();
             player.sendMessage(Component.text("Click to punish", Style.style(NamedTextColor.RED, TextDecoration.UNDERLINED)).clickEvent(ClickEvent.suggestCommand("/punish " + target.getName() + " ")));
             return;
@@ -174,13 +211,13 @@ public class PunishMenuListener implements Listener {
         int slot = event.getSlot();
         if (!(holder instanceof PunishmentSuggestMenu menu)) { return; }
         OfflinePlayer target = Bukkit.getOfflinePlayer(menu.getTarget());
-        if (slot == menu.backButtonSlot) {
+        if (slot == menu.getBackButtonSlot()) {
             player.openInventory(menu.getParent().getInventory());
             return;
         }
-        if (slot == menu.customButtonSlot) {
+        if (slot == menu.getCustomPunishButtonSlot()) {
             player.closeInventory();
-            player.sendMessage(Component.text("Click to punish", Style.style(NamedTextColor.RED, TextDecoration.UNDERLINED)).clickEvent(ClickEvent.suggestCommand("/punish " + target.getName() + " [PUNISHMENT] [DURATION] \"" + menu.reason.reason() + "\" \"[DETAILS]\"")));
+            player.sendMessage(Component.text("Click to punish", Style.style(NamedTextColor.RED, TextDecoration.UNDERLINED)).clickEvent(ClickEvent.suggestCommand("/punish " + target.getName() + " [PUNISHMENT] [DURATION] \"" + menu.getReason().reason() + "\" \"[DETAILS]\"")));
             return;
         }
         PunishmentSuggestion.Option option = menu.getOption(slot);
