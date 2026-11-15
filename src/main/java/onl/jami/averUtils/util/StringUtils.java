@@ -10,6 +10,12 @@ public class StringUtils {
 
     private static final Pattern QUOTED = Pattern.compile("([\"'])(.*?)\\1|(\\S+)");
 
+    /**
+     * Parse quoted sections in provided arguments
+     * @param args provided args containing quoted sections
+     * @param from starting argument to parse quotes from
+     * @return list of quoted sections
+     */
     public static List<String> parseQuoted(String[] args, int from) {
         String joined = String.join(" ", Arrays.copyOfRange(args, from, args.length));
         Matcher m = QUOTED.matcher(joined);
