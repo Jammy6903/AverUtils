@@ -8,6 +8,7 @@ import onl.jami.averUtils.schedules.Scheduled;
 import onl.jami.averUtils.social.Report;
 import onl.jami.averUtils.social.blocks.Block;
 import onl.jami.averUtils.social.blocks.Unblock;
+import onl.jami.averUtils.staff.VanishManager;
 import onl.jami.averUtils.staff.admin.*;
 import onl.jami.averUtils.listeners.ChatListener;
 import onl.jami.averUtils.listeners.PingListener;
@@ -36,6 +37,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -147,11 +149,16 @@ public final class AverUtils extends JavaPlugin {
         registerCommand("invsee", new Invsee());
         registerCommand("vanish", new Vanish());
         registerCommand("fly", new Fly());
+
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            VanishManager.onJoin(p);
+        }
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        VanishManager.shutdown();
         Bot.close();
         try {
             Driver.close();

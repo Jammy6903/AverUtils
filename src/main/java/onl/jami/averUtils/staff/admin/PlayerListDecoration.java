@@ -184,4 +184,15 @@ public class PlayerListDecoration implements TabExecutor {
             Messages.send(sender, "commands.generic.failure.unknown");
         }
     }
+
+    public static void loadActiveDecorations(Player player) {
+        String playerListHeader = PlayerListDecorationCache.getRandom(PlayerListDecorationRepo.PlayerListDecorationData.Location.HEADER);
+        if (playerListHeader != null) {
+            player.sendPlayerListHeader(MiniMessage.miniMessage().deserialize(playerListHeader));
+        }
+        String playerListFooter = PlayerListDecorationCache.getRandom(PlayerListDecorationRepo.PlayerListDecorationData.Location.FOOTER);
+        if (playerListFooter != null) {
+            player.sendPlayerListFooter(MiniMessage.miniMessage().deserialize(playerListFooter));
+        }
+    }
 }

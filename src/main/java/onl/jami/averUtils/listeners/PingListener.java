@@ -2,6 +2,8 @@ package onl.jami.averUtils.listeners;
 
 import com.destroystokyo.paper.event.server.PaperServerListPingEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import onl.jami.averUtils.staff.VanishManager;
+import onl.jami.averUtils.staff.moderation.commands.Vanish;
 import onl.jami.averUtils.storage.cache.MotdCache;
 import onl.jami.averUtils.storage.database.MotdRepo;
 import org.bukkit.event.EventHandler;
@@ -15,5 +17,9 @@ public class PingListener implements Listener {
         if (motd != null) {
             e.motd(MiniMessage.miniMessage().deserialize(motd.message()));
         }
+
+        // hide vanished players
+        e.getListedPlayers().removeIf(info -> VanishManager.isVanished(info.id()));
+        e.setNumPlayers(Math.max(0, e.getNumPlayers() - VanishManager.vanishedCount()));
     }
 }

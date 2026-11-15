@@ -6,7 +6,10 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.discord.sync.chat.MinecraftToDiscord;
 import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.staff.VanishManager;
+import onl.jami.averUtils.staff.admin.PlayerListDecoration;
 import onl.jami.averUtils.staff.moderation.commands.Punish;
+import onl.jami.averUtils.staff.moderation.commands.Reports;
 import onl.jami.averUtils.staff.moderation.commands.Vanish;
 import onl.jami.averUtils.storage.cache.BlockCache;
 import onl.jami.averUtils.storage.cache.PlayerCache;
@@ -18,18 +21,19 @@ import onl.jami.averUtils.userconfig.PlayerName;
 import onl.jami.averUtils.util.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.block.Container;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.PlayerAdvancementDoneEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
+import org.bukkit.inventory.EquipmentSlot;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -47,6 +51,9 @@ public class PlayerListeners implements Listener {
                 boolean isActive = !p.isExpired() && (p.durationEnd() == null || p.durationEnd() > now);
                 if (isBan && isActive) {
                     ban = p;
+                } else if (isBan && p.durationEnd() < now && !p.isExpired()) {
+                    // set punishment to expired if time has elapsed
+                    PunishmentRepo.setExpired(p.id(), true);
                 }
             }
 
@@ -75,11 +82,10 @@ public class PlayerListeners implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        org.bukkit.entity.Player player = e.getPlayer();
+        Player player = e.getPlayer();
         try {
             // create player if not exists
             PlayerRepo.createPlayer(player.getUniqueId());
-
         } catch (SQLException exception) {
             AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
             player.kick(MiniMessage.miniMessage().deserialize(Messages.getString("errors.generic")));
@@ -90,94 +96,52 @@ public class PlayerListeners implements Listener {
         PlayerRepo.PlayerData playerData = PlayerCache.loadPlayer(player);
         BlockCache.loadBlocksForPlayer(player.getUniqueId());
 
-        e.joinMessage(null);
+        sendJoinMessages(playerData, e);
 
-        if (playerData != null && playerData.isVerified()) {
+        // verify player if required and send join message to any linked channels
+        VerifyLock.verifyOnLogin(player);
+        MinecraftToDiscord.sendJoinMessage(e.joinMessage());
+
+        // update ping completions for players
+        updatePingCompletions(player, true);
+
+        // update player list
+        PlayerName.updatePlayerList(player);
+        PlayerListDecoration.loadActiveDecorations(player);
+
+        // join notifications
+        Punish.sendWarnOnJoin(player);
+        Reports.sendReportsOnJoin(player);;
+
+        // moderation checks
+        VanishManager.onJoin(player);
+    }
+
+    public static void sendJoinMessages(PlayerRepo.PlayerData playerData, PlayerJoinEvent e) {
+        e.joinMessage(null);
+        if (playerData != null && playerData.isVerified() && !Vanish.isVanished(e.getPlayer())) {
             Component joinMessage = Messages.getRandom("player.join.messages",
                     Placeholder.component("name", PlayerName.getComponent(e.getPlayer(), false)));
 
             e.joinMessage(Messages.getComponent("player.join.format.message",
                     Placeholder.component("message", joinMessage)));
         }
-
-        // verify player if required, sync roles with discord and send join message to any linked channels
-        VerifyLock.verifyOnLogin(player);
-        MinecraftToDiscord.sendJoinMessage(e.joinMessage());
-
-        PlayerName.updatePlayerList(player);
-
-        String playerListHeader = PlayerListDecorationCache.getRandom(PlayerListDecorationRepo.PlayerListDecorationData.Location.HEADER);
-        if (playerListHeader != null) {
-            player.sendPlayerListHeader(MiniMessage.miniMessage().deserialize(playerListHeader));
-        }
-        String playerListFooter = PlayerListDecorationCache.getRandom(PlayerListDecorationRepo.PlayerListDecorationData.Location.FOOTER);
-        if (playerListFooter != null) {
-            player.sendPlayerListFooter(MiniMessage.miniMessage().deserialize(playerListFooter));
-        }
-
-        String tag = "@" + player.getName();
-        List<String> everyone = Bukkit.getOnlinePlayers().stream()
-                .map(p -> "@" + p.getName()).toList();
-
-        if (player.hasPermission("averutils.ping")) {
-            player.setCustomChatCompletions(everyone);
-        }
-
-        for (Player other : Bukkit.getOnlinePlayers()) {
-            if (!other.equals(player) && other.hasPermission("averutils.ping")) {
-                other.addCustomChatCompletions(List.of(tag));
-            }
-        }
-
-        for (PunishmentRepo.PunishmentData p : PunishmentCache.loadActivePunishmentsForPlayer(player.getUniqueId())) {
-            if (p.type().equals(PunishmentType.WARN) || p.type().equals(PunishmentType.KICK)) {
-                player.sendMessage(Punish.getComponent("moderation.punishments.strings.warn.on-join",
-                        Placeholder.component("reason", Component.text(p.reason()))
-                ));
-            }
-        }
-
-        if (player.hasPermission("averutils.moderation.reports")) {
-            try {
-                List<ReportRepo.ReportData> reports = ReportRepo.getByActive(true);
-                if (!reports.isEmpty()) {
-                    Messages.send(player, "moderation.reports-pending",
-                            Placeholder.component("count", Component.text(reports.size()))
-                    );
-                }
-            } catch (SQLException exception) {
-                AverUtils.logWarning(Messages.getString("errors.database.reports"), exception);
-            }
-        }
-
-        Vanish.showIndicator(player);
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
-        e.quitMessage(null);
+        Player player = e.getPlayer();
 
         PlayerRepo.PlayerData playerData = PlayerCache.loadPlayer(e.getPlayer());
 
-        if (playerData != null && playerData.isVerified()) {
-            Component joinMessage = Messages.getRandom("player.quit.messages",
-                    Placeholder.component("name", PlayerName.getComponent(e.getPlayer(), false)));
-
-            e.quitMessage(Messages.getComponent("player.quit.format.message",
-                    Placeholder.component("message", joinMessage)));
-        }
+        sendQuitMessages(playerData, e);
 
         // send leave message to any linked discord channels
         MinecraftToDiscord.sendPlayerLeaveMessage(e.quitMessage());
 
-        Player player = e.getPlayer();
-        String tag = "@" + player.getName();
-        for (Player other : Bukkit.getOnlinePlayers()) {
-            if (!other.equals(player) && other.hasPermission("averutils.ping")) {
-                other.removeCustomChatCompletions(List.of(tag));
-            }
-        }
+        updatePingCompletions(player, false);
 
+        // log location on leave, for tpo
         try {
             Location l = e.getPlayer().getLocation();
             PlayerRepo.updateLastLocation(player.getUniqueId(), player.getWorld().getUID(), l.getX(), l.getY(), l.getZ());
@@ -185,10 +149,48 @@ public class PlayerListeners implements Listener {
             AverUtils.logWarning(Messages.getString("errors.database.players"), ex);
         }
 
+        VanishManager.onLeave(player);
+
         // remove player from cache
         PlayerCache.removePlayer(e.getPlayer().getUniqueId());
         BlockCache.removeBlocksForPlayer(e.getPlayer().getUniqueId());
         PunishmentCache.removePlayer(e.getPlayer().getUniqueId());
+    }
+
+    private static void sendQuitMessages(PlayerRepo.PlayerData playerData, PlayerQuitEvent e) {
+        e.quitMessage(null);
+        if (playerData != null && playerData.isVerified() && !Vanish.isVanished(e.getPlayer())) {
+            Component joinMessage = Messages.getRandom("player.quit.messages",
+                    Placeholder.component("name", PlayerName.getComponent(e.getPlayer(), false)));
+
+            e.quitMessage(Messages.getComponent("player.quit.format.message",
+                    Placeholder.component("message", joinMessage)));
+        }
+    }
+
+    private static void updatePingCompletions(Player player, boolean joining) {
+        String tag = "@" + player.getName();
+        if (joining) {
+            List<String> everyone = Bukkit.getOnlinePlayers().stream()
+                    .map(p -> "@" + p.getName()).toList();
+
+            if (player.hasPermission("averutils.ping")) {
+                player.setCustomChatCompletions(everyone);
+            }
+            if (!Vanish.isVanished(player)) {
+                for (Player other : Bukkit.getOnlinePlayers()) {
+                    if (!other.equals(player) && other.hasPermission("averutils.ping")) {
+                        other.addCustomChatCompletions(List.of(tag));
+                    }
+                }
+            }
+        } else {
+            for (Player other : Bukkit.getOnlinePlayers()) {
+                if (!other.equals(player) && other.hasPermission("averutils.ping")) {
+                    other.removeCustomChatCompletions(List.of(tag));
+                }
+            }
+        }
     }
 
     @EventHandler
@@ -240,5 +242,22 @@ public class PlayerListeners implements Listener {
         if (damager instanceof Projectile projectile && projectile.getShooter() instanceof Player p) { return p; }
         if (damager instanceof TNTPrimed tnt && tnt.getSource() instanceof Player p) { return p; }
         return null;
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractEvent e) {
+        Player player = e.getPlayer();
+
+        // prevent open animation and noise for vanished players
+        if (VanishManager.isVanished(player)) {
+            if (e.getHand() != EquipmentSlot.HAND) { return; }
+            if (e.getAction() != Action.RIGHT_CLICK_BLOCK) { return; }
+            Block block = e.getClickedBlock();
+            if (block == null) { return; }
+            if (block.getState() instanceof Container container) {
+                e.setCancelled(true);
+                player.openInventory(container.getInventory());
+            }
+        }
     }
 }

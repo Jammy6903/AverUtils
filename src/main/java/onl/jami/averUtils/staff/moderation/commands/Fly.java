@@ -18,7 +18,6 @@ public class Fly implements TabExecutor {
 
     private static final NamespacedKey FLYING = new NamespacedKey(AverUtils.getPlugin(), "flying");
 
-
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player p)) {
@@ -29,13 +28,18 @@ public class Fly implements TabExecutor {
         boolean flyingState;
         Boolean current = p.getPersistentDataContainer().get(FLYING, PersistentDataType.BOOLEAN);
         flyingState = Objects.requireNonNullElse(current, false);
-        p.setAllowFlight(!flyingState);
 
-        String key = "enabled";
+        String key;
+
+        // NOTE: split for readability, otherwise it's a mess to decipher
         if (flyingState) {
+            p.setAllowFlight(false);
+
             key = "disabled";
             p.getPersistentDataContainer().set(FLYING, PersistentDataType.BOOLEAN, false);
         } else {
+            p.setAllowFlight(true);
+            key = "enabled";
             p.getPersistentDataContainer().set(FLYING, PersistentDataType.BOOLEAN, true);
         }
 

@@ -179,7 +179,7 @@ public class Punish implements TabExecutor {
                 return false;
         }
 
-        UUID punisherUuid = null;
+        UUID punisherUuid = UUID.fromString("0");
         if (sender instanceof Player p) {
             punisherUuid = p.getUniqueId();
         }
@@ -261,5 +261,15 @@ public class Punish implements TabExecutor {
             return List.of("'[details]'");
         }
         return List.of();
+    }
+
+    public static void sendWarnOnJoin(Player player) {
+        for (PunishmentRepo.PunishmentData p : PunishmentCache.loadActivePunishmentsForPlayer(player.getUniqueId())) {
+            if (p.type().equals(PunishmentType.WARN) || p.type().equals(PunishmentType.KICK)) {
+                player.sendMessage(getComponent("moderation.punishments.strings.warn.on-join",
+                        Placeholder.component("reason", Component.text(p.reason()))
+                ));
+            }
+        }
     }
 }

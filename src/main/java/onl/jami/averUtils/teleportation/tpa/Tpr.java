@@ -51,7 +51,7 @@ public class Tpr implements TabExecutor {
             attempts++;
         }
 
-        player.teleport(location.add(0.5, 1, 0.5).toHighestLocation(HeightMap.MOTION_BLOCKING_NO_LEAVES));
+        player.teleport(location.add(0.5, 1, 0.5).toHighestLocation(HeightMap.MOTION_BLOCKING_NO_LEAVES).add(0, 1, 0));
         Messages.send(sender, "commands.tpr.success");
 
         return true;

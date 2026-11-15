@@ -121,7 +121,7 @@ commands:
   report:
     description: Report a player
     usage: /report <player> <reason> [details...]
-    permission: avertuils.report
+    permission: avertutils.report
 
   # MODERATION
   socialspy:
@@ -172,7 +172,7 @@ commands:
   motd:
     description: Create and edit MOTDs which will be randomly chosen from an active pool when a player pings the server
     usage: /motd <subcommand>
-    permission: aveutils.admin.motd
+    permission: averutils.admin.motd
   playerlistdecoration:
     description: Create and edit player list decorations which will be randomly chosen from an active pool to display in the server list
     aliases: [ pld, listdecoration ]

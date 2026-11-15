@@ -1,8 +1,11 @@
 package onl.jami.averUtils.staff.moderation.commands;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;
 import onl.jami.averUtils.staff.moderation.menus.reportmenu.ReportMenu;
+import onl.jami.averUtils.storage.database.ReportRepo;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -34,5 +37,20 @@ public class Reports implements TabExecutor {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         return List.of();
+    }
+
+    public static void sendReportsOnJoin(Player player) {
+        if (player.hasPermission("averutils.moderation.reports")) {
+            try {
+                List<ReportRepo.ReportData> reports = ReportRepo.getByActive(true);
+                if (!reports.isEmpty()) {
+                    Messages.send(player, "moderation.reports-pending",
+                            Placeholder.component("count", Component.text(reports.size()))
+                    );
+                }
+            } catch (SQLException exception) {
+                AverUtils.logWarning(Messages.getString("errors.database.reports"), exception);
+            }
+        }
     }
 }

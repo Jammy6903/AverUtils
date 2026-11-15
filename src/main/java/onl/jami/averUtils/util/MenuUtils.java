@@ -87,7 +87,11 @@ public class MenuUtils {
             case BAN -> Material.MACE;
         };
 
-        String playerName = Bukkit.getOfflinePlayer(punishmentData.playerUuid()).getName();
+        OfflinePlayer player = Bukkit.getOfflinePlayer(punishmentData.playerUuid());
+        String playerName = "CONSOLE";
+        if (player != null) {
+            playerName = Bukkit.getOfflinePlayer(punishmentData.playerUuid()).getName();
+        }
         String punisherName = Bukkit.getOfflinePlayer(punishmentData.punisherUuid()).getName();
         String duration = punishmentData.duration();
         if (duration == null) { duration = "permanent"; }

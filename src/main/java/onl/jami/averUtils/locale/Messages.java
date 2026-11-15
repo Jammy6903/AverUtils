@@ -38,13 +38,14 @@ public class Messages {
     }
 
     public static String getString(String key) {
-        return locale.getString(key);
-    }
-
-    public static Component getComponent(String key, TagResolver... tagResolvers) {
         String raw = locale.getString(key);
         if (raw == null) { raw = fallbackLocale.getString(key); }
         if (raw == null) { raw = key; }
+        return raw;
+    }
+
+    public static Component getComponent(String key, TagResolver... tagResolvers) {
+        String raw = getString(key);
         return MiniMessage.miniMessage().deserialize(raw, tagResolvers);
     }
 
