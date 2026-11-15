@@ -12,6 +12,12 @@ public class TimeUtils {
 
     private static final Pattern TOKEN = Pattern.compile("(\\d+)([dhmsMwy])");
 
+    /**
+     * Parse time string written in the format "1y6M2w3c12h30m20s"
+     * @param input time string
+     * @return total time in seconds or null if
+     * @throws IllegalArgumentException if string contains anything other than numbers, "y", "M", "w", "d", "h", "m", "s"
+     */
     public static Long parseTime(String input) {
         String s = input.replace(" ", "");
         Matcher m = TOKEN.matcher(s);
@@ -40,6 +46,11 @@ public class TimeUtils {
 
     private static final DateTimeFormatter DATE_TIME = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
+    /**
+     * Format time to the format "yyyy/MM/dd hh:mm:ss"
+     * @param millis time in milliseconds
+     * @return formatted time
+     */
     public static String formatDateTime(long millis) {
         String tz = AverUtils.getCfg().getString("timezone");
         if (tz == null) {
@@ -48,6 +59,11 @@ public class TimeUtils {
         return DATE_TIME.format(Instant.ofEpochMilli(millis).atZone(ZoneId.of(tz)));
     }
 
+    /**
+     * Format remaining time until a millisecond
+     * @param time time in milliseconds
+     * @return "permanent" if time is null, "expired" if time is before now or formatted-time until time
+     */
     public static String formatRemainingTimeUntil(Long time) {
         if (time == null) { return "permanent"; }
         long seconds = (time - System.currentTimeMillis()) / 1000L;
