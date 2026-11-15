@@ -1,10 +1,8 @@
 package onl.jami.averUtils.staff.moderation.commands;
 
-import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import onl.jami.averUtils.AverUtils;
 import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.staff.VanishManager;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -19,7 +17,6 @@ import java.util.Objects;
 
 public class Vanish implements TabExecutor {
 
-    private static final BossBar indicator = BossBar.bossBar(Component.text("YOU ARE VANISHED", NamedTextColor.RED), 1.0f, BossBar.Color.YELLOW, BossBar.Overlay.NOTCHED_20);
     private static final NamespacedKey VANISHED = new NamespacedKey(AverUtils.getPlugin(), "vanished");
 
     @Override
@@ -32,17 +29,18 @@ public class Vanish implements TabExecutor {
         boolean vanishState;
         Boolean current = p.getPersistentDataContainer().get(VANISHED, PersistentDataType.BOOLEAN);
         vanishState = Objects.requireNonNullElse(current, false);
-        p.setInvisible(!vanishState);
 
-        String key = "visible";
+        String key;
 
-        if (!vanishState) {
-            key = "invisible";
-            p.showBossBar(indicator);
-            p.getPersistentDataContainer().set(VANISHED, PersistentDataType.BOOLEAN, true);
-        } else {
-            p.hideBossBar(indicator);
+        // NOTE: split for readability, otherwise it's a mess to decipher
+        if (vanishState) {
+            VanishManager.disable(p);
+            key = "visible";
             p.getPersistentDataContainer().set(VANISHED, PersistentDataType.BOOLEAN, false);
+        } else {
+            VanishManager.enable(p);
+            key = "invisible";
+            p.getPersistentDataContainer().set(VANISHED, PersistentDataType.BOOLEAN, true);
         }
 
         Messages.send(sender, "commands.vanish.success." + key);
@@ -50,11 +48,9 @@ public class Vanish implements TabExecutor {
         return true;
     }
 
-    public static void showIndicator(Player p) {
+    public static boolean isVanished(Player p) {
         Boolean state = p.getPersistentDataContainer().get(VANISHED, PersistentDataType.BOOLEAN);
-        if (state != null && state) {
-            p.showBossBar(indicator);
-        }
+        return state != null && state;
     }
 
     @Override
