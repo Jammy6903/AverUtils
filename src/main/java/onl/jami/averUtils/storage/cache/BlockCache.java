@@ -1,7 +1,7 @@
 package onl.jami.averUtils.storage.cache;
 
 import onl.jami.averUtils.AverUtils;
-import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.locale.Locale;
 import onl.jami.averUtils.storage.database.BlockRepo;
 
 import java.sql.SQLException;
@@ -18,7 +18,7 @@ public class BlockCache {
         try {
             blocks.put(uuid, BlockRepo.getBlocksForPlayer(uuid));
         } catch (SQLException exception) {
-            AverUtils.logWarning(Messages.getString("errors.database.blocks"), exception);
+            AverUtils.logWarning(Locale.getString("errors.database.blocks"), exception);
         }
     }
 

@@ -1,7 +1,7 @@
 package onl.jami.averUtils.storage.cache;
 
 import onl.jami.averUtils.AverUtils;
-import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.locale.Locale;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -21,7 +21,7 @@ public class PlayerCache {
             playerData = updatePlayer(player.getUniqueId());
         }
         if (playerData == null) {
-            Bukkit.getScheduler().runTask(AverUtils.getPlugin(), () -> player.kick(Messages.getComponent("player.moderation.kick.unknown")));
+            Bukkit.getScheduler().runTask(AverUtils.getPlugin(), () -> player.kick(Locale.getComponent("player.moderation.kick.unknown")));
             return null;
         }
         return playerData;
@@ -36,7 +36,7 @@ public class PlayerCache {
             players.put(uuid, playerData);
             return playerData;
         } catch (SQLException exception) {
-            AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
+            AverUtils.logWarning(Locale.getString("errors.database.players"), exception);
             return null;
         }
     }
@@ -47,8 +47,8 @@ public class PlayerCache {
             players.put(player.getUniqueId(), playerData);
             return playerData;
         } catch (SQLException exception) {
-            AverUtils.logWarning(Messages.getString("errors.database.players"), exception);
-            player.kick(Messages.getComponent("player.moderation.kick.unknown"));
+            AverUtils.logWarning(Locale.getString("errors.database.players"), exception);
+            player.kick(Locale.getComponent("player.moderation.kick.unknown"));
             return null;
         }
     }

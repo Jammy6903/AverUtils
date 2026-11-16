@@ -1,7 +1,7 @@
 package onl.jami.averUtils.storage.cache;
 
 import onl.jami.averUtils.AverUtils;
-import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.locale.Locale;
 import onl.jami.averUtils.storage.database.PunishmentRepo;
 
 import java.sql.SQLException;
@@ -29,7 +29,7 @@ public class PunishmentCache {
                 return activePunishments;
             }
         } catch (SQLException e) {
-            AverUtils.logWarning(Messages.getString("errors.database.punishments"), e);
+            AverUtils.logWarning(Locale.getString("errors.database.punishments"), e);
         }
         return List.of();
     }

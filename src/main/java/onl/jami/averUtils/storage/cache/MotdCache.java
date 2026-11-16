@@ -1,7 +1,7 @@
 package onl.jami.averUtils.storage.cache;
 
 import onl.jami.averUtils.AverUtils;
-import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.locale.Locale;
 import onl.jami.averUtils.storage.database.MotdRepo;
 
 import java.sql.SQLException;
@@ -21,7 +21,7 @@ public class MotdCache {
         try {
             motds = List.copyOf(MotdRepo.getActive());
         } catch (SQLException exception) {
-            AverUtils.logWarning(Messages.getString("errors.database.motds"), exception);
+            AverUtils.logWarning(Locale.getString("errors.database.motds"), exception);
         }
     }
 }

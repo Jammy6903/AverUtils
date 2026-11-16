@@ -1,0 +1,96 @@
+package onl.jami.averUtils.commands.social;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.locale.Locale;
+import onl.jami.averUtils.storage.cache.BlockCache;
+import onl.jami.averUtils.storage.database.BlockCategory;
+import onl.jami.averUtils.storage.database.BlockRepo;
+import onl.jami.averUtils.storage.database.PlayerRepo;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class Block implements TabExecutor {
+
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        if (!(sender instanceof Player p)) {
+            Locale.send(sender, "commands.generic.failure.players-only");
+            return true;
+        }
+
+        if (args.length == 0) { return false; }
+
+        EnumSet<BlockCategory> categories = EnumSet.allOf(BlockCategory.class);
+
+        if (args.length > 1) {
+            categories = EnumSet.noneOf(BlockCategory.class);
+            for (int i = 1; i < args.length; i++) {
+                try {
+                    categories.add(BlockCategory.valueOf(args[i].toUpperCase()));
+                } catch (IllegalArgumentException e) {
+                    return false;
+                }
+            }
+        }
+
+        OfflinePlayer blocked = Bukkit.getOfflinePlayerIfCached(args[0]);
+
+        if (blocked == null || blocked.getUniqueId().equals(p.getUniqueId())) {
+            Locale.send(p, "commands.block.failure.self");
+            return true;
+        }
+
+        try {
+            try {
+                if (PlayerRepo.getPlayer(blocked.getUniqueId()) == null) {
+                    Locale.send(sender, "commands.block.failure.doesnt-exist",
+                            Placeholder.component("player", Component.text(args[0]))
+                    );
+                    return true;
+                }
+            } catch (SQLException exception) {
+                Locale.send(sender, "commands.generic.failure.unknown");
+                AverUtils.logWarning(Locale.getString("errors.database.players"), exception);
+                return true;
+            }
+            BlockRepo.createBlock(p.getUniqueId(), blocked.getUniqueId(), categories);
+            Locale.send(sender, "commands.block.success",
+                    Placeholder.component("player", Component.text(args[0])),
+                    Placeholder.component("categories", Component.text(categories.stream().map(Enum::name).collect(Collectors.joining(", "))))
+            );
+            BlockCache.loadBlocksForPlayer(p.getUniqueId());
+        } catch (SQLException exception) {
+            Locale.send(sender, "commands.generic.failure.unknown");
+            AverUtils.logWarning(Locale.getString("errors.database.blocks"), exception);
+        }
+        return true;
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        if (args.length == 1) { return null; }
+        if (args.length > 1) {
+            List<String> so = new ArrayList<>(Arrays.stream(BlockCategory.values()).map(Enum::name).toList());
+            for (int i = 1; i < args.length - 1; i++) {
+                so.remove(args[i].toUpperCase());
+            }
+            return so;
+        }
+        return List.of();
+    }
+}

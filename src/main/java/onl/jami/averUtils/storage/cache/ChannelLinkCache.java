@@ -1,7 +1,7 @@
 package onl.jami.averUtils.storage.cache;
 
 import onl.jami.averUtils.AverUtils;
-import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.locale.Locale;
 import onl.jami.averUtils.storage.database.ChannelLinkCategory;
 import onl.jami.averUtils.storage.database.ChannelLinkRepo;
 
@@ -27,7 +27,7 @@ public class ChannelLinkCache {
                 channels.put(category, ChannelLinkRepo.getChannelsFor(category));
             }
         } catch (SQLException exception) {
-            AverUtils.logWarning(Messages.getString("errors.database.channel_links"), exception);
+            AverUtils.logWarning(Locale.getString("errors.database.channel_links"), exception);
         }
     }
 

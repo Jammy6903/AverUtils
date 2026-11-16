@@ -1,7 +1,7 @@
 package onl.jami.averUtils.storage.cache;
 
 import onl.jami.averUtils.AverUtils;
-import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.locale.Locale;
 import onl.jami.averUtils.storage.database.RoleLinkRepo;
 
 import java.sql.SQLException;
@@ -19,7 +19,7 @@ public class RoleLinkCache {
         try {
             roles = List.copyOf(RoleLinkRepo.getRoles());
         } catch (SQLException exception) {
-            AverUtils.logWarning(Messages.getString("errors.database.role_links"), exception);
+            AverUtils.logWarning(Locale.getString("errors.database.role_links"), exception);
         }
     }
 }

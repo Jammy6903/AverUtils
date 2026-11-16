@@ -1,7 +1,7 @@
 package onl.jami.averUtils.storage.cache;
 
 import onl.jami.averUtils.AverUtils;
-import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.locale.Locale;
 import onl.jami.averUtils.storage.database.PlayerListDecorationRepo;
 
 import java.sql.SQLException;
@@ -26,7 +26,7 @@ public class PlayerListDecorationCache {
             headers = List.copyOf(PlayerListDecorationRepo.getActive(PlayerListDecorationRepo.PlayerListDecorationData.Location.HEADER));
             footers = List.copyOf(PlayerListDecorationRepo.getActive(PlayerListDecorationRepo.PlayerListDecorationData.Location.FOOTER));
         } catch (SQLException exception) {
-            AverUtils.logWarning(Messages.getString("errors.database.player_list_decorations"), exception);
+            AverUtils.logWarning(Locale.getString("errors.database.player_list_decorations"), exception);
         }
     }
 }

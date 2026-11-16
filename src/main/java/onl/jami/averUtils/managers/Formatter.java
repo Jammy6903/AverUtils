@@ -1,0 +1,150 @@
+package onl.jami.averUtils.managers;
+
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.luckperms.api.cacheddata.CachedMetaData;
+import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.locale.Locale;
+import onl.jami.averUtils.storage.database.PlayerRepo;
+import onl.jami.averUtils.storage.cache.PlayerCache;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import java.sql.SQLException;
+import java.util.Map;
+
+public class Formatter {
+    public record MessageData(Component name, Component prefix, Component suffix, Component pronouns) {}
+
+    public static MessageData getMessageData(Player player, String prefixFormatString, String suffixFormatString, String pronounsFormatString) {
+        CachedMetaData md = AverUtils.getLuckPermsApi().getPlayerAdapter(Player.class).getUser(player).getCachedData().getMetaData();
+        String lpPrefixString = md.getPrefix();
+        String lpSuffixString = md.getSuffix();
+        if (lpPrefixString == null) {
+            lpPrefixString = "default";
+        }
+        if (lpSuffixString == null) {
+            lpSuffixString = "";
+        }
+        Component lpPrefix = MiniMessage.miniMessage().deserialize(lpPrefixString);
+        Component lpSuffix = MiniMessage.miniMessage().deserialize(lpSuffixString);
+
+        String playerPronouns = "";
+        PlayerRepo.PlayerData playerData = PlayerCache.getPlayer(player);
+        if (playerData != null) {
+            playerPronouns = playerData.pronouns();
+        }
+
+        Component prefix = MiniMessage.miniMessage().deserialize(prefixFormatString,
+                Placeholder.component("prefix", lpPrefix));
+        Component suffix = MiniMessage.miniMessage().deserialize(suffixFormatString,
+                Placeholder.component("suffix", lpSuffix));
+        Component pronouns = Component.empty();
+        if (!(playerPronouns == null)) {
+            if (!playerPronouns.isEmpty()) {
+                pronouns = MiniMessage.miniMessage().deserialize(pronounsFormatString,
+                        Placeholder.component("pronouns", Component.text(playerPronouns)));
+            }
+        }
+        return new MessageData(PlayerName.getComponent(player, true), prefix, suffix, pronouns);
+    }
+
+    public static Component formatChat(Player player, Component message) {
+        String chatFormatString = Locale.getString("chat.format.message");
+        String prefixFormatString = Locale.getString("chat.format.prefix");
+        String suffixFormatString = Locale.getString("chat.format.suffix");
+        String pronounsFormatString = Locale.getString("chat.format.pronouns");
+
+        MessageData messageData = getMessageData(player, prefixFormatString, suffixFormatString, pronounsFormatString);
+
+        Component styled = parseChat(player, message);
+
+        return MiniMessage.miniMessage().deserialize(chatFormatString,
+                Placeholder.component("prefix", messageData.prefix),
+                Placeholder.component("suffix", messageData.suffix),
+                Placeholder.component("name", PlayerName.getComponent(player, true)),
+                Placeholder.component("pronouns", messageData.pronouns),
+                Placeholder.component("message", styled)
+        );
+    }
+
+    private static final MiniMessage BASE = MiniMessage.builder().tags(TagResolver.empty()).build();
+
+    private static final Map<String, TagResolver> TAGS = Map.of(
+            "averutils.chat.style.color", StandardTags.color(),
+            "averutils.chat.style.decoration", StandardTags.decorations(),
+            "averutils.chat.style.gradient", StandardTags.gradient()
+    );
+
+    public static Component parseChat(Player player, Component message) {
+        String raw = PlainTextComponentSerializer.plainText().serialize(message);
+        TagResolver.Builder allowed = TagResolver.builder();
+        TAGS.forEach((permission, resolver) -> {
+            if (player.hasPermission(permission)) {
+                allowed.resolver(resolver);
+            }
+        });
+        return BASE.deserialize(raw, allowed.build());
+    }
+
+    public static Component formatDiscordChat(MessageReceivedEvent event, String message, Message reply) {
+        String discordFormatString = Locale.getString("chat.format.discord.message");
+        String prefixFormatString = Locale.getString("chat.format.prefix");
+        String suffixFormatString = Locale.getString("chat.format.suffix");
+        String pronounsFormatString = Locale.getString("chat.format.pronouns");
+
+        String playerName = event.getAuthor().getName();
+        try {
+            PlayerRepo.PlayerData playerData = PlayerRepo.getPlayerByDiscordId(event.getAuthor().getIdLong());
+            if (playerData == null) {
+                return discordNonPlayer(discordFormatString, playerName, message);
+            }
+
+            Player p = Bukkit.getOfflinePlayer(playerData.uuid()).getPlayer();
+            if (p == null) {
+                return discordNonPlayer(discordFormatString, playerName, message);
+            }
+
+            MessageData messageData = getMessageData(p, prefixFormatString, suffixFormatString, pronounsFormatString);
+
+            Component r = Component.empty();
+            if (reply != null) {
+                r = Component.text(Locale.getString("chat.format.discord.reply-indicator")).hoverEvent(
+                        HoverEvent.showText(Locale.getComponent("chat.format.discord.reply-hover",
+                                Placeholder.component("name", Component.text(reply.getAuthor().getName())),
+                                Placeholder.component("message", Component.text(reply.getContentDisplay()))
+                        )
+                ));
+            }
+
+            return MiniMessage.miniMessage().deserialize(discordFormatString,
+                    Placeholder.component("prefix", messageData.prefix),
+                    Placeholder.component("suffix", messageData.suffix),
+                    Placeholder.component("name", messageData.name),
+                    Placeholder.component("pronouns", messageData.pronouns),
+                    Placeholder.component("reply", r),
+                    Placeholder.component("message", Component.text(message))
+            );
+        } catch (SQLException exception) {
+            AverUtils.logWarning(Locale.getString("errors.database.players"), exception);
+        }
+        return null;
+    }
+
+    private static Component discordNonPlayer(String formatString, String name, String message) {
+        return MiniMessage.miniMessage().deserialize(formatString,
+                Placeholder.component("prefix", Component.empty()),
+                Placeholder.component("suffix", Component.empty()),
+                Placeholder.component("name", Component.text(name)),
+                Placeholder.component("pronouns", Component.empty()),
+                Placeholder.component("reply",  Component.empty()),
+                Placeholder.component("message", Component.text(message)));
+    }
+}

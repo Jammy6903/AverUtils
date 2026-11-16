@@ -1,6 +1,7 @@
 package onl.jami.averUtils.util;
 
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.exceptions.DurationParseException;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -17,8 +18,9 @@ public class TimeUtils {
      * @param input time string
      * @return total time in seconds or null if
      * @throws IllegalArgumentException if string contains anything other than numbers, "y", "M", "w", "d", "h", "m", "s"
+     * @throws DurationParseException if the matched tokens don't equate to the length of the string
      */
-    public static Long parseTime(String input) {
+    public static Long parseTime(String input) throws DurationParseException, IllegalArgumentException {
         String s = input.replace(" ", "");
         Matcher m = TOKEN.matcher(s);
 
@@ -39,7 +41,7 @@ public class TimeUtils {
             matched += m.group().length();
         }
         if (matched != s.length()) {
-            return null;
+            throw new DurationParseException("Invalid time format");
         }
         return total;
     }

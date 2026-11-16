@@ -5,6 +5,7 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.managers.PunishmentManager;
 import onl.jami.averUtils.storage.database.HomeRepo;
 import onl.jami.averUtils.storage.database.PlayerRepo;
 import onl.jami.averUtils.storage.database.PunishmentRepo;
@@ -87,12 +88,15 @@ public class MenuUtils {
             case BAN -> Material.MACE;
         };
 
-        OfflinePlayer player = Bukkit.getOfflinePlayer(punishmentData.playerUuid());
-        String playerName = "CONSOLE";
-        if (player != null) {
-            playerName = Bukkit.getOfflinePlayer(punishmentData.playerUuid()).getName();
+        OfflinePlayer player =  Bukkit.getOfflinePlayer(punishmentData.playerUuid());
+        String playerName = player.getName();
+
+        String punisherName = "CONSOLE";
+        if (!punishmentData.punisherUuid().equals(PunishmentManager.CONSOLE_UUID)) {
+            OfflinePlayer punisher = Bukkit.getOfflinePlayer(punishmentData.punisherUuid());
+            punisherName = punisher.getName();
         }
-        String punisherName = Bukkit.getOfflinePlayer(punishmentData.punisherUuid()).getName();
+
         String duration = punishmentData.duration();
         if (duration == null) { duration = "permanent"; }
         Long durationEnd = punishmentData.durationEnd();

@@ -1,19 +1,16 @@
 package onl.jami.averUtils.storage.database;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class PunishmentRepo {
-    public record PunishmentData(int id, UUID playerUuid, UUID punisherUuid, PunishmentType type, String duration, Long durationEnd, String reason, String details, boolean isExpired) {}
+    public record PunishmentData(int id, UUID playerUuid, UUID punisherUuid, PunishmentType type, String duration, Long durationEnd, String reason, String details, UUID lastAmendedBy, boolean isExpired) {}
 
-    public static void create(UUID playerUuid, UUID punisherUuid, PunishmentType type, String duration, Long durationEnd, String reason, String details) throws SQLException {
+    public static int create(UUID playerUuid, UUID punisherUuid, PunishmentType type, String duration, Long durationEnd, String reason, String details) throws SQLException {
         String sql = "INSERT INTO punishments (player_uuid, punisher_uuid, type, duration, duration_end, reason, details) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
+        try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, playerUuid.toString());
             if (punisherUuid == null) {
                 ps.setString(2, null);
@@ -30,6 +27,10 @@ public class PunishmentRepo {
             ps.setString(6, reason);
             ps.setString(7, details);
             ps.executeUpdate();
+            try (ResultSet keys = ps.getGeneratedKeys()) {
+                if (keys.next()) { return keys.getInt(1); }
+                throw new SQLException("Insert succeeded but no id was returned");
+            }
         }
     }
 
@@ -49,6 +50,7 @@ public class PunishmentRepo {
                             longOrNull(rs, "duration_end"),
                             rs.getString("reason"),
                             rs.getString("details"),
+                            uuidOrNull(rs.getString("last_amended_by")),
                             rs.getBoolean("is_expired")
                     ));
                 }
@@ -75,6 +77,7 @@ public class PunishmentRepo {
                             longOrNull(rs, "duration_end"),
                             rs.getString("reason"),
                             rs.getString("details"),
+                            uuidOrNull(rs.getString("last_amended_by")),
                             rs.getBoolean("is_expired")
                     ));
                 }
@@ -100,6 +103,7 @@ public class PunishmentRepo {
                             longOrNull(rs, "duration_end"),
                             rs.getString("reason"),
                             rs.getString("details"),
+                            uuidOrNull(rs.getString("last_amended_by")),
                             rs.getBoolean("is_expired")
                     ));
                 }
@@ -129,6 +133,27 @@ public class PunishmentRepo {
         }
     }
 
+    public static boolean setDuration(int id, String duration, long durationEnd, UUID amender) throws SQLException {
+        String sql = "UPDATE punishments SET duration = ?, duration_end = ?, last_amended_by = ? WHERE id = ?";
+        try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
+            ps.setString(1, duration);
+            ps.setLong(2, durationEnd);
+            ps.setString(3, amender.toString());
+            ps.setInt(4, id);
+            return ps.executeUpdate() != 0;
+        }
+    }
+
+    public static boolean setExpired(int id, boolean expired, UUID amender) throws SQLException {
+        String sql = "UPDATE punishments SET is_expired = ?, last_amended_by = ? WHERE punishment_id = ?";
+        try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
+            ps.setBoolean(1, expired);
+            ps.setString(2, amender.toString());
+            ps.setInt(3, id);
+            return ps.executeUpdate() != 0;
+        }
+    }
+
     public static boolean setExpired(int id, boolean expired) throws SQLException {
         String sql = "UPDATE punishments SET is_expired = ? WHERE punishment_id = ?";
         try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
@@ -138,11 +163,12 @@ public class PunishmentRepo {
         }
     }
 
-    public static boolean setDetails(int id, String details) throws SQLException {
-        String sql = "UPDATE punishments SET details = ? WHERE punishment_id = ?";
+    public static boolean setDetails(int id, String details, UUID amender) throws SQLException {
+        String sql = "UPDATE punishments SET details = ?, last_amended_by = ? WHERE punishment_id = ?";
         try (PreparedStatement ps = Driver.getConnection().prepareStatement(sql)) {
             ps.setString(1, details);
-            ps.setInt(2, id);
+            ps.setString(2, amender.toString());
+            ps.setInt(3, id);
             return ps.executeUpdate() != 0;
         }
     }

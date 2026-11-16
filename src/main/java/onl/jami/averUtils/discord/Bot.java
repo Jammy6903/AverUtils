@@ -13,11 +13,9 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import onl.jami.averUtils.AverUtils;
-import onl.jami.averUtils.discord.sync.chat.DiscordToMinecraft;
-import onl.jami.averUtils.discord.chatlink.EditChannels;
-import onl.jami.averUtils.discord.sync.SyncOnChange;
-import onl.jami.averUtils.discord.verification.commands.VerifyDiscord;
-import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.discord.verification.VerifyCommand;
+import onl.jami.averUtils.listeners.discord.*;
+import onl.jami.averUtils.locale.Locale;
 
 public class Bot {
     public static JDA jda;
@@ -25,14 +23,21 @@ public class Bot {
     public static boolean jdaInit(String token) {
         try {
             jda = JDABuilder.createLight(token, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_WEBHOOKS, GatewayIntent.MESSAGE_CONTENT)
-                    .addEventListeners(new DiscordToMinecraft(), new SyncOnChange(), new VerifyDiscord(), new EditChannels())
+                    .addEventListeners(
+                            new VerifyCommand(),
+                            new MemberRemove(),
+                            new MemberUpdateNickname(),
+                            new MemberUpdateTimeout(),
+                            new MessageReceived(),
+                            new UserUpdateGlobalName(),
+                            new UserUpdateName())
                     .setMemberCachePolicy(MemberCachePolicy.ALL)
                     .setChunkingFilter(ChunkingFilter.ALL)
                     .build();
             jda.updateCommands().addCommands(verifyCommand(), channelCommand()).queue();
             return true;
         } catch (Exception e) {
-            AverUtils.logWarning(Messages.getString("errors.discord.setup"), e);
+            AverUtils.logWarning(Locale.getString("errors.discord.setup"), e);
             jda = null;
             return false;
         }

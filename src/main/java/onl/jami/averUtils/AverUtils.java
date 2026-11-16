@@ -2,42 +2,41 @@ package onl.jami.averUtils;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.luckperms.api.LuckPerms;
-import onl.jami.averUtils.discord.verification.jail.JailWorld;
-import onl.jami.averUtils.listeners.CommandListener;
-import onl.jami.averUtils.schedules.Scheduled;
-import onl.jami.averUtils.social.Report;
-import onl.jami.averUtils.social.blocks.Block;
-import onl.jami.averUtils.social.blocks.Unblock;
-import onl.jami.averUtils.staff.VanishManager;
-import onl.jami.averUtils.staff.admin.*;
-import onl.jami.averUtils.listeners.ChatListener;
-import onl.jami.averUtils.listeners.PingListener;
-import onl.jami.averUtils.locale.Messages;
-import onl.jami.averUtils.locale.Reload;
-import onl.jami.averUtils.staff.moderation.commands.*;
-import onl.jami.averUtils.staff.moderation.menus.punishmenu.PunishMenuListener;
-import onl.jami.averUtils.staff.moderation.menus.reportmenu.ReportMenuListener;
+import onl.jami.averUtils.commands.moderation.*;
+import onl.jami.averUtils.listeners.*;
+import onl.jami.averUtils.managers.ChatManager;
+import onl.jami.averUtils.worlds.jail.JailWorld;
+import onl.jami.averUtils.managers.ScheduleManager;
+import onl.jami.averUtils.commands.social.Report;
+import onl.jami.averUtils.commands.social.Block;
+import onl.jami.averUtils.commands.social.Unblock;
+import onl.jami.averUtils.managers.VanishManager;
+import onl.jami.averUtils.commands.admin.*;
+import onl.jami.averUtils.locale.Locale;
+import onl.jami.averUtils.commands.admin.Reload;
+import onl.jami.averUtils.menus.punish.PunishMenuListener;
+import onl.jami.averUtils.menus.report.ReportMenuListener;
 import onl.jami.averUtils.storage.cache.ChannelLinkCache;
 import onl.jami.averUtils.storage.cache.MotdCache;
 import onl.jami.averUtils.storage.cache.PlayerListDecorationCache;
-import onl.jami.averUtils.teleportation.tpa.*;
-import onl.jami.averUtils.userconfig.profile.*;
-import onl.jami.averUtils.social.messaging.commands.Msg;
-import onl.jami.averUtils.social.messaging.commands.Reply;
+import onl.jami.averUtils.commands.teleportation.tpa.*;
+import onl.jami.averUtils.commands.profile.*;
+import onl.jami.averUtils.commands.social.Msg;
+import onl.jami.averUtils.commands.social.Reply;
 import onl.jami.averUtils.storage.database.Driver;
 import onl.jami.averUtils.discord.Bot;
-import onl.jami.averUtils.discord.verification.commands.VerifyMinecraft;
-import onl.jami.averUtils.listeners.PlayerListeners;
-import onl.jami.averUtils.teleportation.Spawn;
-import onl.jami.averUtils.teleportation.home.*;
-import onl.jami.averUtils.teleportation.warp.Warp;
-import onl.jami.averUtils.teleportation.warp.Warps;
+import onl.jami.averUtils.commands.Verify;
+import onl.jami.averUtils.commands.teleportation.Spawn;
+import onl.jami.averUtils.commands.teleportation.home.*;
+import onl.jami.averUtils.commands.teleportation.warp.Warp;
+import onl.jami.averUtils.commands.teleportation.warp.Warps;
 import org.bukkit.*;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -68,7 +67,6 @@ public final class AverUtils extends JavaPlugin {
             MotdCache.updateMotds();
             ChannelLinkCache.updateChannels();
             PlayerListDecorationCache.updateDecorations();
-            Scheduled.update();
         } catch (ClassNotFoundException | SQLException e) {
             this.getLogger().log(Level.SEVERE, "Could not initialize or migrate the database!", e);
             getServer().getPluginManager().disablePlugin(this);
@@ -102,13 +100,49 @@ public final class AverUtils extends JavaPlugin {
             luckPermsApi = provider.getProvider();
         }
 
-        getServer().getPluginManager().registerEvents(new ChatListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerListeners(), this);
-        getServer().getPluginManager().registerEvents(new PingListener(), this);
-        getServer().getPluginManager().registerEvents(new CommandListener(), this);
-        getServer().getPluginManager().registerEvents(new ReportMenuListener(), this);
-        // getServer().getPluginManager().registerEvents(new Cooldowns(), this);
-        getServer().getPluginManager().registerEvents(new PunishMenuListener(), this);
+        registerListeners();
+        registerCommands();
+
+        ScheduleManager.update();
+        // ChatManager.load();
+
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            VanishManager.onJoin(p);
+        }
+    }
+
+    @Override
+    public void onDisable() {
+        // Plugin shutdown logic
+        VanishManager.shutdown();
+        Bot.close();
+        try {
+            Driver.close();
+        } catch (SQLException e) {
+            this.getLogger().log(Level.WARNING, "Failed to close database connection", e);
+        }
+    }
+
+    private void registerListeners() {
+        registerListener(new EntityDamage());
+        registerListener(new PingListener());
+        registerListener(new PlayerAdvancement());
+        registerListener(new PlayerChat());
+        registerListener(new PlayerCommand());
+        registerListener(new PlayerDeath());
+        registerListener(new PlayerInteract());
+        registerListener(new PlayerJoin());
+        registerListener(new PlayerPreLogin());
+        registerListener(new PlayerQuit());
+        registerListener(new PunishMenuListener());
+        registerListener(new ReportMenuListener());
+    }
+
+    private void registerListener(Listener listener) {
+        getServer().getPluginManager().registerEvents(listener, this);
+    }
+
+    private void registerCommands() {
         registerCommand("msg", new Msg());
         registerCommand("reply", new Reply());
         registerCommand("tpa", new Tpa());
@@ -120,7 +154,7 @@ public final class AverUtils extends JavaPlugin {
         registerCommand("home", new Home());
         registerCommand("homes", new Homes());
         registerCommand("delHome", new DelHome());
-        registerCommand("verify", new VerifyMinecraft());
+        registerCommand("verify", new Verify());
         registerCommand("doas", new DoAs());
         registerCommand("pronouns", new Pronouns());
         registerCommand("nickname", new Nickname());
@@ -149,22 +183,7 @@ public final class AverUtils extends JavaPlugin {
         registerCommand("invsee", new Invsee());
         registerCommand("vanish", new Vanish());
         registerCommand("fly", new Fly());
-
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            VanishManager.onJoin(p);
-        }
-    }
-
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
-        VanishManager.shutdown();
-        Bot.close();
-        try {
-            Driver.close();
-        } catch (SQLException e) {
-            this.getLogger().log(Level.WARNING, "Failed to close database connection", e);
-        }
+        registerCommand("announce", new Announce());
     }
 
     private void registerCommand(String name, CommandExecutor executor) {
@@ -184,10 +203,11 @@ public final class AverUtils extends JavaPlugin {
 
         // load config and locale
         cfg = plugin.getConfig();
-        Messages.load((AverUtils) plugin);
+        Locale.load((AverUtils) plugin);
     }
 
     public static void logWarning(String message, Exception e) { AverUtils.getPlugin().getLogger().log(Level.WARNING, message, e); }
+    public static void logWarning(String message) { AverUtils.getPlugin().getLogger().log(Level.WARNING, message); }
 
     public static Plugin getPlugin() {return instance;}
 

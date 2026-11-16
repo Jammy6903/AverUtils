@@ -21,7 +21,7 @@ import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionE
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import onl.jami.averUtils.AverUtils;
-import onl.jami.averUtils.locale.Messages;
+import onl.jami.averUtils.locale.Locale;
 import onl.jami.averUtils.storage.cache.ChannelLinkCache;
 import onl.jami.averUtils.storage.database.ChannelLinkCategory;
 import onl.jami.averUtils.storage.database.ChannelLinkRepo;
@@ -83,8 +83,8 @@ public class EditChannels extends ListenerAdapter {
                     event.reply("Channel link has been removed").setEphemeral(true).queue();
                     ChannelLinkCache.updateChannels();
                 } catch (SQLException exception) {
-                    AverUtils.logWarning(Messages.getString("discord.commands.generic.failure.unknown"), exception);
-                    event.reply(Messages.getString("errors.database.channel_links")).setEphemeral(true).queue();
+                    AverUtils.logWarning(Locale.getString("discord.commands.generic.failure.unknown"), exception);
+                    event.reply(Locale.getString("errors.database.channel_links")).setEphemeral(true).queue();
                 }
                 break;
             case "list":
@@ -134,7 +134,7 @@ public class EditChannels extends ListenerAdapter {
         try {
             ChannelLinkRepo.setCategories(guildId, channelId, categoriesSet, generateWebhook(guildId, channelId).get());
         } catch (Exception exception) {
-            AverUtils.logWarning(Messages.getString("errors.database.channel_links"), exception);
+            AverUtils.logWarning(Locale.getString("errors.database.channel_links"), exception);
             event.reply("An error has occurred.").setEphemeral(true).queue();
             return;
         }
@@ -174,7 +174,7 @@ public class EditChannels extends ListenerAdapter {
                 ChannelLinkCache.updateChannels();
                 future.complete(webhook.getUrl());
             } catch (SQLException exception) {
-                AverUtils.logWarning(Messages.getString("errors.database.channel_links"), exception);
+                AverUtils.logWarning(Locale.getString("errors.database.channel_links"), exception);
                 future.completeExceptionally(exception);
             }
         });

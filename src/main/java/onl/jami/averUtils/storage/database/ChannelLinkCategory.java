@@ -11,7 +11,8 @@ public enum ChannelLinkCategory {
     ADVANCEMENT(16 << 0),
     STARTUP(32 << 0),
     SHUTDOWN(64 << 0),
-    CONSOLE(128 << 0);
+    CONSOLE(128 << 0),
+    STAFF(256 << 0);
 
     public final int bit;
     ChannelLinkCategory(int bit) {this.bit = bit;}

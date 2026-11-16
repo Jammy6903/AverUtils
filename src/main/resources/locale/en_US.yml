@@ -259,30 +259,25 @@ commands:
   punish:
     failure:
       player-not-joined: "<red>That player has not joined the server</red>"
+      player-not-online: "<red>You can't kick someone who is not online</red>"
+      self: "<red>You can not punish yourself</red>"
+      invalid-arguments: "<red>You must at least select a player to punish</red>"
+      invalid-flag: "<red><error></red>"
+      invalid-duration: "<red>The duration you entered is not in the format \"1y6M2w5d12h30m\", use something like \"5d12h\"</red>"
     warn:
       success: "<yellow>You have warned <red><player></red> for <red><reason></red>:</yellow> <details>"
-      failure:
     kick:
       success: "<yellow>You have kicked <red><player></red> for <red><reason>>:</yellow> <details>"
-      failure:
-        not-online: "<red>You cannot kick a player who is offline</red>"
     timeout:
       success: "<yellow>You have timed out <red><player></red> for <red><duration></red> for <red><reason></red>:</yellow> <details>"
-      failure:
     temp_ban:
       success: "<yellow>You have temp-banned <red><player></red> for <red><duration></red> for <red><reason></red>:</yellow> <details>"
-      failure:
     ban:
       success: "<yellow>You have banned <red><player></red> for <red><reason>>:</yellow> <details>"
-      failure:
     remove:
       success: "<yellow>You have removed <red>punishment <id></red> from <red><player></red></yellow>"
-      failure:
-        doesnt-exist: "<red>That punishment does not exist</red>"
-    edit_details:
+    edit:
       success:
-      failure:
-        doesnt-exist:
   reload:
     success: "<green>Successfully reloaded config and locale</green>"
   report:

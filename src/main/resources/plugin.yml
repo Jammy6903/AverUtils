@@ -157,6 +157,10 @@ commands:
     permission: averutils.moderation.fly
 
   # ADMIN
+  announce:
+    description: Announce to all players
+    usage: /announce <message>
+    permission: averutils.admin.announce
   setwarp:
     description: Set a warp point
     usage: /setwarp <name>

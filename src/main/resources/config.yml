@@ -8,6 +8,37 @@ discord:
 locale: "en_US"
 timezone: "UTC"
 
+chat:
+  default-channel: global
+  channels:
+    global:
+      display-name: "Global"
+      format: chat.format.message
+      speak-permission: ""
+      listen-permission: ""
+      range: -1
+      scope: ALL
+      discord-category: CHAT
+      shortcut: "!"
+    local:
+      display-name: "Local"
+      format: chat.format.local.message
+      speak-permission: averutils.chat.local
+      listen-permission: averutils.chat.local
+      range: 100
+      scope: RANGE
+      discord-category:
+      shortcut: "~"
+    staff:
+      display-name: "Staff"
+      format: chat.format.staff.message
+      speak-permission: averutils.chat.staff
+      listen-permission: averutils.chat.staff
+      range: -1
+      scope: ALL
+      discord-category: STAFF
+      shortcut: "sc:"
+
 teleportation:
   tpr-distance: 15000
 
@@ -57,6 +88,14 @@ reporting:
 moderation:
   punishments:
     strings:
+      announce:
+        moderators: "<yellow>[PUNISH]</yellow> <grey><red><player></red> has been <red><punishment></red> by <white><moderator></white> for <white><reason></white> (<details>), duration: <white><duration></white></grey>"
+        public:
+          warn: ""
+          kick: ""
+          timeout: ""
+          temp_ban:
+          ban: "<bold><dark_red><player></dark_red> <yellow>has been banned</yellow></bold>"
       warn:
         on-join: "<newline><bold><dark_red>[!]</dark_red></bold> <red>You have an active warning for <yellow><reason></yellow></red><newline> "
         on-warn: "<newline><bold><dark_red>[!]</dark_red></bold> <red>You have been warned for <yellow><reason></yellow></red><newline> "
@@ -64,7 +103,7 @@ moderation:
       timeout:
         on-timeout: "<newline><bold><dark_red>[!]</dark_red></bold> <red>You have been timed out for <yellow><duration></yellow> for <yellow><reason></yellow></red><newline> "
         on-action: "<bold><dark_red>[!]</dark_red></bold> <red>You can't interact with chat or message players while timed out, you have <yellow><remaining></yellow> remaining on your time out for <yellow><reason></yellow></red>"
-      temp-ban: "<bold><dark_red>You have been temporarily banned!</dark_red></bold><newline><newline><yellow>Reason:</yellow> <reason><newline><yellow>Duration:</yellow> <duration><newline><yellow>Remaining:</yellow> <remaining><newline><newline><italic><grey>punishment id: <id></grey>"
+      temp_ban: "<bold><dark_red>You have been temporarily banned!</dark_red></bold><newline><newline><yellow>Reason:</yellow> <reason><newline><yellow>Duration:</yellow> <duration><newline><yellow>Remaining:</yellow> <remaining><newline><newline><italic><grey>punishment id: <id></grey>"
       ban: "<bold><dark_red>You have been banned!</dark_red></bold><newline><newline><yellow>Reason:</yellow> <reason><newline><newline><italic><grey>punishment id: <id></grey>"
     warn-kick-duration: 7d
     no-reason: "Reason not provided"

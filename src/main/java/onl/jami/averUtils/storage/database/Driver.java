@@ -24,7 +24,7 @@ public class Driver {
         return connection;
     }
 
-    private static final int SCHEMA_VERSION = 4;
+    private static final int SCHEMA_VERSION = 5;
 
     public static void initTables() throws SQLException {
         try (Statement st = connection.createStatement()) {
@@ -140,7 +140,7 @@ public class Driver {
                 CREATE TABLE IF NOT EXISTS punishments (
                     punishment_id       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                     player_uuid         TEXT REFERENCES players(uuid),
-                    punisher_uuid       TEXT,
+                    punisher_uuid       TEXT NOT NULL,
                     type                TEXT NOT NULL
                                         CHECK(type IN ('WARN', 'KICK', 'TIMEOUT', 'TEMP_BAN', 'BAN')),
                     duration            TEXT,
@@ -159,6 +159,7 @@ public class Driver {
         if (current < 2) { migrateToV2(); }
         if (current < 3) { migrateToV3(); }
         if (current < 4) { migrateToV4(); }
+        if (current < 5) { migrateToV5(); }
         setSchemaVersion(SCHEMA_VERSION);
     }
 
@@ -242,6 +243,41 @@ public class Driver {
             for (PlayerRepo.PlayerData playerData : players) {
                 PlayerRepo.updateLastSeen(playerData.uuid(), Bukkit.getOfflinePlayer(playerData.uuid()).getLastSeen());
             }
+            connection.commit();
+        } catch (SQLException exception) {
+            connection.rollback();
+            throw exception;
+        } finally {
+            connection.setAutoCommit(oldAutoCommit);
+        }
+    }
+
+    private static void migrateToV5() throws SQLException {
+        boolean oldAutoCommit = connection.getAutoCommit();
+        connection.setAutoCommit(false);
+        try (Statement st = connection.createStatement()) {
+            st.executeUpdate("""
+                CREATE TABLE punishments_new (
+                    punishment_id       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    player_uuid         TEXT REFERENCES players(uuid),
+                    punisher_uuid       TEXT NOT NULL,
+                    type                TEXT NOT NULL
+                                        CHECK(type IN ('WARN', 'KICK', 'TIMEOUT', 'TEMP_BAN', 'BAN')),
+                    duration            TEXT,
+                    duration_end        INTEGER,
+                    reason              TEXT NOT NULL,
+                    details             TEXT NOT NULL,
+                    last_amended_by     TEXT,
+                    is_expired          BOOLEAN NOT NULL DEFAULT FALSE
+                )
+            """);
+            st.executeUpdate("""
+                INSERT INTO punishments_new (punishment_id, player_uuid, punisher_uuid, type, duration, duration_end, reason, details, is_expired)
+                SELECT punishment_id, player_uuid, COALESCE(punisher_uuid, '00000000-0000-0000-0000-000000000000'), type, duration, duration_end, reason, details, is_expired
+                FROM punishments
+            """);
+            st.executeUpdate("DROP TABLE punishments");
+            st.executeUpdate("ALTER TABLE punishments_new RENAME TO punishments");
             connection.commit();
         } catch (SQLException exception) {
             connection.rollback();
