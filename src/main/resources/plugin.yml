@@ -121,7 +121,7 @@ commands:
   report:
     description: Report a player
     usage: /report <player> <reason> [details...]
-    permission: avertutils.report
+    permission: averutils.report
 
   # MODERATION
   socialspy:
@@ -186,3 +186,8 @@ commands:
     description: Create or edit a command or message schedule
     usage: /schedule <subcommand>
     permission: averutils.admin.schedule
+  icon:
+    description: Add, enable, disable and list server icons
+    aliases: [ servericon ]
+    usage: /icon <subcommand>
+    permission: averutils.admin.icon

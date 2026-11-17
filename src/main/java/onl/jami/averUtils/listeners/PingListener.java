@@ -4,9 +4,11 @@ import com.destroystokyo.paper.event.server.PaperServerListPingEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import onl.jami.averUtils.managers.VanishManager;
 import onl.jami.averUtils.storage.cache.MotdCache;
+import onl.jami.averUtils.storage.cache.ServerIconCache;
 import onl.jami.averUtils.storage.database.MotdRepo;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.util.CachedServerIcon;
 
 public class PingListener implements Listener {
 
@@ -15,6 +17,10 @@ public class PingListener implements Listener {
         MotdRepo.MotdData motd = MotdCache.getRandom();
         if (motd != null) {
             e.motd(MiniMessage.miniMessage().deserialize(motd.message()));
+        }
+        CachedServerIcon icon = ServerIconCache.getRandom();
+        if (icon != null) {
+            e.setServerIcon(icon);
         }
 
         // hide vanished players

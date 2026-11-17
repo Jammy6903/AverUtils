@@ -5,6 +5,8 @@ import net.luckperms.api.LuckPerms;
 import onl.jami.averUtils.commands.moderation.*;
 import onl.jami.averUtils.commands.teleportation.Tpr;
 import onl.jami.averUtils.listeners.*;
+import onl.jami.averUtils.managers.ServerIconManager;
+import onl.jami.averUtils.storage.cache.ServerIconCache;
 import onl.jami.averUtils.worlds.jail.JailWorld;
 import onl.jami.averUtils.managers.ScheduleManager;
 import onl.jami.averUtils.commands.social.Report;
@@ -65,6 +67,7 @@ public final class AverUtils extends JavaPlugin {
             Driver.migrate();
 
             MotdCache.updateMotds();
+            ServerIconCache.load();
             ChannelLinkCache.updateChannels();
             PlayerListDecorationCache.updateDecorations();
         } catch (ClassNotFoundException | SQLException e) {
@@ -184,6 +187,7 @@ public final class AverUtils extends JavaPlugin {
         registerCommand("vanish", new Vanish());
         registerCommand("fly", new Fly());
         registerCommand("announce", new Announce());
+        registerCommand("icon", new Icon());
     }
 
     private void registerCommand(String name, CommandExecutor executor) {

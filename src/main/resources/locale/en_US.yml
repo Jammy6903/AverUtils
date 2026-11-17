@@ -191,6 +191,17 @@ commands:
     success: "<green>Your homes:</green> <yellow><homes></yellow>"
     failure:
       doesnt-exist: "<red>You do not have any homes</red>"
+  icon:
+    downloading: "<yellow>Downloading server icon...</yellow>"
+    success:
+      list: "<yellow>Server icons:</yellow><newline><green>Enabled: <enabled></green><newline><red>Disabled: <disabled></red>"
+      enabled: "<green>Enabled icon: <name></green>"
+      disabled: "<green>Disabled icon: <yellow><name></yellow></green>"
+      added: "<green>Downloaded new server icon: <name></green>"
+    failure:
+      not-found: "<red>That file does not exist</red>"
+      exists: "<red>That file already exists</red>"
+      invalid: "<red><error></red>"
   invsee:
     failure:
       not-online: "<red>That player is not online</red>"
