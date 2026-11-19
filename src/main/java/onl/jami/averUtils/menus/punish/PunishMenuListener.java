@@ -198,7 +198,7 @@ public class PunishMenuListener implements Listener {
         }
         if (slot == menu.getCustomPunishButtonSlot()) {
             player.closeInventory();
-            player.sendMessage(Component.text("Click to punish", Style.style(NamedTextColor.RED, TextDecoration.UNDERLINED)).clickEvent(ClickEvent.suggestCommand("/punish " + target.getName() + " ")));
+            player.sendMessage(Component.text("Click to punish", Style.style(NamedTextColor.RED, TextDecoration.UNDERLINED)).clickEvent(ClickEvent.suggestCommand("/punish player:" + target.getName() + " ")));
             return;
         }
         PunishmentSuggestion.ReasonEntry reason = menu.getReason(slot);
@@ -217,18 +217,18 @@ public class PunishMenuListener implements Listener {
         }
         if (slot == menu.getCustomPunishButtonSlot()) {
             player.closeInventory();
-            player.sendMessage(Component.text("Click to punish", Style.style(NamedTextColor.RED, TextDecoration.UNDERLINED)).clickEvent(ClickEvent.suggestCommand("/punish " + target.getName() + " [PUNISHMENT] [DURATION] \"" + menu.getReason().reason() + "\" \"[DETAILS]\"")));
+            player.sendMessage(Component.text("Click to punish", Style.style(NamedTextColor.RED, TextDecoration.UNDERLINED)).clickEvent(ClickEvent.suggestCommand("/punish [PUNISHMENT] player:" + target.getName() + " reason:" + menu.getReason().reason() + " ")));
             return;
         }
         PunishmentSuggestion.Option option = menu.getOption(slot);
         if (option == null) { return; }
         PunishmentSuggestion.ReasonEntry reason = menu.getReason();
         switch (option.type()) {
-            case BAN -> player.performCommand("punish " + target.getName() + " BAN \"" + reason.reason() + "\"");
-            case TEMP_BAN -> player.performCommand("punish " + target.getName() + " TEMP_BAN " + option.duration() + " \"" + reason.reason() + "\"");
-            case TIMEOUT -> player.performCommand("punish " + target.getName() + " TIMEOUT " + option.duration() + " \"" + reason.reason() + "\"");
-            case KICK -> player.performCommand("punish " + target.getName() + " KICK \"" + reason.reason() + "\"");
-            case WARN -> player.performCommand("punish " + target.getName() + " WARN \"" + reason.reason() + "\"");
+            case BAN -> player.performCommand("punish ban player:" + target.getName() + " reason:" + reason.reason());
+            case TEMP_BAN -> player.performCommand("punish ban player:" + target.getName() + " duration:" + option.duration() + " reason:" + reason.reason());
+            case TIMEOUT -> player.performCommand("punish timeout player:" + target.getName() + " duration: " + option.duration() + " reason:" + reason.reason());
+            case KICK -> player.performCommand("punish kick player:" + target.getName() + " reason:" + reason.reason());
+            case WARN -> player.performCommand("punish warn player:" + target.getName() + " reason:" + reason.reason());
         }
         player.closeInventory();
     }
