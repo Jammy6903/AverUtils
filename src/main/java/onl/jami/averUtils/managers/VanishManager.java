@@ -76,6 +76,7 @@ public class VanishManager {
         p.addPotionEffect(NIGHT_VISION);
         p.showBossBar(INDICATOR);
         syncVisibility(p);
+        PlayerName.updatePlayerList(p);
     }
 
     public static void disable(Player p) {
@@ -90,6 +91,7 @@ public class VanishManager {
         p.removePotionEffect(PotionEffectType.NIGHT_VISION);
         p.hideBossBar(INDICATOR);
         syncVisibility(p);
+        PlayerName.updatePlayerList(p);
     }
 
     public static void syncVisibility(Player player) {

@@ -3,6 +3,7 @@ package onl.jami.averUtils.managers;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.luckperms.api.cacheddata.CachedMetaData;
@@ -94,6 +95,9 @@ public class PlayerName {
                 Placeholder.component("name", getComponent(player, false)),
                 Placeholder.component("pronouns", pronouns)
         );
+        if (VanishManager.isVanished(player)) {
+            component = component.append(Component.text(" [v]", NamedTextColor.GRAY));
+        }
         player.playerListName(component);
     }
 }
