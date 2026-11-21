@@ -226,6 +226,8 @@ commands:
       failure:
         doesnt-exist: "<red>Unable to set <name>, does it exist?</red>"
         wrong-args: "Usage: /motd set [name] [true/false]"
+    failure:
+      empty: "<red>MOTD can't be blank"
   msg:
     failure:
       blocked: "<red>You can't message this player right now</red>"

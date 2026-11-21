@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import onl.jami.averUtils.AverUtils;
+import onl.jami.averUtils.dialogs.MotdDialog;
 import onl.jami.averUtils.locale.Locale;
 import onl.jami.averUtils.storage.cache.MotdCache;
 import onl.jami.averUtils.storage.database.MotdRepo;
@@ -22,19 +23,33 @@ import java.util.List;
 public class Motd implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-        if (args.length == 0) {
-            if (sender instanceof Player p) {
-                // Show gui
-            }
-            return true;
-        }
+        if (args.length < 2) { return false;}
         switch (args[0].toLowerCase()) {
             case "create":
-                create(sender, args);
-                break;
+                if (!(sender instanceof Player p) || args.length != 2) {
+                    create(sender, args);
+                    break;
+                }
+                MotdDialog.open(p, args[1], "", true);
+                return true;
             case "edit":
-                edit(sender, args);
-                break;
+                if (!(sender instanceof Player p) || args.length != 2) {
+                    edit(sender, args);
+                    break;
+                }
+                try {
+                    MotdRepo.MotdData existing = MotdRepo.get(args[1]);
+                    if (existing == null) {
+                        Locale.send(sender, "commands.motd.edit.failure.doesnt-exist",
+                                Placeholder.unparsed("name", args[1]));
+                        return true;
+                    }
+                    MotdDialog.open(p, args[1], existing.message(), false);
+                } catch (SQLException e) {
+                    AverUtils.logWarning(Locale.getString("errors.database.motds"), e);
+                    Locale.send(sender, "commands.generic.failure.unknown");
+                }
+                return true;
             case "delete":
                 delete(sender, args);
                 break;
