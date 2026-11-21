@@ -139,6 +139,7 @@ public final class AverUtils extends JavaPlugin {
         registerListener(new PlayerQuit());
         registerListener(new PunishMenuListener());
         registerListener(new ReportMenuListener());
+        registerListener(new PlayerSpawn());
     }
 
     private void registerListener(Listener listener) {
